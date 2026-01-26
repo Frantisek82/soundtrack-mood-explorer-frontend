@@ -27,3 +27,4 @@ export async function getSoundtrackById(id: string) {
 }
 
 // This will later be replaced with a real fetch() call.
+// fetch(`${API_URL}/soundtracks/${id}`)
