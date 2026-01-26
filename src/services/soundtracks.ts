@@ -1,6 +1,5 @@
-export async function getSoundtracks(mood?: string) {
-  // Temporary mock data
-  const data = [
+// Temporary mock data
+const data = [
   {
     id: "1",
     title: "Time",
@@ -26,6 +25,5 @@ export async function getSoundtracks(mood?: string) {
 export async function getSoundtrackById(id: string) {
   return data.find((s) => s.id === id);
 }
-
 
 // This will later be replaced with a real fetch() call.
