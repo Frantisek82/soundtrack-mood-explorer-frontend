@@ -26,8 +26,11 @@ export default function Navbar() {
           <Link href="/" className={linkClass("/")}>
             Home
           </Link>
-          <Link href="/explore" className={linkClass("/explore")}>
-            Explore
+          <Link href="/login" className={linkClass("/login")}>
+            Login
+          </Link>
+          <Link href="/register" className={linkClass("/register")}>
+            Register
           </Link>
           <Link href="/contact" className={linkClass("/contact")}>
             Contact
@@ -35,8 +38,8 @@ export default function Navbar() {
           <Link href="/profile" className={linkClass("/profile")}>
             Profile
           </Link>
-          <Link href="/login" className={linkClass("/login")}>
-            Login
+          <Link href="/explore" className={linkClass("/explore")}>
+            Explore
           </Link>
         </div>
       </div>
