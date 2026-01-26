@@ -1,3 +1,5 @@
+"use cleint";
+
 import Link from "next/link";
 
 type Props = {
