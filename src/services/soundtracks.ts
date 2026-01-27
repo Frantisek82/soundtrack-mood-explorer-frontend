@@ -1,30 +1,25 @@
-// Temporary mock data
-const data = [
-  {
-    id: "1",
-    title: "Time",
-    movie: "Inception",
-    composer: "Hans Zimmer",
-    mood: ["Epic", "Emotional"],
-    previewUrl: "",
-  },
-  {
-    id: "2",
-    title: "Cornfield Chase",
-    movie: "Interstellar",
-    composer: "Hans Zimmer",
-    mood: ["Calm"],
-    previewUrl: "",
-  },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getSoundtracks(mood?: string) {
-  return mood ? data.filter((s) => s.mood.includes(mood)) : data;
+  const url = mood
+    ? `${API_URL}/soundtracks?mood=${mood}`
+    : `${API_URL}/soundtracks`;
+
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch soundtracks");
+  }
+
+  return res.json();
 }
 
 export async function getSoundtrackById(id: string) {
-  return data.find((s) => s.id === id);
-}
+  const res = await fetch(`${API_URL}/soundtracks/${id}`);
 
-// This will later be replaced with a real fetch() call.
-// fetch(`${API_URL}/soundtracks/${id}`)
+  if (!res.ok) {
+    throw new Error("Failed to fetch soundtrack");
+  }
+
+  return res.json();
+}

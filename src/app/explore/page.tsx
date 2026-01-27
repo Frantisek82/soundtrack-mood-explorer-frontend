@@ -19,12 +19,33 @@ export default function ExplorePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+  let isMounted = true;
+
+  async function loadSoundtracks() {
     setLoading(true);
-    getSoundtracks(mood || undefined).then((data) => {
-      setSoundtracks(data);
-      setLoading(false);
-    });
-  }, [mood]);
+    try {
+      const data = await getSoundtracks(mood || undefined);
+      if (isMounted) {
+        setSoundtracks(data);
+      }
+    } catch (error) {
+      console.error("Failed to load soundtracks:", error);
+      if (isMounted) {
+        setSoundtracks([]);
+      }
+    } finally {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }
+  }
+
+  loadSoundtracks();
+
+  return () => {
+    isMounted = false;
+  };
+}, [mood]);
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
