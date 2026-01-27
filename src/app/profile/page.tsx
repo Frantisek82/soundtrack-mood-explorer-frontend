@@ -1,9 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "@/src/utils/auth";
+import { logout } from "@/src/utils/auth";
+
 
 export default function ProfilePage() {
   const [image, setImage] = useState<File | null>(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push("/login");
+    }
+  }, [router]);
 
   return (
     <main className="min-h-screen flex items-center justify-center px-6">
@@ -36,6 +49,16 @@ export default function ProfilePage() {
 
         <button className="w-full bg-white text-black py-3 rounded font-medium">
           Save Changes
+        </button>
+        // inside JSX
+        <button
+          onClick={() => {
+            logout();
+            router.push("/login");
+          }}
+          className="mt-6 w-full bg-red-500 py-3 rounded font-medium"
+        >
+          Logout
         </button>
       </div>
     </main>

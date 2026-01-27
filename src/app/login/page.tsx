@@ -1,16 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { loginUser } from "@/src/services/auth";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    console.log({ email, password });
-    // API call will be added later
+  const router = useRouter();
+
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+
+  try {
+    const res = await loginUser({ email, password });
+
+    // Store token (simple version)
+    localStorage.setItem("token", res.token);
+    localStorage.setItem("user", JSON.stringify(res.user));
+
+    router.push("/explore");
+  } catch (err: any) {
+    alert(err.message);
   }
+}
 
   return (
     <main className="min-h-screen flex items-center justify-center">

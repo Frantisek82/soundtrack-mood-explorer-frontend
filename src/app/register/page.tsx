@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { registerUser } from "@/src/services/auth";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -10,14 +12,30 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-    console.log(form);
+  // inside component
+const router = useRouter();
+
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+
+  if (form.password !== form.confirmPassword) {
+    alert("Passwords do not match");
+    return;
   }
+
+  try {
+    await registerUser({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    });
+
+    alert("Registration successful");
+    router.push("/login");
+  } catch (err: any) {
+    alert(err.message);
+  }
+}
 
   return (
     <main className="min-h-screen flex items-center justify-center">
