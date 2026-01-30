@@ -60,6 +60,30 @@ export async function getFavorites() {
 }
 
 /**
+ * Disable “Add to Favorites” if Already Favorited
+ */
+export async function isFavorite(soundtrackId: string): Promise<boolean> {
+  const token = getToken();
+
+  if (!token) return false;
+
+  const res = await fetch(`${API_URL}/favorites`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) return false;
+
+  const favorites = await res.json();
+
+  return favorites.some(
+    (fav: any) => fav.soundtrackId._id === soundtrackId
+  );
+}
+
+
+/**
  * Remove a soundtrack from favorites
  */
 export async function removeFavorite(soundtrackId: string) {

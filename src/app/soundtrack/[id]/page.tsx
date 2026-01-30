@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getSoundtrackById } from "@/src/services/soundtracks";
-import { addFavorite } from "@/src/services/favorites";
+import { addFavorite, isFavorite } from "@/src/services/favorites";
 import MoodTag from "@/src/components/MoodTag";
 
 type Soundtrack = {
@@ -19,6 +19,8 @@ export default function SoundtrackDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [soundtrack, setSoundtrack] = useState<Soundtrack | null>(null);
   const [loading, setLoading] = useState(true);
+  const [favorited, setFavorited] = useState(false);
+
 
   useEffect(() => {
     if (!id) return;
@@ -27,7 +29,15 @@ export default function SoundtrackDetailPage() {
       setSoundtrack(data || null);
       setLoading(false);
     });
-  }, [id]);
+    async function checkFavorite() {
+      if (soundtrack?._id) {
+        const exists = await isFavorite(soundtrack._id);
+        setFavorited(exists);
+      }
+    }
+
+    checkFavorite();
+  }, [id, soundtrack]);
 
   if (loading) {
     return (
@@ -73,21 +83,24 @@ export default function SoundtrackDetailPage() {
 
       {/* Actions */}
       <section className="flex gap-4">
-        <button onClick={async () => {
-          try {
-            await addFavorite(soundtrack._id);
-            alert("Added to favorites ❤️");
-          } catch (err: any) {
-            if (err.message.includes("already")) {
-              alert("This soundtrack is already in your favorites ⭐");
-            } else {
-              alert("Failed to add favorite");
+        <button
+          disabled={favorited}
+          onClick={async () => {
+            try {
+              await addFavorite(soundtrack._id);
+              setFavorited(true);
+            } catch (error: any) {
+              alert(error.message || "Failed to add favorite");
             }
-          }
-        }}
-          className="px-6 py-3 rounded-lg bg-white text-black font-medium">
-          Add to Favorites
+          }}
+          className={`px-6 py-3 rounded-lg font-medium transition ${favorited
+              ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+              : "bg-white text-black hover:bg-gray-200"
+            }`}
+        >
+          {favorited ? "Favorited ❤️" : "Add to Favorites"}
         </button>
+
 
         <button className="px-6 py-3 rounded-lg border border-zinc-700">
           Add to Playlist
