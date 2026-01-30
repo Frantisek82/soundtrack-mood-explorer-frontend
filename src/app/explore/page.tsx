@@ -6,7 +6,7 @@ import SoundtrackCard from "@/src/components/SoundtrackCard";
 import { getSoundtracks } from "@/src/services/soundtracks";
 
 type Soundtrack = {
-  id: string;
+  _id: string;
   title: string;
   movie: string;
   composer: string;
@@ -73,8 +73,8 @@ export default function ExplorePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {soundtracks.map((track) => (
             <SoundtrackCard
-              key={track.id}
-              id={track.id}
+              key={track._id}
+              _id={track._id}
               title={track.title}
               movie={track.movie}
               composer={track.composer}

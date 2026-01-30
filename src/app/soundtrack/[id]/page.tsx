@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getSoundtrackById } from "@/src/services/soundtracks";
+import { addFavorite } from "@/src/services/favorites";
 import MoodTag from "@/src/components/MoodTag";
 
 type Soundtrack = {
-  id: string;
+  _id: string;
   title: string;
   movie: string;
   composer: string;
-  mood: string[];
+  moods: string[];
   previewUrl?: string;
 };
 
@@ -65,14 +66,26 @@ export default function SoundtrackDetailPage() {
 
       {/* Mood Tags */}
       <section className="flex gap-2 mb-8 flex-wrap">
-        {soundtrack.mood.map((m) => (
+        {soundtrack.moods.map((m) => (
           <MoodTag key={m} label={m} />
         ))}
       </section>
 
       {/* Actions */}
       <section className="flex gap-4">
-        <button className="px-6 py-3 rounded-lg bg-white text-black font-medium">
+        <button onClick={async () => {
+          try {
+            await addFavorite(soundtrack._id);
+            alert("Added to favorites ❤️");
+          } catch (err: any) {
+            if (err.message.includes("already")) {
+              alert("This soundtrack is already in your favorites ⭐");
+            } else {
+              alert("Failed to add favorite");
+            }
+          }
+        }}
+          className="px-6 py-3 rounded-lg bg-white text-black font-medium">
           Add to Favorites
         </button>
 

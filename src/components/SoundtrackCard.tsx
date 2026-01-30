@@ -3,21 +3,21 @@
 import Link from "next/link";
 
 type Props = {
-  id: string;
+  _id: string;
   title: string;
   movie: string;
   composer: string;
 };
 
 export default function SoundtrackCard({
-  id,
+  _id,
   title,
   movie,
   composer,
 }: Props) {
   return (
     <Link
-      href={`/soundtrack/${id}`}
+      href={`/soundtrack/${_id}`}
       className="bg-zinc-900 p-4 rounded-xl hover:bg-zinc-800 transition"
     >
       <h3 className="font-semibold mb-1">{title}</h3>
