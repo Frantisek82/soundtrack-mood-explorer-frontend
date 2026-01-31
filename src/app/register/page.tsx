@@ -38,9 +38,14 @@ async function handleSubmit(e: React.FormEvent) {
 }
 
   return (
-    <main className="min-h-screen flex items-center justify-center">
+    <main className="max-w-6xl mx-auto px-6 py-10">
+        <header className="mb-10">
+        <h1 className="text-3xl font-bold mb-2">Register</h1>
+        <p className="text-gray-400">
+          Create a new account.
+        </p>
+      </header>
       <form className="bg-zinc-900 p-8 rounded-xl w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6">Register</h2>
 
         {["name", "email", "password", "confirmPassword"].map((field) => (
           <input
@@ -55,7 +60,7 @@ async function handleSubmit(e: React.FormEvent) {
           />
         ))}
 
-        <button className="w-full bg-white text-black py-3 rounded font-medium">
+        <button className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition">
           Create Account
         </button>
       </form>

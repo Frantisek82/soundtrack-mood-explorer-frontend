@@ -28,9 +28,9 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="max-w-md mx-auto px-6 py-12">
+    <main className="max-w-6xl mx-auto px-6 py-10">
       {/* Header */}
-      <header className="mb-8">
+      <header className="mb-10">
         <h1 className="text-3xl font-bold mb-2">Login</h1>
         <p className="text-gray-400">
           Sign in to access your favorites and profile.
@@ -38,7 +38,7 @@ export default function LoginPage() {
       </header>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="bg-zinc-900 p-8 rounded-xl w-full max-w-md">
         <div>
           <label className="block text-sm mb-1">Email</label>
           <input
@@ -46,7 +46,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+            className="w-full mb-4 p-3 rounded bg-black border border-zinc-700"
           />
         </div>
 
@@ -57,7 +57,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+            className="w-full mb-4 p-3 rounded bg-black border border-zinc-700"
           />
         </div>
 
@@ -68,7 +68,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full mt-4 px-6 py-3 rounded-lg font-medium transition
+          className={`px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition
             ${
               loading
                 ? "bg-gray-700 text-gray-400 cursor-not-allowed"

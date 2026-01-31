@@ -60,7 +60,7 @@ export default function ExplorePage() {
   }, []);
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-12">
+    <main className="max-w-6xl mx-auto px-6 py-10">
       {/* Page Header */}
       <header className="mb-10">
         <h1 className="text-3xl font-bold mb-2">Explore Soundtracks</h1>

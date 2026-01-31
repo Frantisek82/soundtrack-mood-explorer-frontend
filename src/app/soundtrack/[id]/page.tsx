@@ -104,7 +104,7 @@ export default function SoundtrackDetailPage() {
 
   if (loading) {
     return (
-      <main className="max-w-4xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-6 py-10">
         <p className="text-gray-400">Loading soundtrack...</p>
       </main>
     );
@@ -112,16 +112,16 @@ export default function SoundtrackDetailPage() {
 
   if (error || !soundtrack) {
     return (
-      <main className="max-w-4xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-6 py-10">
         <p className="text-red-400">{error}</p>
       </main>
     );
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12">
+    <main className="max-w-6xl mx-auto px-6 py-10">
       {/* Header */}
-      <header className="mb-8">
+      <header className="mb-10">
         <h1 className="text-3xl font-bold mb-2">
           {soundtrack.title}
         </h1>

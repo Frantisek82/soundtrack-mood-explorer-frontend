@@ -11,7 +11,7 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="max-w-xl mx-auto px-6 py-12">
+    <main className="max-w-6xl mx-auto px-6 py-10">
       {/* Page Header */}
       <header className="mb-10">
         <h1 className="text-3xl font-bold mb-2">Contact</h1>
@@ -53,7 +53,7 @@ export default function ContactPage() {
 
             <button
               type="submit"
-              className="w-full mt-4 px-6 py-3 rounded-lg font-medium bg-white text-black hover:bg-gray-200 transition"
+              className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition"
             >
               Send message
             </button>

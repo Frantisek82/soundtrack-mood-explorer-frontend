@@ -60,8 +60,8 @@ export default function FavoritesPage() {
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-8">
+    <main className="max-w-6xl mx-auto px-6 py-10">
+      <h1 className="text-3xl font-bold mb-2">
         Your Favorites
       </h1>
 
@@ -69,12 +69,16 @@ export default function FavoritesPage() {
         <p className="text-gray-400">
           You don’t have any favorites yet.
         </p>
+      
       ) : (
         <ul className="space-y-6">
           {favorites.map((fav) => (
             <li
               key={fav._id}
-              className="flex items-center justify-between border-b border-zinc-800 pb-4"
+              className="flow-root bg-zinc-900 p-4 rounded-xl 
+           hover:bg-zinc-700 
+           hover:-translate-y-1 
+           transition-all duration-200"
             >
               <div>
                 <Link
@@ -93,7 +97,7 @@ export default function FavoritesPage() {
                 onClick={() =>
                   handleRemove(fav.soundtrackId._id)
                 }
-                className="px-4 py-2 text-sm rounded-lg bg-red-500 hover:bg-red-600 text-white transition"
+                className="float-right px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
               >
                 Remove
               </button>

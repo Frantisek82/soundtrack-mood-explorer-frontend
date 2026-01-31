@@ -19,7 +19,7 @@ export default function SoundtrackCard({
     <Link
       href={`/soundtrack/${_id}`}
       className="bg-zinc-900 p-4 rounded-xl 
-           hover:bg-zinc-800 
+           hover:bg-zinc-700 
            hover:-translate-y-1 
            transition-all duration-200"
     >
