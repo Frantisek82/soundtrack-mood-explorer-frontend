@@ -1,57 +1,82 @@
 "use client";
 
 import { useState } from "react";
-import { loginUser } from "@/src/services/auth";
 import { useRouter } from "next/navigation";
+import { loginUser } from "@/src/services/auth";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const router = useRouter();
 
-async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  try {
-    const res = await loginUser({ email, password });
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
-    // Store token (simple version)
-    localStorage.setItem("token", res.token);
-    localStorage.setItem("user", JSON.stringify(res.user));
-
-    router.push("/explore");
-  } catch (err: any) {
-    alert(err.message);
+    try {
+      await loginUser(email, password);
+      router.push("/explore");
+    } catch (err: any) {
+      setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-zinc-900 p-8 rounded-xl w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6">Login</h2>
+    <main className="max-w-md mx-auto px-6 py-12">
+      {/* Header */}
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Login</h1>
+        <p className="text-gray-400">
+          Sign in to access your favorites and profile.
+        </p>
+      </header>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-4 p-3 rounded bg-black border border-zinc-700"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm mb-1">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-6 p-3 rounded bg-black border border-zinc-700"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div>
+          <label className="block text-sm mb-1">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+          />
+        </div>
 
-        <button className="w-full bg-white text-black py-3 rounded font-medium">
-          Login
+        {error && (
+          <p className="text-sm text-red-400">{error}</p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full mt-4 px-6 py-3 rounded-lg font-medium transition
+            ${
+              loading
+                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                : "bg-white text-black hover:bg-gray-200"
+            }
+          `}
+        >
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </main>

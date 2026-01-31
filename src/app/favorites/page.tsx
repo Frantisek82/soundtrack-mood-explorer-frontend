@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import SoundtrackCard from "@/src/components/SoundtrackCard";
+import Link from "next/link";
 import { getFavorites, removeFavorite } from "@/src/services/favorites";
 import { isAuthenticated } from "@/src/utils/auth";
 
@@ -18,74 +18,88 @@ type Favorite = {
 
 export default function FavoritesPage() {
   const router = useRouter();
+
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔐 Protect page
+  /**
+   * Redirect if not authenticated
+   */
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push("/login");
+      router.replace("/login");
       return;
     }
 
     async function loadFavorites() {
-      try {
-        const data = await getFavorites();
-        setFavorites(data);
-      } catch (error) {
-        console.error("Failed to load favorites:", error);
-        setFavorites([]);
-      } finally {
-        setLoading(false);
-      }
+      const data = await getFavorites();
+      setFavorites(data);
+      setLoading(false);
     }
 
     loadFavorites();
   }, [router]);
 
+  async function handleRemove(soundtrackId: string) {
+    await removeFavorite(soundtrackId);
+
+    // 🔁 Update local state immediately
+    setFavorites((prev) =>
+      prev.filter(
+        (fav) => fav.soundtrackId._id !== soundtrackId
+      )
+    );
+  }
+
   if (loading) {
     return (
-      <main className="p-6">
+      <main className="max-w-4xl mx-auto px-6 py-12">
         <p className="text-gray-400">Loading favorites...</p>
       </main>
     );
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-8">Your Favorites</h1>
+    <main className="max-w-4xl mx-auto px-6 py-12">
+      <h1 className="text-3xl font-bold mb-8">
+        Your Favorites
+      </h1>
 
       {favorites.length === 0 ? (
-        <p className="text-gray-400">You haven’t added any favorites yet.</p>
+        <p className="text-gray-400">
+          You don’t have any favorites yet.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <ul className="space-y-6">
           {favorites.map((fav) => (
-            <div key={fav._id} className="relative">
-              <SoundtrackCard
-                _id={fav.soundtrackId._id}
-                title={fav.soundtrackId.title}
-                movie={fav.soundtrackId.movie}
-                composer={fav.soundtrackId.composer}
-              />
+            <li
+              key={fav._id}
+              className="flex items-center justify-between border-b border-zinc-800 pb-4"
+            >
+              <div>
+                <Link
+                  href={`/soundtrack/${fav.soundtrackId._id}`}
+                  className="text-lg font-semibold hover:underline"
+                >
+                  {fav.soundtrackId.title}
+                </Link>
+                <p className="text-gray-400 text-sm">
+                  {fav.soundtrackId.movie} •{" "}
+                  {fav.soundtrackId.composer}
+                </p>
+              </div>
 
               <button
-                onClick={async () => {
-                  try {
-                    await removeFavorite(fav.soundtrackId._id);
-                    setFavorites((prev) =>
-                      prev.filter((f) => f._id !== fav._id)
-                    );
-                  } catch (error) {
-                    alert("Failed to remove favorite");
-                  }
-                }}
-                className="absolute top-3 right-3 text-xs text-red-400 hover:text-red-300"
+                onClick={() =>
+                  handleRemove(fav.soundtrackId._id)
+                }
+                className="px-4 py-2 text-sm rounded-lg bg-red-500 hover:bg-red-600 text-white transition"
               >
                 Remove
               </button>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </main>
   );

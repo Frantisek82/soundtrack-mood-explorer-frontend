@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MoodSelector from "@/src/components/MoodSelector";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import { getSoundtracks } from "@/src/services/soundtracks";
 
@@ -10,67 +9,88 @@ type Soundtrack = {
   title: string;
   movie: string;
   composer: string;
-  mood: string;
+  moods: string[];
 };
 
+function SoundtrackSkeleton() {
+  return (
+    <div className="bg-zinc-900 p-4 rounded-xl animate-pulse">
+      <div className="h-4 bg-zinc-700 rounded w-3/4 mb-2" />
+      <div className="h-3 bg-zinc-700 rounded w-1/2 mb-1" />
+      <div className="h-3 bg-zinc-700 rounded w-1/3" />
+    </div>
+  );
+}
+
 export default function ExplorePage() {
-  const [mood, setMood] = useState<string | null>(null);
   const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-  let isMounted = true;
+    let mounted = true;
 
-  async function loadSoundtracks() {
-    setLoading(true);
-    try {
-      const data = await getSoundtracks(mood || undefined);
-      if (isMounted) {
-        setSoundtracks(data);
-      }
-    } catch (error) {
-      console.error("Failed to load soundtracks:", error);
-      if (isMounted) {
-        setSoundtracks([]);
-      }
-    } finally {
-      if (isMounted) {
-        setLoading(false);
+    async function loadSoundtracks() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await getSoundtracks();
+        if (mounted) {
+          setSoundtracks(data);
+        }
+      } catch (err) {
+        console.error("Failed to load soundtracks:", err);
+        if (mounted) {
+          setError("Failed to load soundtracks. Please try again.");
+          setSoundtracks([]);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
-  }
 
-  loadSoundtracks();
+    loadSoundtracks();
 
-  return () => {
-    isMounted = false;
-  };
-}, [mood]);
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
-      {/* Header */}
+      {/* Page Header */}
       <header className="mb-10">
-        <h1 className="text-3xl font-bold mb-2">
-          Explore Soundtracks
-        </h1>
+        <h1 className="text-3xl font-bold mb-2">Explore Soundtracks</h1>
         <p className="text-gray-400">
-          Discover movie and game soundtracks by emotion.
+          Discover iconic movie soundtracks and explore their moods.
         </p>
       </header>
 
-      {/* Mood Selector */}
-      <MoodSelector selected={mood} onSelect={setMood} />
+      {/* Loading */}
+      {loading && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SoundtrackSkeleton key={i} />
+          ))}
+        </div>
+      )}
 
-      {/* Content */}
-      {loading ? (
-        <p className="text-gray-400">Loading soundtracks...</p>
-      ) : soundtracks.length === 0 ? (
-        <p className="text-gray-400">
-          No soundtracks found for this mood.
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {/* Error */}
+      {!loading && error && (
+        <p className="text-red-400">{error}</p>
+      )}
+
+      {/* Empty State */}
+      {!loading && !error && soundtracks.length === 0 && (
+        <p className="text-gray-400">No soundtracks found.</p>
+      )}
+
+      {/* Soundtrack Grid */}
+      {!loading && !error && soundtracks.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {soundtracks.map((track) => (
             <SoundtrackCard
               key={track._id}

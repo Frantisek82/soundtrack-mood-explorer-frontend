@@ -12,21 +12,20 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // ✅ Run only on client after hydration
+  // ✅ Client-only auth check to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
     setLoggedIn(isAuthenticated());
-  }, []);
+  }, [pathname]);
+
+  if (!mounted) {
+    return null;
+  }
 
   const linkClass = (path: string) =>
     pathname === path
       ? "text-white font-semibold"
       : "text-gray-400 hover:text-white transition";
-
-  // ⛔ Prevent rendering until mounted (avoids hydration mismatch)
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <nav className="border-b border-zinc-800 bg-black">
@@ -39,6 +38,10 @@ export default function Navbar() {
 
           <Link href="/explore" className={linkClass("/explore")}>
             Explore
+          </Link>
+
+          <Link href="/contact" className={linkClass("/contact")}>
+            Contact
           </Link>
 
           {loggedIn && (

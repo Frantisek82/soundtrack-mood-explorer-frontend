@@ -1,21 +1,56 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { getToken } from "@/src/utils/auth";
+
+const API_URL = "http://localhost:3000/api";
+
+export type FavoriteResponse = {
+  _id: string;
+  soundtrackId: {
+    _id: string;
+    title: string;
+    movie: string;
+    composer: string;
+  };
+};
 
 /**
- * Helper to get JWT token from localStorage
+ * Get all favorites for the logged-in user
+ * Returns empty array if not authenticated
  */
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
+export async function getFavorites(): Promise<FavoriteResponse[]> {
+  const token = getToken();
+
+  // 🛡 Guard: user not logged in
+  if (!token) {
+    return [];
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/favorites`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      return [];
+    }
+
+    return res.json();
+  } catch {
+    return [];
+  }
 }
 
 /**
- * Add a soundtrack to favorites
+ * Add soundtrack to favorites
+ * Throws if user is not authenticated
  */
 export async function addFavorite(soundtrackId: string) {
   const token = getToken();
 
   if (!token) {
-    throw new Error("Not authenticated");
+    throw new Error("You must be logged in to add favorites");
   }
 
   const res = await fetch(`${API_URL}/favorites`, {
@@ -24,6 +59,7 @@ export async function addFavorite(soundtrackId: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    credentials: "include",
     body: JSON.stringify({ soundtrackId }),
   });
 
@@ -36,76 +72,36 @@ export async function addFavorite(soundtrackId: string) {
 }
 
 /**
- * Get all favorites for the logged-in user
- */
-export async function getFavorites() {
-  const token = getToken();
-
-  if (!token) {
-    throw new Error("Not authenticated");
-  }
-
-  const res = await fetch(`${API_URL}/favorites`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Failed to fetch favorites");
-  }
-
-  return res.json();
-}
-
-/**
- * Disable “Add to Favorites” if Already Favorited
- */
-export async function isFavorite(soundtrackId: string): Promise<boolean> {
-  const token = getToken();
-
-  if (!token) return false;
-
-  const res = await fetch(`${API_URL}/favorites`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) return false;
-
-  const favorites = await res.json();
-
-  return favorites.some(
-    (fav: any) => fav.soundtrackId._id === soundtrackId
-  );
-}
-
-
-/**
- * Remove a soundtrack from favorites
+ * Remove soundtrack from favorites
+ * DELETE is idempotent on the backend
  */
 export async function removeFavorite(soundtrackId: string) {
   const token = getToken();
 
-  if (!token) {
-    throw new Error("Not authenticated");
-  }
+  if (!token) return;
 
-  const res = await fetch(`${API_URL}/favorites`, {
+  await fetch(`${API_URL}/favorites/${soundtrackId}`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ soundtrackId }),
+    credentials: "include",
   });
+}
 
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Failed to remove favorite");
-  }
+/**
+ * Check if a soundtrack is favorited
+ */
+export async function isFavorite(
+  soundtrackId: string
+): Promise<boolean> {
+  const token = getToken();
 
-  return res.json();
+  // 🛡 Guard: logged out
+  if (!token) return false;
+
+  const favorites = await getFavorites();
+  return favorites.some(
+    (fav) => fav.soundtrackId._id === soundtrackId
+  );
 }

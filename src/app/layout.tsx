@@ -1,5 +1,11 @@
 import "./globals.css";
+import type { Metadata } from "next";
 import Navbar from "@/src/components/Navbar";
+
+export const metadata: Metadata = {
+  title: "Soundtrack Explorer",
+  description: "Discover movie soundtracks by mood and atmosphere",
+};
 
 export default function RootLayout({
   children,
@@ -18,4 +24,3 @@ export default function RootLayout({
     </html>
   );
 }
-

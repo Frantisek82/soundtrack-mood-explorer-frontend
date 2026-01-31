@@ -1,31 +1,70 @@
 "use client";
 
+import { useState } from "react";
+
 export default function ContactPage() {
+  const [submitted, setSubmitted] = useState(false);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitted(true);
+  }
+
   return (
-    <main className="min-h-screen flex items-center justify-center px-6">
-      <form className="bg-zinc-900 p-8 rounded-xl w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-6">Contact Us</h2>
+    <main className="max-w-xl mx-auto px-6 py-12">
+      {/* Page Header */}
+      <header className="mb-10">
+        <h1 className="text-3xl font-bold mb-2">Contact</h1>
+        <p className="text-gray-400">
+          Get in touch if you’d like to discuss this project.
+        </p>
+      </header>
 
-        <input
-          placeholder="Name"
-          className="w-full mb-4 p-3 rounded bg-black border border-zinc-700"
-        />
+      {/* Contact Card */}
+      <section className="bg-zinc-900 rounded-xl p-6">
+        {!submitted ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm mb-1">Name</label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+              />
+            </div>
 
-        <input
-          placeholder="Email"
-          className="w-full mb-4 p-3 rounded bg-black border border-zinc-700"
-        />
+            <div>
+              <label className="block text-sm mb-1">Email</label>
+              <input
+                type="email"
+                required
+                className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+              />
+            </div>
 
-        <textarea
-          placeholder="Message"
-          className="w-full mb-6 p-3 rounded bg-black border border-zinc-700"
-          rows={4}
-        />
+            <div>
+              <label className="block text-sm mb-1">Message</label>
+              <textarea
+                required
+                rows={4}
+                className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white resize-none"
+              />
+            </div>
 
-        <button className="w-full bg-white text-black py-3 rounded font-medium">
-          Send Message
-        </button>
-      </form>
+            <button
+              type="submit"
+              className="w-full mt-4 px-6 py-3 rounded-lg font-medium bg-white text-black hover:bg-gray-200 transition"
+            >
+              Send message
+            </button>
+          </form>
+        ) : (
+          <p className="text-center text-gray-300">
+            Thanks for your message!  
+            I’ll get back to you as soon as possible.
+          </p>
+        )}
+      </section>
     </main>
   );
 }

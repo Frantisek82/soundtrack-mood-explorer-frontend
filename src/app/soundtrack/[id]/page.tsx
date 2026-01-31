@@ -1,56 +1,119 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getSoundtrackById } from "@/src/services/soundtracks";
-import { addFavorite, isFavorite } from "@/src/services/favorites";
-import MoodTag from "@/src/components/MoodTag";
+import { useParams, useRouter } from "next/navigation";
+import { isAuthenticated } from "@/src/utils/auth";
+import {
+  addFavorite,
+  removeFavorite,
+  isFavorite,
+} from "@/src/services/favorites";
 
 type Soundtrack = {
   _id: string;
   title: string;
   movie: string;
   composer: string;
-  moods: string[];
-  previewUrl?: string;
+  year?: number;
+  description?: string;
+  mood?: string[];
 };
 
 export default function SoundtrackDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+
   const [soundtrack, setSoundtrack] = useState<Soundtrack | null>(null);
   const [loading, setLoading] = useState(true);
-  const [favorited, setFavorited] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const [isFav, setIsFav] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
 
+  /**
+   * Fetch soundtrack details
+   */
   useEffect(() => {
-    if (!id) return;
+    async function fetchSoundtrack() {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/soundtracks/${id}`
+        );
 
-    getSoundtrackById(id).then((data) => {
-      setSoundtrack(data || null);
-      setLoading(false);
-    });
-    async function checkFavorite() {
-      if (soundtrack?._id) {
-        const exists = await isFavorite(soundtrack._id);
-        setFavorited(exists);
+        if (!res.ok) {
+          throw new Error("Soundtrack not found");
+        }
+
+        const data = await res.json();
+        setSoundtrack(data);
+      } catch {
+        setError("Soundtrack not found");
+      } finally {
+        setLoading(false);
       }
     }
 
-    checkFavorite();
-  }, [id, soundtrack]);
+    fetchSoundtrack();
+  }, [id]);
+
+  /**
+   * Check favorite status
+   * (only when logged in)
+   */
+  useEffect(() => {
+    if (!soundtrack || !isAuthenticated()) return;
+
+    async function checkFavorite(soundtrackId: string) {
+  const fav = await isFavorite(soundtrackId);
+  setIsFav(fav);
+}
+
+
+    checkFavorite(soundtrack._id);
+  }, [soundtrack]);
+
+  /**
+   * Add / remove favorite
+   */
+  async function handleFavorite() {
+    if (!soundtrack) return;
+
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      setFavLoading(true);
+
+      if (isFav) {
+        await removeFavorite(soundtrack._id);
+        setIsFav(false);
+      } else {
+        await addFavorite(soundtrack._id);
+        setIsFav(true);
+      }
+    } catch (err: any) {
+      alert(err.message || "Action failed");
+    } finally {
+      setFavLoading(false);
+    }
+  }
+
+  /* ---------- Render states ---------- */
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
+      <main className="max-w-4xl mx-auto px-6 py-12">
         <p className="text-gray-400">Loading soundtrack...</p>
       </main>
     );
   }
 
-  if (!soundtrack) {
+  if (error || !soundtrack) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-400">Soundtrack not found.</p>
+      <main className="max-w-4xl mx-auto px-6 py-12">
+        <p className="text-red-400">{error}</p>
       </main>
     );
   }
@@ -64,48 +127,56 @@ export default function SoundtrackDetailPage() {
         </h1>
         <p className="text-gray-400">
           {soundtrack.movie} • {soundtrack.composer}
+          {soundtrack.year && ` • ${soundtrack.year}`}
         </p>
       </header>
 
-      {/* Audio Preview */}
-      <section className="mb-8">
-        <div className="bg-zinc-900 rounded-xl p-6 text-center text-gray-400">
-          Audio preview coming soon
+      {/* Description */}
+      {soundtrack.description && (
+        <p className="mb-6 text-gray-300">
+          {soundtrack.description}
+        </p>
+      )}
+
+      {/* Mood tags */}
+      {Array.isArray(soundtrack.mood) && soundtrack.mood.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-8">
+          {soundtrack.mood.map((mood) => (
+            <span
+              key={mood}
+              className="px-3 py-1 text-sm rounded-full bg-zinc-800"
+            >
+              {mood}
+            </span>
+          ))}
         </div>
-      </section>
+      )}
 
-      {/* Mood Tags */}
-      <section className="flex gap-2 mb-8 flex-wrap">
-        {soundtrack.moods.map((m) => (
-          <MoodTag key={m} label={m} />
-        ))}
-      </section>
-
-      {/* Actions */}
-      <section className="flex gap-4">
+      {/* Favorite action */}
+      {isAuthenticated() ? (
         <button
-          disabled={favorited}
-          onClick={async () => {
-            try {
-              await addFavorite(soundtrack._id);
-              setFavorited(true);
-            } catch (error: any) {
-              alert(error.message || "Failed to add favorite");
+          onClick={handleFavorite}
+          disabled={favLoading}
+          className={`px-6 py-3 rounded-lg font-medium transition
+            ${
+              isFav
+                ? "bg-red-500 hover:bg-red-600 text-white"
+                : "bg-white hover:bg-gray-200 text-black"
             }
-          }}
-          className={`px-6 py-3 rounded-lg font-medium transition ${favorited
-              ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-              : "bg-white text-black hover:bg-gray-200"
-            }`}
+            ${favLoading ? "opacity-50 cursor-not-allowed" : ""}
+          `}
         >
-          {favorited ? "Favorited ❤️" : "Add to Favorites"}
+          {favLoading
+            ? "Saving..."
+            : isFav
+            ? "Remove from Favorites"
+            : "Add to Favorites"}
         </button>
-
-
-        <button className="px-6 py-3 rounded-lg border border-zinc-700">
-          Add to Playlist
-        </button>
-      </section>
+      ) : (
+        <p className="text-gray-400 text-sm">
+          Login to add this soundtrack to your favorites
+        </p>
+      )}
     </main>
   );
 }
