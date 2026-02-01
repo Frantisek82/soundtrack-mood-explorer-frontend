@@ -1,49 +1,34 @@
 const API_URL = "http://localhost:3000/api";
 
-/**
- * Login user
- * - Sends credentials so backend can set auth cookie
- * - Stores JWT in localStorage for Authorization headers
- */
-export async function loginUser(email: string, password: string) {
-  const res = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include", // ⭐ REQUIRED for cookies
-    body: JSON.stringify({ email, password }),
-  });
+/* =====================
+   Types
+===================== */
 
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Login failed");
-  }
+type RegisterData = {
+  name: string;
+  email: string;
+  password: string;
+};
 
-  const data = await res.json();
+type LoginData = {
+  email: string;
+  password: string;
+};
 
-  // Save token for API calls (headers)
-  localStorage.setItem("token", data.token);
+/* =====================
+   Register
+===================== */
 
-  return data;
-}
-
-/**
- * Register user
- */
-export async function registerUser(
-  email: string,
-  password: string
-) {
+export async function registerUser(data: RegisterData) {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify(data),
   });
 
+  // Backend responded, but with an error status (e.g. 409)
   if (!res.ok) {
     const error = await res.json();
     throw new Error(error.message || "Registration failed");
@@ -52,11 +37,36 @@ export async function registerUser(
   return res.json();
 }
 
-/**
- * Logout user
- * - Clears local token
- * - Cookie is cleared by backend/proxy logic
- */
-export function logoutUser() {
-  localStorage.removeItem("token");
+/* =====================
+   Login
+===================== */
+
+export async function loginUser(data: LoginData) {
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Invalid credentials");
+  }
+
+  return res.json();
+}
+
+/* =====================
+   Logout
+===================== */
+
+export async function logoutUser() {
+  // Logout should never block UI, so we fail silently
+  await fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
 }

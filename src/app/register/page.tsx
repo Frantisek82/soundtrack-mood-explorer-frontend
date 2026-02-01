@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { registerUser } from "@/src/services/auth";
 import { useRouter } from "next/navigation";
+import { registerUser } from "@/src/services/auth";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -12,56 +14,103 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  // inside component
-const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
+  const fields = [
+    { key: "name", label: "Name", type: "text" },
+    { key: "email", label: "Email", type: "text" },
+    { key: "password", label: "Password", type: "password" },
+    {
+      key: "confirmPassword",
+      label: "Confirm password",
+      type: "password",
+    },
+  ];
 
-  if (form.password !== form.confirmPassword) {
-    alert("Passwords do not match");
-    return;
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await registerUser({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      });
+      router.push("/login");
+    } catch (err: any) {
+      setError(err.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   }
-
-  try {
-    await registerUser({
-      name: form.name,
-      email: form.email,
-      password: form.password,
-    });
-
-    alert("Registration successful");
-    router.push("/login");
-  } catch (err: any) {
-    alert(err.message);
-  }
-}
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
-        <header className="mb-10">
-        <h1 className="text-3xl font-bold mb-2">Register</h1>
-        <p className="text-gray-400">
-          Create a new account.
-        </p>
-      </header>
-      <form className="bg-zinc-900 p-8 rounded-xl w-full max-w-md">
+    <main className="min-h-screen flex items-center justify-center px-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-zinc-900 p-8 rounded-xl w-full max-w-md"
+      >
+        <h1 className="text-2xl font-bold mb-6 text-center">
+          Create account
+        </h1>
 
-        {["name", "email", "password", "confirmPassword"].map((field) => (
+        {error && (
+          <p className="mb-4 text-sm text-red-400">{error}</p>
+        )}
+
+        {fields.map(({ key, label, type }) => (
           <input
-            key={field}
-            type={field.includes("password") ? "password" : "text"}
-            placeholder={field}
-            className="w-full mb-4 p-3 rounded bg-black border border-zinc-700"
-            value={(form as any)[field]}
+            key={key}
+            type={type}
+            placeholder={label}
+            value={(form as any)[key]}
             onChange={(e) =>
-              setForm({ ...form, [field]: e.target.value })
+              setForm({ ...form, [key]: e.target.value })
             }
+            className="
+              w-full
+              mb-4
+              px-4
+              py-3
+              rounded-lg
+              bg-black
+              border
+              border-zinc-700
+              text-white
+              placeholder:text-gray-500
+              focus:outline-none
+              focus:border-white
+            "
           />
         ))}
 
-        <button className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition">
-          Create Account
+        <button
+          type="submit"
+          disabled={loading}
+          className="
+            w-full
+            mt-2
+            px-6
+            py-3
+            rounded-lg
+            bg-white
+            text-black
+            font-medium
+            hover:bg-gray-200
+            transition
+            disabled:opacity-50
+            disabled:cursor-not-allowed
+          "
+        >
+          {loading ? "Creating account..." : "Register"}
         </button>
       </form>
     </main>
