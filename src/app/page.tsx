@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-      <h1 className="text-4xl font-bold mb-4">
+    <main className="max-w-6xl mx-auto px-6 py-10">
+      <h1 className="text-3xl font-bold mb-2">
         Soundtrack Mood Explorer
       </h1>
 
@@ -14,14 +14,14 @@ export default function HomePage() {
       <div className="flex gap-4">
         <Link
           href="/explore"
-          className="px-6 py-3 bg-white text-black rounded-lg font-medium"
+          className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition"
         >
           Explore
         </Link>
 
         <Link
           href="/login"
-          className="px-6 py-3 border border-white rounded-lg"
+          className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition"
         >
           Login
         </Link>

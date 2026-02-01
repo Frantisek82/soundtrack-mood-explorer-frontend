@@ -58,7 +58,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="max-w-xl mx-auto px-6 py-12">
+    <main className="max-w-6xl mx-auto px-6 py-10">
       {/* Page Header */}
       <header className="mb-10">
         <h1 className="text-3xl font-bold mb-2">Profile</h1>
@@ -133,7 +133,7 @@ export default function ProfilePage() {
           logout();
           router.push("/login");
         }}
-        className="mt-6 text-sm text-red-400 hover:text-red-300 transition"
+        className="mt-6 text-lg text-red-400 hover:text-red-300 transition"
       >
         Logout
       </button>
