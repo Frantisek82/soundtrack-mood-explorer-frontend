@@ -9,9 +9,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [loggedIn, setLoggedIn] = useState(() => isAuthenticated());
+  const [mounted, setMounted] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setLoggedIn(isAuthenticated());
   }, [pathname]);
 
@@ -25,6 +27,11 @@ export default function Navbar() {
     pathname.startsWith(path)
       ? "text-white font-semibold"
       : "text-gray-400 hover:text-white transition";
+
+  // ⛔ Prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <nav className="border-b border-zinc-800 bg-black">
