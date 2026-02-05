@@ -1,23 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSoundtracks } from "@/src/services/soundtracks";
+import Link from "next/link";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import MoodSelector from "@/src/components/MoodSelector";
+import { getSoundtracks } from "@/src/services/soundtracks";
 
 type Soundtrack = {
   _id: string;
   title: string;
-  artist: string;
-  coverUrl?: string;
-  mood?: string[]; // mood is optional (defensive)
+  movie: string;
+  composer: string;
+  moods: string[];
 };
 
 export default function ExplorePage() {
   const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function loadSoundtracks() {
@@ -34,80 +35,63 @@ export default function ExplorePage() {
     loadSoundtracks();
   }, []);
 
-  /* -----------------------------
-     Extract unique moods safely
-  ----------------------------- */
-  const allMoods = Array.from(
-    new Set(
-      soundtracks.flatMap((s) =>
-        Array.isArray(s.mood) ? s.mood : []
-      )
-    )
-  );
-
-  /* -----------------------------
-     Filter by selected mood
-  ----------------------------- */
   const filteredSoundtracks = selectedMood
-    ? soundtracks.filter(
-        (s) =>
-          Array.isArray(s.mood) &&
-          s.mood.includes(selectedMood)
+    ? soundtracks.filter((s) =>
+        Array.isArray(s.moods) && s.moods.includes(selectedMood)
       )
     : soundtracks;
 
-  /* -----------------------------
-     UI states
-  ----------------------------- */
   if (loading) {
     return (
-      <p className="text-center mt-12 text-gray-400">
-        Loading soundtracks...
-      </p>
+      <div className="p-8 text-center text-gray-400">
+        Loading soundtracks…
+      </div>
     );
   }
 
   if (error) {
     return (
-      <p className="text-center mt-12 text-red-400">
+      <div className="p-8 text-center text-red-400">
         {error}
-      </p>
+      </div>
     );
   }
 
   return (
-    <main className="px-6 py-10 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">
-        Explore Soundtracks
-      </h1>
-
-      <p className="text-gray-400 mb-6">
-        Discover music by mood
-      </p>
+    <div className="max-w-6xl mx-auto p-8 space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-semibold mb-2">
+          Explore Soundtracks
+        </h1>
+        <p className="text-gray-400">
+          Discover movie soundtracks by mood
+        </p>
+      </div>
 
       {/* Mood selector */}
       <MoodSelector
-        moods={allMoods}
         selectedMood={selectedMood}
         onChange={setSelectedMood}
       />
 
-      {/* Empty state */}
-      {filteredSoundtracks.length === 0 && (
-        <p className="text-gray-400 mt-10">
+      {/* Results */}
+      {filteredSoundtracks.length === 0 ? (
+        <div className="text-center text-gray-400 mt-12">
           No soundtracks match this mood.
-        </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredSoundtracks.map((soundtrack) => (
+            <Link
+              key={soundtrack._id}
+              href={`/soundtrack/${soundtrack._id}`}
+            >
+              <SoundtrackCard soundtrack={soundtrack} />
+            </Link>
+          ))}
+        </div>
       )}
-
-      {/* Soundtracks grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredSoundtracks.map((soundtrack) => (
-          <SoundtrackCard
-            key={soundtrack._id}
-            soundtrack={soundtrack}
-          />
-        ))}
-      </div>
-    </main>
+    </div>
   );
 }

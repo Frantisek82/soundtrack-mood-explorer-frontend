@@ -1,64 +1,29 @@
 /**
- * Get token from cookies
+ * Returns Authorization headers for authenticated requests
  */
-function getTokenFromCookie(): string | null {
-  if (typeof document === "undefined") return null;
+export function getAuthHeaders(): HeadersInit {
+  if (typeof window === "undefined") return {};
 
-  const match = document.cookie.match(/(^| )token=([^;]+)/);
-  return match ? match[2] : null;
+  const token = localStorage.getItem("token");
+  if (!token) return {};
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
 }
 
 /**
- * Check authentication status
- * Syncs cookie → localStorage if needed
+ * Check if the user is authenticated
  */
 export function isAuthenticated(): boolean {
   if (typeof window === "undefined") return false;
-
-  const localToken = localStorage.getItem("token");
-  const cookieToken = getTokenFromCookie();
-
-  // 🔄 Sync cookie to localStorage
-  if (!localToken && cookieToken) {
-    localStorage.setItem("token", cookieToken);
-    return true;
-  }
-
-  return Boolean(localToken);
+  return Boolean(localStorage.getItem("token"));
 }
 
 /**
- * Login: save token in both places
+ * Log the user out
  */
-export function login(token: string) {
+export function logout(): void {
   if (typeof window === "undefined") return;
-
-  localStorage.setItem("token", token);
-
-  document.cookie = [
-    `token=${token}`,
-    "path=/",
-    "SameSite=Lax",   // ✅ REQUIRED
-  ].join("; ");
-}
-
-
-/**
- * Logout: clear both places
- */
-export function logout() {
-  if (typeof window === "undefined") return;
-
   localStorage.removeItem("token");
-  document.cookie = "token=; Max-Age=0; path=/; SameSite=Lax";
-}
-
-
-/**
- * Get token for API calls
- */
-export function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-
-  return localStorage.getItem("token") ?? getTokenFromCookie();
 }

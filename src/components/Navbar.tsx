@@ -8,18 +8,16 @@ import { isAuthenticated, logout } from "@/src/utils/auth";
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-
-  const [mounted, setMounted] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // ✅ Client-only auth check to avoid hydration mismatch
   useEffect(() => {
-    setMounted(true);
     setLoggedIn(isAuthenticated());
-  }, [pathname]);
+  }, [pathname]); // 🔑 re-check auth on navigation
 
-  if (!mounted) {
-    return null;
+  function handleLogout() {
+    logout();
+    setLoggedIn(false);
+    router.push("/login");
   }
 
   const linkClass = (path: string) =>
@@ -29,13 +27,12 @@ export default function Navbar() {
 
   return (
     <nav className="border-b border-zinc-800 bg-black">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Left */}
-        <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-bold text-white">
-            Soundtrack Explorer
-          </Link>
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <Link href="/" className="text-xl font-bold">
+          Soundtrack Mood Explorer
+        </Link>
 
+        <div className="flex gap-6 items-center">
           <Link href="/explore" className={linkClass("/explore")}>
             Explore
           </Link>
@@ -44,27 +41,25 @@ export default function Navbar() {
             Contact
           </Link>
 
-          {loggedIn && (
-            <Link href="/favorites" className={linkClass("/favorites")}>
-              Favorites
-            </Link>
-          )}
-        </div>
-
-        {/* Right */}
-        <div className="flex items-center gap-4">
           {loggedIn ? (
             <>
-              <Link href="/profile" className={linkClass("/profile")}>
+              <Link
+                href="/favorites"
+                className={linkClass("/favorites")}
+              >
+                Favorites
+              </Link>
+
+              <Link
+                href="/profile"
+                className={linkClass("/profile")}
+              >
                 Profile
               </Link>
 
               <button
-                onClick={() => {
-                  logout();
-                  router.push("/login");
-                }}
-                className="text-gray-400 hover:text-white transition"
+                onClick={handleLogout}
+                className="text-red-400 hover:text-red-300 transition"
               >
                 Logout
               </button>
@@ -74,8 +69,10 @@ export default function Navbar() {
               <Link href="/login" className={linkClass("/login")}>
                 Login
               </Link>
-
-              <Link href="/register" className={linkClass("/register")}>
+              <Link
+                href="/register"
+                className={linkClass("/register")}
+              >
                 Register
               </Link>
             </>

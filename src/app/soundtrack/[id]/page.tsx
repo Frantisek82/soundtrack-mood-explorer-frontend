@@ -1,91 +1,61 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { isAuthenticated } from "@/src/utils/auth";
+import { useParams } from "next/navigation";
+import SoundtrackCard from "@/src/components/SoundtrackCard";
 import {
   addFavorite,
   removeFavorite,
   isFavorite,
 } from "@/src/services/favorites";
+import { getSoundtrackById } from "@/src/services/soundtracks";
 
 type Soundtrack = {
   _id: string;
   title: string;
   movie: string;
   composer: string;
-  year?: number;
-  description?: string;
-  mood?: string[];
+  moods: string[];
+  spotifyTrackId?: string;
 };
 
 export default function SoundtrackDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
 
   const [soundtrack, setSoundtrack] = useState<Soundtrack | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const [error, setError] = useState("");
   const [isFav, setIsFav] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
 
-  /**
-   * Fetch soundtrack details
-   */
   useEffect(() => {
-    async function fetchSoundtrack() {
+    async function loadSoundtrack() {
       try {
-        const res = await fetch(
-          `http://localhost:3000/api/soundtracks/${id}`
-        );
-
-        if (!res.ok) {
-          throw new Error("Soundtrack not found");
-        }
-
-        const data = await res.json();
+        const data = await getSoundtrackById(id);
         setSoundtrack(data);
-      } catch {
-        setError("Soundtrack not found");
+
+        // Favorites check (safe when logged out)
+        try {
+          const fav = await isFavorite(data._id);
+          setIsFav(fav);
+        } catch {
+          setIsFav(false);
+        }
+      } catch (err: any) {
+        setError(err.message || "Failed to load soundtrack");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchSoundtrack();
+    loadSoundtrack();
   }, [id]);
 
-  /**
-   * Check favorite status
-   * (only when logged in)
-   */
-  useEffect(() => {
-    if (!soundtrack || !isAuthenticated()) return;
-
-    async function checkFavorite(soundtrackId: string) {
-  const fav = await isFavorite(soundtrackId);
-  setIsFav(fav);
-}
-
-
-    checkFavorite(soundtrack._id);
-  }, [soundtrack]);
-
-  /**
-   * Add / remove favorite
-   */
-  async function handleFavorite() {
+  async function toggleFavorite() {
     if (!soundtrack) return;
 
-    if (!isAuthenticated()) {
-      router.push("/login");
-      return;
-    }
-
+    setFavLoading(true);
     try {
-      setFavLoading(true);
-
       if (isFav) {
         await removeFavorite(soundtrack._id);
         setIsFav(false);
@@ -94,89 +64,59 @@ export default function SoundtrackDetailPage() {
         setIsFav(true);
       }
     } catch (err: any) {
-      alert(err.message || "Action failed");
+      alert(err.message || "Failed to update favorites");
     } finally {
       setFavLoading(false);
     }
   }
 
-  /* ---------- Render states ---------- */
-
   if (loading) {
     return (
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <p className="text-gray-400">Loading soundtrack...</p>
-      </main>
+      <div className="p-8 text-center text-gray-400">
+        Loading soundtrack…
+      </div>
     );
   }
 
   if (error || !soundtrack) {
     return (
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <p className="text-red-400">{error}</p>
-      </main>
+      <div className="p-8 text-center text-red-400">
+        {error || "Soundtrack not found"}
+      </div>
     );
   }
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
-      {/* Header */}
-      <header className="mb-10">
-        <h1 className="text-3xl font-bold mb-2">
-          {soundtrack.title}
-        </h1>
-        <p className="text-gray-400">
-          {soundtrack.movie} • {soundtrack.composer}
-          {soundtrack.year && ` • ${soundtrack.year}`}
-        </p>
-      </header>
+    <div className="max-w-3xl mx-auto p-8 space-y-8">
+      {/* Unified card */}
+      <SoundtrackCard soundtrack={soundtrack} />
 
-      {/* Description */}
-      {soundtrack.description && (
-        <p className="mb-6 text-gray-300">
-          {soundtrack.description}
-        </p>
-      )}
+      {/* Actions */}
+      <button
+        onClick={toggleFavorite}
+        disabled={favLoading}
+        className="px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 transition disabled:opacity-50"
+      >
+        {isFav ? "Remove from Favorites" : "Save to Favorites"}
+      </button>
 
-      {/* Mood tags */}
-      {Array.isArray(soundtrack.mood) && soundtrack.mood.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
-          {soundtrack.mood.map((mood) => (
-            <span
-              key={mood}
-              className="px-3 py-1 text-sm rounded-full bg-zinc-800"
-            >
-              {mood}
-            </span>
-          ))}
-        </div>
-      )}
+      {/* Spotify embed */}
+      {soundtrack.spotifyTrackId && (
+        <section className="pt-6 border-t border-zinc-800">
+          <h3 className="text-sm uppercase tracking-wide text-gray-400 mb-3">
+            Spotify Preview
+          </h3>
 
-      {/* Favorite action */}
-      {isAuthenticated() ? (
-        <button
-          onClick={handleFavorite}
-          disabled={favLoading}
-          className={`px-6 py-3 rounded-lg font-medium transition
-            ${
-              isFav
-                ? "bg-red-500 hover:bg-red-600 text-white"
-                : "bg-white hover:bg-gray-200 text-black"
-            }
-            ${favLoading ? "opacity-50 cursor-not-allowed" : ""}
-          `}
-        >
-          {favLoading
-            ? "Saving..."
-            : isFav
-            ? "Remove from Favorites"
-            : "Add to Favorites"}
-        </button>
-      ) : (
-        <p className="text-gray-400 text-sm">
-          Login to add this soundtrack to your favorites
-        </p>
+          <iframe
+            src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
+            width="100%"
+            height="80"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            className="rounded-lg border-none"
+          />
+        </section>
       )}
-    </main>
+    </div>
   );
 }

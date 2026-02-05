@@ -28,7 +28,6 @@ export async function registerUser(data: RegisterData) {
     body: JSON.stringify(data),
   });
 
-  // Backend responded, but with an error status (e.g. 409)
   if (!res.ok) {
     const error = await res.json();
     throw new Error(error.message || "Registration failed");
@@ -41,32 +40,29 @@ export async function registerUser(data: RegisterData) {
    Login
 ===================== */
 
-export async function loginUser(data: LoginData) {
+export async function loginUser(data: LoginData): Promise<void> {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify(data),
   });
 
+  const result = await res.json();
+
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Invalid credentials");
+    throw new Error(result.message || "Invalid credentials");
   }
 
-  return res.json();
+  // 🔑 THIS WAS MISSING — THE CORE BUG
+  localStorage.setItem("token", result.token);
 }
 
 /* =====================
    Logout
 ===================== */
 
-export async function logoutUser() {
-  // Logout should never block UI, so we fail silently
-  await fetch(`${API_URL}/auth/logout`, {
-    method: "POST",
-    credentials: "include",
-  });
+export function logoutUser(): void {
+  localStorage.removeItem("token");
 }
