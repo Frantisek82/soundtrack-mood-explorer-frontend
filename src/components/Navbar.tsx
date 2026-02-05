@@ -8,11 +8,12 @@ import { isAuthenticated, logout } from "@/src/utils/auth";
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [loggedIn, setLoggedIn] = useState(false);
+
+  const [loggedIn, setLoggedIn] = useState(() => isAuthenticated());
 
   useEffect(() => {
     setLoggedIn(isAuthenticated());
-  }, [pathname]); // 🔑 re-check auth on navigation
+  }, [pathname]);
 
   function handleLogout() {
     logout();
@@ -21,7 +22,7 @@ export default function Navbar() {
   }
 
   const linkClass = (path: string) =>
-    pathname === path
+    pathname.startsWith(path)
       ? "text-white font-semibold"
       : "text-gray-400 hover:text-white transition";
 
@@ -43,17 +44,11 @@ export default function Navbar() {
 
           {loggedIn ? (
             <>
-              <Link
-                href="/favorites"
-                className={linkClass("/favorites")}
-              >
+              <Link href="/favorites" className={linkClass("/favorites")}>
                 Favorites
               </Link>
 
-              <Link
-                href="/profile"
-                className={linkClass("/profile")}
-              >
+              <Link href="/profile" className={linkClass("/profile")}>
                 Profile
               </Link>
 
@@ -69,10 +64,8 @@ export default function Navbar() {
               <Link href="/login" className={linkClass("/login")}>
                 Login
               </Link>
-              <Link
-                href="/register"
-                className={linkClass("/register")}
-              >
+
+              <Link href="/register" className={linkClass("/register")}>
                 Register
               </Link>
             </>
