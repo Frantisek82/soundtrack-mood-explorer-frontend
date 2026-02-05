@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/src/services/auth";
+import Button from "@/src/components/Button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -89,25 +90,10 @@ export default function LoginPage() {
           "
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="
-            w-full
-            px-6
-            py-3
-            rounded-lg
-            bg-white
-            text-black
-            font-medium
-            hover:bg-gray-200
-            transition
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-          "
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+        <Button type="submit" disabled={loading}>
+          Login
+        </Button>
+
 
         <p className="mt-4 text-sm text-center text-gray-400">
           Don’t have an account?{" "}

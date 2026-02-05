@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser } from "@/src/services/auth";
+import Button from "@/src/components/Button";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -92,26 +93,10 @@ export default function RegisterPage() {
           />
         ))}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="
-            w-full
-            mt-2
-            px-6
-            py-3
-            rounded-lg
-            bg-white
-            text-black
-            font-medium
-            hover:bg-gray-200
-            transition
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-          "
-        >
-          {loading ? "Creating account..." : "Register"}
-        </button>
+        <Button type="submit">
+          Register
+        </Button>
+
       </form>
     </main>
   );

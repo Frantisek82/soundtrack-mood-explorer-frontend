@@ -9,6 +9,7 @@ import {
   isFavorite,
 } from "@/src/services/favorites";
 import { getSoundtrackById } from "@/src/services/soundtracks";
+import Button from "@/src/components/Button";
 
 type Soundtrack = {
   _id: string;
@@ -92,16 +93,13 @@ export default function SoundtrackDetailPage() {
       <SoundtrackCard soundtrack={soundtrack} />
 
       {/* Favorite action */}
-      <button
+      <Button
         onClick={toggleFavorite}
         disabled={favLoading}
-        className={`px-4 py-2 rounded border transition disabled:opacity-50 disabled:cursor-not-allowed ${isFav
-            ? "bg-zinc-900 border-red-500/40 text-red-400 hover:bg-zinc-800"
-            : "bg-zinc-900 border-zinc-700 text-white hover:bg-zinc-800"
-          }`}
+        variant={isFav ? "danger" : "primary"}
       >
         {isFav ? "Remove from Favorites" : "Save to Favorites"}
-      </button>
+      </Button>
 
       {/* Spotify embed */}
       {soundtrack.spotifyTrackId && (
