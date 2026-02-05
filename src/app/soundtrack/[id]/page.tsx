@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import {
   addFavorite,
@@ -9,7 +10,7 @@ import {
   isFavorite,
 } from "@/src/services/favorites";
 import { getSoundtrackById } from "@/src/services/soundtracks";
-import Button from "@/src/components/Button";
+import { isAuthenticated } from "@/src/utils/auth";
 
 type Soundtrack = {
   _id: string;
@@ -22,6 +23,7 @@ type Soundtrack = {
 
 export default function SoundtrackDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
 
   const [soundtrack, setSoundtrack] = useState<Soundtrack | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,13 +37,9 @@ export default function SoundtrackDetailPage() {
         const data = await getSoundtrackById(id);
         setSoundtrack(data);
 
-        // Safe favorites check (works when logged out)
-        try {
-          const fav = await isFavorite(data._id);
-          setIsFav(fav);
-        } catch {
-          setIsFav(false);
-        }
+        // Safe favorites check (returns false if logged out)
+        const fav = await isFavorite(data._id);
+        setIsFav(fav);
       } catch (err: any) {
         setError(err.message || "Failed to load soundtrack");
       } finally {
@@ -55,6 +53,13 @@ export default function SoundtrackDetailPage() {
   async function toggleFavorite() {
     if (!soundtrack) return;
 
+    // ✅ Friendly UX when logged out
+    if (!isAuthenticated()) {
+      alert("Please log in to save soundtracks to your favorites.");
+      router.push("/login");
+      return;
+    }
+
     setFavLoading(true);
     try {
       if (isFav) {
@@ -64,12 +69,16 @@ export default function SoundtrackDetailPage() {
         await addFavorite(soundtrack._id);
         setIsFav(true);
       }
-    } catch (err: any) {
-      alert(err.message || "Failed to update favorites");
+    } catch {
+      alert("Something went wrong. Please try again.");
     } finally {
       setFavLoading(false);
     }
   }
+
+  /* -----------------------------
+     States
+  ------------------------------ */
 
   if (loading) {
     return (
@@ -87,19 +96,25 @@ export default function SoundtrackDetailPage() {
     );
   }
 
+  /* -----------------------------
+     Render
+  ------------------------------ */
+
   return (
     <div className="max-w-3xl mx-auto p-8 space-y-8">
-      {/* Unified soundtrack card (same as Explore/Favorites) */}
+      {/* Unified card (same as Explore & Favorites) */}
       <SoundtrackCard soundtrack={soundtrack} />
 
       {/* Favorite action */}
-      <Button
+      <button
         onClick={toggleFavorite}
         disabled={favLoading}
-        variant={isFav ? "danger" : "primary"}
+        className="px-5 py-2 rounded-lg bg-zinc-800 text-white
+                   hover:bg-zinc-700 transition
+                   disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isFav ? "Remove from Favorites" : "Save to Favorites"}
-      </Button>
+      </button>
 
       {/* Spotify embed */}
       {soundtrack.spotifyTrackId && (

@@ -2,30 +2,43 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold mb-2">
-        Soundtrack Mood Explorer
-      </h1>
+    <section className="min-h-[80vh] flex items-center justify-center bg-black text-white">
+      <div className="max-w-3xl mx-auto px-6 text-center space-y-8">
+        {/* Title */}
+        <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
+          Discover Movie Soundtracks <br />
+          <span className="text-zinc-400">by Mood</span>
+        </h1>
 
-      <p className="text-gray-400 max-w-xl mb-8">
-        Discover movie and game soundtracks by emotion instead of title.
-      </p>
+        {/* Subtitle */}
+        <p className="text-lg text-gray-400">
+          From epic and emotional to calm and mysterious.
+          <br />
+          Explore film music the way it makes you feel.
+        </p>
 
-      <div className="flex gap-4">
-        <Link
-          href="/explore"
-          className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition"
-        >
-          Explore
-        </Link>
+        {/* CTA */}
+        <div>
+          <Link
+            href="/explore"
+            className="inline-block px-6 py-3 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 transition"
+          >
+            Explore by Mood →
+          </Link>
+        </div>
 
-        <Link
-          href="/login"
-          className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition"
-        >
-          Login
-        </Link>
+        {/* Mood preview (non-interactive) */}
+        <div className="flex flex-wrap justify-center gap-3 pt-6">
+          {["Epic", "Calm", "Dark", "Emotional", "Hopeful"].map((mood) => (
+            <span
+              key={mood}
+              className="px-3 py-1 rounded-full border border-zinc-700 text-sm text-gray-300"
+            >
+              {mood}
+            </span>
+          ))}
+        </div>
       </div>
-    </main>
+    </section>
   );
 }
