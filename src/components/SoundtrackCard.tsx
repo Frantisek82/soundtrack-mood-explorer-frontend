@@ -1,17 +1,20 @@
+import Link from "next/link";
+
 type Soundtrack = {
   _id: string;
   title: string;
   movie: string;
   composer: string;
-  moods: string[];
+  moods?: string[];
 };
 
-export default function SoundtrackCard({
-  soundtrack,
-}: {
+type Props = {
   soundtrack: Soundtrack;
-}) {
-  return (
+  href?: string; // optional navigation
+};
+
+export default function SoundtrackCard({ soundtrack, href }: Props) {
+  const CardContent = (
     <div className="bg-zinc-900 rounded-xl p-5 transition hover:bg-zinc-800">
       {/* Title */}
       <h3 className="text-lg text-white font-semibold mb-1">
@@ -38,4 +41,15 @@ export default function SoundtrackCard({
       )}
     </div>
   );
+
+  // If clickable, wrap with Link
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        {CardContent}
+      </Link>
+    );
+  }
+
+  return CardContent;
 }

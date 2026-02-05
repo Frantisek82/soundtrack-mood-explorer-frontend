@@ -1,5 +1,8 @@
 import { getAuthHeaders } from "@/src/utils/auth";
 
+/**
+ * Shared Soundtrack type used across the app
+ */
 export type Soundtrack = {
   _id: string;
   title: string;
@@ -11,6 +14,10 @@ export type Soundtrack = {
 
 const API_URL = "http://localhost:3000/api/favorites";
 
+/**
+ * Get all favorite soundtracks
+ * Backend returns Soundtrack[]
+ */
 export async function getFavorites(): Promise<Soundtrack[]> {
   const res = await fetch(API_URL, {
     headers: getAuthHeaders(),
@@ -24,6 +31,9 @@ export async function getFavorites(): Promise<Soundtrack[]> {
   return res.json();
 }
 
+/**
+ * Add a soundtrack to favorites
+ */
 export async function addFavorite(soundtrackId: string): Promise<void> {
   const res = await fetch(API_URL, {
     method: "POST",
@@ -40,6 +50,9 @@ export async function addFavorite(soundtrackId: string): Promise<void> {
   }
 }
 
+/**
+ * Remove a soundtrack from favorites
+ */
 export async function removeFavorite(soundtrackId: string): Promise<void> {
   const res = await fetch(`${API_URL}/${soundtrackId}`, {
     method: "DELETE",
@@ -52,12 +65,18 @@ export async function removeFavorite(soundtrackId: string): Promise<void> {
   }
 }
 
+/**
+ * Check if a soundtrack is already in favorites
+ * Safe to call when logged out (returns false)
+ */
 export async function isFavorite(
   soundtrackId: string
 ): Promise<boolean> {
   try {
     const favorites = await getFavorites();
-    return favorites.some((s) => s._id === soundtrackId);
+    return favorites.some(
+      (s) => s._id === soundtrackId
+    );
   } catch {
     return false;
   }

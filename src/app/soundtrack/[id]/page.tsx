@@ -34,7 +34,7 @@ export default function SoundtrackDetailPage() {
         const data = await getSoundtrackById(id);
         setSoundtrack(data);
 
-        // Favorites check (safe when logged out)
+        // Safe favorites check (works when logged out)
         try {
           const fav = await isFavorite(data._id);
           setIsFav(fav);
@@ -88,10 +88,10 @@ export default function SoundtrackDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-8 space-y-8">
-      {/* Unified card */}
+      {/* Unified soundtrack card (same as Explore/Favorites) */}
       <SoundtrackCard soundtrack={soundtrack} />
 
-      {/* Actions */}
+      {/* Favorite action */}
       <button
         onClick={toggleFavorite}
         disabled={favLoading}
