@@ -107,10 +107,16 @@ export default function SoundtrackDetailPage() {
         <button
           onClick={toggleFavorite}
           disabled={favLoading}
-          className="px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 transition disabled:opacity-50"
+          className={`px-4 py-2 rounded font-medium transition disabled:opacity-50
+    ${isFav
+              ? "bg-red-600 hover:bg-red-500 text-white"
+              : "bg-emerald-600 hover:bg-emerald-500 text-white"
+            }
+  `}
         >
           {isFav ? "Remove from Favorites" : "Save to Favorites"}
         </button>
+
 
         {/* Friendly inline auth message */}
         {authMessage && (
