@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-
+import { useParams } from "next/navigation";
+import Link from "next/link";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import {
   addFavorite,
@@ -23,13 +23,13 @@ type Soundtrack = {
 
 export default function SoundtrackDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
 
   const [soundtrack, setSoundtrack] = useState<Soundtrack | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isFav, setIsFav] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
+  const [authMessage, setAuthMessage] = useState("");
 
   useEffect(() => {
     async function loadSoundtrack() {
@@ -37,9 +37,13 @@ export default function SoundtrackDetailPage() {
         const data = await getSoundtrackById(id);
         setSoundtrack(data);
 
-        // Safe favorites check (returns false if logged out)
-        const fav = await isFavorite(data._id);
-        setIsFav(fav);
+        // Safe favorites check (works even when logged out)
+        try {
+          const fav = await isFavorite(data._id);
+          setIsFav(fav);
+        } catch {
+          setIsFav(false);
+        }
       } catch (err: any) {
         setError(err.message || "Failed to load soundtrack");
       } finally {
@@ -53,14 +57,15 @@ export default function SoundtrackDetailPage() {
   async function toggleFavorite() {
     if (!soundtrack) return;
 
-    // ✅ Friendly UX when logged out
+    // 🔐 Logged out → show friendly message, no API call
     if (!isAuthenticated()) {
-      alert("Please log in to save soundtracks to your favorites.");
-      router.push("/login");
+      setAuthMessage("You need to be logged in to save favorites.");
       return;
     }
 
+    setAuthMessage("");
     setFavLoading(true);
+
     try {
       if (isFav) {
         await removeFavorite(soundtrack._id);
@@ -70,15 +75,11 @@ export default function SoundtrackDetailPage() {
         setIsFav(true);
       }
     } catch {
-      alert("Something went wrong. Please try again.");
+      setAuthMessage("Something went wrong. Please try again.");
     } finally {
       setFavLoading(false);
     }
   }
-
-  /* -----------------------------
-     States
-  ------------------------------ */
 
   if (loading) {
     return (
@@ -96,25 +97,36 @@ export default function SoundtrackDetailPage() {
     );
   }
 
-  /* -----------------------------
-     Render
-  ------------------------------ */
-
   return (
     <div className="max-w-3xl mx-auto p-8 space-y-8">
       {/* Unified card (same as Explore & Favorites) */}
       <SoundtrackCard soundtrack={soundtrack} />
 
       {/* Favorite action */}
-      <button
-        onClick={toggleFavorite}
-        disabled={favLoading}
-        className="px-5 py-2 rounded-lg bg-zinc-800 text-white
-                   hover:bg-zinc-700 transition
-                   disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isFav ? "Remove from Favorites" : "Save to Favorites"}
-      </button>
+      <div>
+        <button
+          onClick={toggleFavorite}
+          disabled={favLoading}
+          className="px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 transition disabled:opacity-50"
+        >
+          {isFav ? "Remove from Favorites" : "Save to Favorites"}
+        </button>
+
+        {/* Friendly inline auth message */}
+        {authMessage && (
+          <p className="mt-2 text-sm text-red-400">
+            {authMessage}
+            {!isAuthenticated() && (
+              <Link
+                href="/login"
+                className="underline ml-1 hover:text-red-300"
+              >
+                Login
+              </Link>
+            )}
+          </p>
+        )}
+      </div>
 
       {/* Spotify embed */}
       {soundtrack.spotifyTrackId && (
