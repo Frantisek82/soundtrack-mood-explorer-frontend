@@ -89,9 +89,15 @@ export default function ProfilePage() {
             <label className="block text-sm mb-1">New Password</label>
             <input
               type="password"
+              placeholder="New password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+              className="
+    w-full px-4 py-2 rounded-lg
+    bg-black border border-zinc-700
+    text-white placeholder:text-gray-500
+    focus:outline-none focus:border-white
+  "
               required
             />
           </div>
@@ -102,9 +108,15 @@ export default function ProfilePage() {
             </label>
             <input
               type="password"
+              placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+              className="
+    w-full px-4 py-2 rounded-lg
+    bg-black border border-zinc-700
+    text-white placeholder:text-gray-500
+    focus:outline-none focus:border-white
+  "
               required
             />
           </div>

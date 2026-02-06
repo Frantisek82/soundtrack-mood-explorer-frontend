@@ -30,7 +30,13 @@ export default function ContactPage() {
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+                placeholder="Your name"
+                className="
+    w-full px-4 py-2 rounded-lg
+    bg-black border border-zinc-700
+    text-white placeholder:text-gray-500
+    focus:outline-none focus:border-white
+  "
               />
             </div>
 
@@ -39,7 +45,13 @@ export default function ContactPage() {
               <input
                 type="email"
                 required
-                className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white"
+                placeholder="Your email"
+                className="
+    w-full px-4 py-2 rounded-lg
+    bg-black border border-zinc-700
+    text-white placeholder:text-gray-500
+    focus:outline-none focus:border-white
+  "
               />
             </div>
 
@@ -48,7 +60,14 @@ export default function ContactPage() {
               <textarea
                 required
                 rows={4}
-                className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 focus:outline-none focus:border-white resize-none"
+                placeholder="Your message"
+                className="
+    w-full px-4 py-2 rounded-lg
+    bg-black border border-zinc-700
+    text-white placeholder:text-gray-500
+    focus:outline-none focus:border-white
+    resize-none
+  "
               />
             </div>
 
@@ -59,7 +78,7 @@ export default function ContactPage() {
           </form>
         ) : (
           <p className="text-center text-gray-300">
-            Thanks for your message!  
+            Thanks for your message!
             I’ll get back to you as soon as possible.
           </p>
         )}
