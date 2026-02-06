@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { registerUser } from "@/src/services/auth";
 import Button from "@/src/components/Button";
 
@@ -20,7 +21,7 @@ export default function RegisterPage() {
 
   const fields = [
     { key: "name", label: "Name", type: "text" },
-    { key: "email", label: "Email", type: "text" },
+    { key: "email", label: "Email", type: "email" },
     { key: "password", label: "Password", type: "password" },
     {
       key: "confirmPassword",
@@ -40,11 +41,13 @@ export default function RegisterPage() {
 
     try {
       setLoading(true);
+
       await registerUser({
         name: form.name,
         email: form.email,
         password: form.password,
       });
+
       router.push("/login");
     } catch (err: any) {
       setError(err.message || "Registration failed");
@@ -64,7 +67,9 @@ export default function RegisterPage() {
         </h1>
 
         {error && (
-          <p className="mb-4 text-sm text-red-400">{error}</p>
+          <p className="mb-4 text-sm text-red-400 text-center">
+            {error}
+          </p>
         )}
 
         {fields.map(({ key, label, type }) => (
@@ -72,31 +77,35 @@ export default function RegisterPage() {
             key={key}
             type={type}
             placeholder={label}
+            required
             value={(form as any)[key]}
             onChange={(e) =>
               setForm({ ...form, [key]: e.target.value })
             }
             className="
-              w-full
-              mb-4
-              px-4
-              py-3
-              rounded-lg
-              bg-black
-              border
-              border-zinc-700
-              text-white
-              placeholder:text-gray-500
-              focus:outline-none
-              focus:border-white
+              w-full mb-4 px-4 py-3 rounded-lg
+              bg-black border border-zinc-700
+              text-white placeholder:text-gray-500
+              focus:outline-none focus:border-white
             "
           />
         ))}
 
-        <Button type="submit">
-          Register
+        {/* Primary action */}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={loading}
+        >
+          {loading ? "Creating account..." : "Register"}
         </Button>
 
+        <p className="mt-4 text-sm text-center text-gray-400">
+          Already have an account?{" "}
+          <Link href="/login" className="text-white underline">
+            Login
+          </Link>
+        </p>
       </form>
     </main>
   );

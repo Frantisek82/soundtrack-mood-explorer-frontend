@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/src/components/Button";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -51,12 +52,10 @@ export default function ContactPage() {
               />
             </div>
 
-            <button
-              type="submit"
-              className="px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition"
-            >
+            {/* Primary action */}
+            <Button type="submit">
               Send message
-            </button>
+            </Button>
           </form>
         ) : (
           <p className="text-center text-gray-300">

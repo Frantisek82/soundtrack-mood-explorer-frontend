@@ -11,6 +11,8 @@ import {
 } from "@/src/services/favorites";
 import { getSoundtrackById } from "@/src/services/soundtracks";
 import { isAuthenticated } from "@/src/utils/auth";
+import Button from "@/src/components/Button";
+
 
 type Soundtrack = {
   _id: string;
@@ -104,18 +106,14 @@ export default function SoundtrackDetailPage() {
 
       {/* Favorite action */}
       <div>
-        <button
+        <Button
           onClick={toggleFavorite}
           disabled={favLoading}
-          className={`px-4 py-2 rounded font-medium transition disabled:opacity-50
-    ${isFav
-              ? "bg-red-600 hover:bg-red-500 text-white"
-              : "bg-emerald-600 hover:bg-emerald-500 text-white"
-            }
-  `}
+          variant={isFav ? "danger" : "primary"}
         >
           {isFav ? "Remove from Favorites" : "Save to Favorites"}
-        </button>
+        </Button>
+
 
 
         {/* Friendly inline auth message */}

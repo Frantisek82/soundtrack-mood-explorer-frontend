@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { loginUser } from "@/src/services/auth";
 import Button from "@/src/components/Button";
 
@@ -51,55 +52,45 @@ export default function LoginPage() {
         <input
           type="email"
           placeholder="Email"
+          required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="
-            w-full
-            mb-4
-            px-4
-            py-3
-            rounded-lg
-            bg-black
-            border
-            border-zinc-700
-            text-white
-            placeholder:text-gray-500
-            focus:outline-none
-            focus:border-white
+            w-full mb-4 px-4 py-3 rounded-lg
+            bg-black border border-zinc-700
+            text-white placeholder:text-gray-500
+            focus:outline-none focus:border-white
           "
         />
 
         <input
           type="password"
           placeholder="Password"
+          required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="
-            w-full
-            mb-6
-            px-4
-            py-3
-            rounded-lg
-            bg-black
-            border
-            border-zinc-700
-            text-white
-            placeholder:text-gray-500
-            focus:outline-none
-            focus:border-white
+            w-full mb-6 px-4 py-3 rounded-lg
+            bg-black border border-zinc-700
+            text-white placeholder:text-gray-500
+            focus:outline-none focus:border-white
           "
         />
 
-        <Button type="submit" disabled={loading}>
-          Login
+        {/* Primary action */}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
         </Button>
-
 
         <p className="mt-4 text-sm text-center text-gray-400">
           Don’t have an account?{" "}
-          <a href="/register" className="text-white underline">
+          <Link href="/register" className="text-white underline">
             Register
-          </a>
+          </Link>
         </p>
       </form>
     </main>

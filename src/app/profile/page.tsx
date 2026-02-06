@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, logout } from "@/src/utils/auth";
+import Button from "@/src/components/Button";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -112,31 +113,29 @@ export default function ProfilePage() {
             <p className="text-sm text-gray-300">{message}</p>
           )}
 
-          <button
+          {/* Update password */}
+          <Button
             type="submit"
             disabled={loading}
-            className={`w-full mt-4 px-6 py-3 rounded-lg font-medium transition
-              ${loading
-                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                : "bg-white text-black hover:bg-gray-200"
-              }
-            `}
+            className="w-full mt-4"
           >
             {loading ? "Saving..." : "Update Password"}
-          </button>
+          </Button>
         </form>
       </section>
 
       {/* Logout */}
-      <button
-        onClick={() => {
-          logout();
-          router.push("/login");
-        }}
-        className="mt-6 text-lg text-red-400 hover:text-red-300 transition"
-      >
-        Logout
-      </button>
+      <div className="mt-6">
+        <Button
+          variant="danger"
+          onClick={() => {
+            logout();
+            router.push("/login");
+          }}
+        >
+          Logout
+        </Button>
+      </div>
     </main>
   );
 }
