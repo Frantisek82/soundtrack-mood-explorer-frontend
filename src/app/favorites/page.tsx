@@ -140,7 +140,7 @@ export default function FavoritesPage() {
 
           <Link
             href="/explore"
-            className="inline-block mt-4 underline text-white"
+            className="inline-block mt-4 underline text-gray-400"
           >
             Explore soundtracks
           </Link>

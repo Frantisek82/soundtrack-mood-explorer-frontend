@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+
 import SoundtrackCard from "@/src/components/SoundtrackCard";
+import Button from "@/src/components/Button";
 import {
   addFavorite,
   removeFavorite,
@@ -11,8 +13,10 @@ import {
 } from "@/src/services/favorites";
 import { getSoundtrackById } from "@/src/services/soundtracks";
 import { isAuthenticated } from "@/src/utils/auth";
-import Button from "@/src/components/Button";
 
+/* =====================
+   Types
+===================== */
 
 type Soundtrack = {
   _id: string;
@@ -23,23 +27,33 @@ type Soundtrack = {
   spotifyTrackId?: string;
 };
 
+/* =====================
+   Page
+===================== */
+
 export default function SoundtrackDetailPage() {
   const { id } = useParams<{ id: string }>();
 
-  const [soundtrack, setSoundtrack] = useState<Soundtrack | null>(null);
+  const [soundtrack, setSoundtrack] =
+    useState<Soundtrack | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
   const [isFav, setIsFav] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
-  const [authMessage, setAuthMessage] = useState("");
+  const [authMessage, setAuthMessage] =
+    useState<string | null>(null);
 
+  const authRef = useRef<HTMLParagraphElement>(null);
+
+  /* Load soundtrack */
   useEffect(() => {
     async function loadSoundtrack() {
       try {
         const data = await getSoundtrackById(id);
         setSoundtrack(data);
 
-        // Safe favorites check (works even when logged out)
+        // Safe favorites check
         try {
           const fav = await isFavorite(data._id);
           setIsFav(fav);
@@ -56,16 +70,25 @@ export default function SoundtrackDetailPage() {
     loadSoundtrack();
   }, [id]);
 
+  /* Focus auth message when shown */
+  useEffect(() => {
+    if (authMessage) {
+      authRef.current?.focus();
+    }
+  }, [authMessage]);
+
+  /* Toggle favorites */
   async function toggleFavorite() {
     if (!soundtrack) return;
 
-    // 🔐 Logged out → show friendly message, no API call
     if (!isAuthenticated()) {
-      setAuthMessage("You need to be logged in to save favorites.");
+      setAuthMessage(
+        "You need to be logged in to save favorites."
+      );
       return;
     }
 
-    setAuthMessage("");
+    setAuthMessage(null);
     setFavLoading(true);
 
     try {
@@ -77,15 +100,25 @@ export default function SoundtrackDetailPage() {
         setIsFav(true);
       }
     } catch {
-      setAuthMessage("Something went wrong. Please try again.");
+      setAuthMessage(
+        "Something went wrong. Please try again."
+      );
     } finally {
       setFavLoading(false);
     }
   }
 
+  /* =====================
+     States
+  ===================== */
+
   if (loading) {
     return (
-      <div className="p-8 text-center text-gray-400">
+      <div
+        role="status"
+        aria-live="polite"
+        className="p-8 text-center text-gray-400"
+      >
         Loading soundtrack…
       </div>
     );
@@ -93,73 +126,84 @@ export default function SoundtrackDetailPage() {
 
   if (error || !soundtrack) {
     return (
-      <div className="p-8 text-center text-red-400">
+      <div
+        role="alert"
+        className="p-8 text-center text-red-400"
+      >
         {error || "Soundtrack not found"}
       </div>
     );
   }
 
+  /* =====================
+     UI
+  ===================== */
+
   return (
-    <div className="max-w-3xl mx-auto p-8 space-y-8">
-      {/* Unified card (same as Explore & Favorites) */}
+    <main className="max-w-3xl mx-auto p-8 space-y-8">
+      {/* Unified card */}
       <SoundtrackCard soundtrack={soundtrack} />
 
       {/* Favorite action */}
-      <div>
+      <section>
         <Button
           onClick={toggleFavorite}
           disabled={favLoading}
+          aria-disabled={favLoading}
           variant={isFav ? "danger" : "primary"}
         >
-          {isFav ? "Remove from Favorites" : "Save to Favorites"}
+          {isFav
+            ? "Remove from Favorites"
+            : "Save to Favorites"}
         </Button>
 
-
-
-        {/* Friendly inline auth message */}
+        {/* Auth / error message */}
         {authMessage && (
-          <p role="alert" className="mt-2 text-sm text-red-400">
-            {authMessage}
+          <p
+            ref={authRef}
+            tabIndex={-1}
+            role="alert"
+            className="mt-2 text-sm text-red-400 outline-none"
+          >
+            {authMessage}{" "}
             {!isAuthenticated() && (
               <Link
                 href="/login"
-                className="underline ml-1 hover:text-red-300"
+                className="underline hover:text-red-300"
               >
                 Login
               </Link>
             )}
           </p>
         )}
-      </div>
+      </section>
 
-      {/* Spotify embed */}
-      {soundtrack.spotifyTrackId && (
-        <section className="pt-6 border-t border-zinc-800">
-          <h3 className="text-sm uppercase tracking-wide text-gray-400 mb-3">
-            Spotify Preview
-          </h3>
+      {/* Spotify preview */}
+      <section className="pt-6 border-t border-zinc-800">
+        <h3 className="text-sm uppercase tracking-wide text-gray-400 mb-3">
+          Spotify Preview
+        </h3>
 
-          {soundtrack.spotifyTrackId ? (
-            <iframe
-              src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
-              width="100%"
-              height="80"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-              className="rounded-lg border-none"
-              title={`Spotify preview for ${soundtrack.title}`}
-            />
-          ) : (
-            <p
-              role="status"
-              aria-live="polite"
-              className="text-sm text-gray-400"
-            >
-              Spotify preview is not available for this soundtrack.
-            </p>
-          )}
-        </section>
-      )}
-    </div>
+        {soundtrack.spotifyTrackId ? (
+          <iframe
+            src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
+            width="100%"
+            height="80"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            className="rounded-lg border-none"
+            title={`Spotify preview for ${soundtrack.title}`}
+          />
+        ) : (
+          <p
+            role="status"
+            aria-live="polite"
+            className="text-sm text-gray-400"
+          >
+            Spotify preview is not available for this soundtrack.
+          </p>
+        )}
+      </section>
+    </main>
   );
 }

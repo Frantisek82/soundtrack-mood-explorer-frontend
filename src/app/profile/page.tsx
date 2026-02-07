@@ -124,23 +124,18 @@ export default function ProfilePage() {
           </div>
 
           {message && (
-            <p className="text-sm text-gray-300">{message}</p>
+            <p className="text-sm text-gray-300" role="aletrt">{message}</p>
           )}
 
           {/* Update password */}
-          <button
+          <Button
             type="submit"
             disabled={loading}
             aria-disabled={loading}
-            className={`w-full mt-4 px-6 py-3 rounded-lg font-medium transition
-    ${loading
-                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                : "bg-white text-black hover:bg-gray-200"
-              }
-  `}
+            className="w-full mt-4"
           >
             {loading ? "Saving..." : "Update Password"}
-          </button>
+          </Button>
         </form>
       </section>
 
