@@ -44,16 +44,20 @@ export default function SoundtrackDetailPage() {
   const [authMessage, setAuthMessage] =
     useState<string | null>(null);
 
+  const errorRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLParagraphElement>(null);
 
-  /* Load soundtrack */
+  const loggedIn = isAuthenticated();
+
+  /* =====================
+     Load soundtrack
+  ===================== */
   useEffect(() => {
     async function loadSoundtrack() {
       try {
         const data = await getSoundtrackById(id);
         setSoundtrack(data);
 
-        // Safe favorites check
         try {
           const fav = await isFavorite(data._id);
           setIsFav(fav);
@@ -70,18 +74,28 @@ export default function SoundtrackDetailPage() {
     loadSoundtrack();
   }, [id]);
 
-  /* Focus auth message when shown */
+  /* =====================
+     Focus management
+  ===================== */
+  useEffect(() => {
+    if (error) {
+      errorRef.current?.focus();
+    }
+  }, [error]);
+
   useEffect(() => {
     if (authMessage) {
       authRef.current?.focus();
     }
   }, [authMessage]);
 
-  /* Toggle favorites */
+  /* =====================
+     Toggle favorites
+  ===================== */
   async function toggleFavorite() {
     if (!soundtrack) return;
 
-    if (!isAuthenticated()) {
+    if (!loggedIn) {
       setAuthMessage(
         "You need to be logged in to save favorites."
       );
@@ -114,7 +128,11 @@ export default function SoundtrackDetailPage() {
 
   if (loading) {
     return (
-      <div className="p-12 flex justify-center">
+      <div
+        className="p-12 flex justify-center"
+        role="status"
+        aria-live="polite"
+      >
         <Spinner size="lg" />
       </div>
     );
@@ -123,8 +141,10 @@ export default function SoundtrackDetailPage() {
   if (error || !soundtrack) {
     return (
       <div
+        ref={errorRef}
+        tabIndex={-1}
         role="alert"
-        className="p-8 text-center text-red-400"
+        className="p-8 text-center text-red-400 outline-none"
       >
         {error || "Soundtrack not found"}
       </div>
@@ -146,6 +166,7 @@ export default function SoundtrackDetailPage() {
           onClick={toggleFavorite}
           loading={favLoading}
           variant={isFav ? "danger" : "primary"}
+          aria-disabled={favLoading}
         >
           {isFav ? "Remove from Favorites" : "Save to Favorites"}
         </Button>
@@ -155,11 +176,12 @@ export default function SoundtrackDetailPage() {
           <p
             ref={authRef}
             tabIndex={-1}
-            role="alert"
+            role="status"
+            aria-live="polite"
             className="mt-2 text-sm text-red-400 outline-none"
           >
             {authMessage}{" "}
-            {!isAuthenticated() && (
+            {!loggedIn && (
               <Link
                 href="/login"
                 className="underline hover:text-red-300"

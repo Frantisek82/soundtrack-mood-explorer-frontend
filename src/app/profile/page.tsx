@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, logout } from "@/src/utils/auth";
 import Button from "@/src/components/Button";
@@ -11,11 +11,18 @@ export default function ProfilePage() {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<
+    "error" | "success" | null
+  >(null);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // 🔐 Protect page + avoid hydration mismatch
+  const messageRef = useRef<HTMLParagraphElement>(null);
+
+  /* =====================
+     Protect page
+  ===================== */
   useEffect(() => {
     setMounted(true);
 
@@ -24,40 +31,60 @@ export default function ProfilePage() {
     }
   }, [router]);
 
+  /* =====================
+     Focus message
+  ===================== */
+  useEffect(() => {
+    if (message) {
+      messageRef.current?.focus();
+    }
+  }, [message]);
+
   if (!mounted) {
     return null;
   }
 
+  /* =====================
+     Handlers
+  ===================== */
   async function handlePasswordChange(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
+    setMessageType(null);
 
     if (password.length < 6) {
       setMessage("Password must be at least 6 characters long.");
+      setMessageType("error");
       return;
     }
 
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
+      setMessageType("error");
       return;
     }
 
     try {
       setLoading(true);
 
-      // ⛔ Placeholder: backend endpoint can be added later
+      // 🔧 Placeholder for future backend integration
       // await updatePassword(password);
 
       setPassword("");
       setConfirmPassword("");
       setMessage("Password updated successfully.");
+      setMessageType("success");
     } catch {
       setMessage("Failed to update password.");
+      setMessageType("error");
     } finally {
       setLoading(false);
     }
   }
 
+  /* =====================
+     UI
+  ===================== */
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
       {/* Page Header */}
@@ -72,7 +99,10 @@ export default function ProfilePage() {
       <section className="bg-zinc-900 rounded-xl p-6">
         {/* Avatar */}
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-full bg-zinc-700 flex items-center justify-center text-xl font-bold">
+          <div
+            className="w-16 h-16 rounded-full bg-zinc-700 flex items-center justify-center text-xl font-bold"
+            aria-hidden="true"
+          >
             U
           </div>
           <div>
@@ -86,25 +116,28 @@ export default function ProfilePage() {
         {/* Password Form */}
         <form onSubmit={handlePasswordChange} className="space-y-4">
           <div>
-            <label htmlFor="new-password" className="block text-sm mb-1">New Password</label>
+            <label
+              htmlFor="new-password"
+              className="block text-sm mb-1"
+            >
+              New Password
+            </label>
             <input
               id="new-password"
               type="password"
               placeholder="New password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="
-    w-full px-4 py-2 rounded-lg
-    bg-black border border-zinc-700
-    text-white placeholder:text-gray-500
-    focus:outline-none focus:border-white
-  "
+              className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 text-white placeholder:text-gray-500 focus:outline-none focus:border-white"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="confirm-password" className="block text-sm mb-1">
+            <label
+              htmlFor="confirm-password"
+              className="block text-sm mb-1"
+            >
               Confirm New Password
             </label>
             <input
@@ -112,19 +145,37 @@ export default function ProfilePage() {
               type="password"
               placeholder="Confirm new password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="
-    w-full px-4 py-2 rounded-lg
-    bg-black border border-zinc-700
-    text-white placeholder:text-gray-500
-    focus:outline-none focus:border-white
-  "
+              onChange={(e) =>
+                setConfirmPassword(e.target.value)
+              }
+              className="w-full px-4 py-2 rounded-lg bg-black border border-zinc-700 text-white placeholder:text-gray-500 focus:outline-none focus:border-white"
               required
             />
           </div>
 
+          {/* Feedback message */}
           {message && (
-            <p className="text-sm text-gray-300" role="aletrt">{message}</p>
+            <p
+              ref={messageRef}
+              tabIndex={-1}
+              role={
+                messageType === "error"
+                  ? "alert"
+                  : "status"
+              }
+              aria-live={
+                messageType === "error"
+                  ? "assertive"
+                  : "polite"
+              }
+              className={`text-sm outline-none ${
+                messageType === "error"
+                  ? "text-red-400"
+                  : "text-green-400"
+              }`}
+            >
+              {message}
+            </p>
           )}
 
           {/* Update password */}
@@ -135,7 +186,7 @@ export default function ProfilePage() {
             aria-disabled={loading}
             className="w-full mt-4"
           >
-            {loading ? "Saving..." : "Update Password"}
+            Update Password
           </Button>
         </form>
       </section>
