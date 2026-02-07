@@ -139,15 +139,25 @@ export default function SoundtrackDetailPage() {
             Spotify Preview
           </h3>
 
-          <iframe
-            title={`Spotify preview for ${soundtrack.title}`}
-            src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
-            width="100%"
-            height="80"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-            className="rounded-lg border-none"
-          />
+          {soundtrack.spotifyTrackId ? (
+            <iframe
+              src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
+              width="100%"
+              height="80"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              className="rounded-lg border-none"
+              title={`Spotify preview for ${soundtrack.title}`}
+            />
+          ) : (
+            <p
+              role="status"
+              aria-live="polite"
+              className="text-sm text-gray-400"
+            >
+              Spotify preview is not available for this soundtrack.
+            </p>
+          )}
         </section>
       )}
     </div>

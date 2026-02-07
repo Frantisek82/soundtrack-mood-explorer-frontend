@@ -80,7 +80,11 @@ export default function ContactPage() {
             </Button>
           </form>
         ) : (
-          <p className="text-center text-gray-300">
+          <p
+            role="status"
+            aria-live="polite"
+            className="text-center text-gray-300"
+          >
             Thanks for your message!
             I’ll get back to you as soon as possible.
           </p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import {
   getFavorites,
@@ -68,8 +69,24 @@ export default function FavoritesPage() {
       </div>
 
       {favorites.length === 0 ? (
-        <div className="text-center text-gray-400 mt-12">
-          You haven’t added any favorites yet.
+        <div
+          role="status"
+          aria-live="polite"
+          className="text-center text-gray-400 mt-16 space-y-3"
+        >
+          <p className="text-xl font-semibold">
+            No favorites yet
+          </p>
+          <p className="text-sm max-w-md mx-auto">
+            Save soundtracks you love to quickly find them here later.
+          </p>
+
+          <Link
+            href="/explore"
+            className="inline-block mt-4 underline text-white hover:text-gray-200"
+          >
+            Explore soundtracks
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

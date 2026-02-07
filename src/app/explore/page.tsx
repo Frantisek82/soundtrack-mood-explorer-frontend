@@ -36,8 +36,8 @@ export default function ExplorePage() {
 
   const filteredSoundtracks = selectedMood
     ? soundtracks.filter(
-        (s) => Array.isArray(s.moods) && s.moods.includes(selectedMood)
-      )
+      (s) => Array.isArray(s.moods) && s.moods.includes(selectedMood)
+    )
     : soundtracks;
 
   if (loading) {
@@ -76,8 +76,17 @@ export default function ExplorePage() {
 
       {/* Results */}
       {filteredSoundtracks.length === 0 ? (
-        <div className="text-center text-gray-400 mt-12">
-          No soundtracks match this mood.
+        <div
+          role="status"
+          aria-live="polite"
+          className="text-center text-gray-400 mt-12 space-y-2"
+        >
+          <p className="text-lg font-medium">
+            No soundtracks found
+          </p>
+          <p className="text-sm">
+            Try selecting a different mood to discover more music.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
