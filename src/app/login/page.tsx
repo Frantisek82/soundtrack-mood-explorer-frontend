@@ -81,9 +81,9 @@ export default function LoginPage() {
         <Button
           type="submit"
           className="w-full"
-          disabled={loading}
+          loading={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          Login
         </Button>
 
         <p className="mt-4 text-sm text-center text-gray-400">

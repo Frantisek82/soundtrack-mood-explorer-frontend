@@ -1,19 +1,24 @@
 "use client";
 
 import { ButtonHTMLAttributes } from "react";
+import Spinner from "./Spinner";
 
 type ButtonVariant = "primary" | "danger";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
+  loading?: boolean;
 };
 
 export default function Button({
   children,
   variant = "primary",
+  loading = false,
+  disabled,
   className = "",
   ...props
 }: ButtonProps) {
+  const isDisabled = disabled || loading;
   const baseStyles =
     `
     px-4 py-2 rounded
@@ -38,9 +43,18 @@ export default function Button({
   return (
     <button
       {...props}
+      disabled={isDisabled}
+      aria-disabled={isDisabled}
       className={`${baseStyles} ${variants[variant]} ${className}`}
     >
-      {children}
+      {loading ? (
+        <span className="flex items-center justify-center gap-2">
+          <Spinner size="sm" />
+          <span>Loading</span>
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 }

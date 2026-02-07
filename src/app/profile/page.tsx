@@ -131,6 +131,7 @@ export default function ProfilePage() {
           <Button
             type="submit"
             disabled={loading}
+            loading={loading}
             aria-disabled={loading}
             className="w-full mt-4"
           >

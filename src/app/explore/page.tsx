@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Spinner from "@/src/components/Spinner";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import MoodSelector from "@/src/components/MoodSelector";
 import { getSoundtracks } from "@/src/services/soundtracks";
@@ -67,16 +68,12 @@ export default function ExplorePage() {
   ===================== */
 
   if (loading) {
-    return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="p-8 text-center text-gray-400"
-      >
-        Loading soundtracks…
-      </div>
-    );
-  }
+  return (
+    <div className="p-12 flex justify-center">
+      <Spinner size="lg" />
+    </div>
+  );
+}
 
   if (error) {
     return (

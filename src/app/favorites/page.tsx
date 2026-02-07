@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Spinner from "@/src/components/Spinner";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import { getFavorites } from "@/src/services/favorites";
 import { isAuthenticated } from "@/src/utils/auth";
@@ -63,16 +64,12 @@ export default function FavoritesPage() {
   ===================== */
 
   if (loading) {
-    return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="p-8 text-center text-gray-400"
-      >
-        Loading favorites…
-      </div>
-    );
-  }
+  return (
+    <div className="p-12 flex justify-center">
+      <Spinner size="lg" />
+    </div>
+  );
+}
 
   if (!isAuthenticated()) {
     return (

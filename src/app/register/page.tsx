@@ -95,9 +95,9 @@ export default function RegisterPage() {
         <Button
           type="submit"
           className="w-full"
-          disabled={loading}
+          loading={loading}
         >
-          {loading ? "Creating account..." : "Register"}
+          Register
         </Button>
 
         <p className="mt-4 text-sm text-center text-gray-400">

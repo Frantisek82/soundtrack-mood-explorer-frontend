@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-
+import Spinner from "@/src/components/Spinner";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import Button from "@/src/components/Button";
 import {
@@ -114,12 +114,8 @@ export default function SoundtrackDetailPage() {
 
   if (loading) {
     return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="p-8 text-center text-gray-400"
-      >
-        Loading soundtrack…
+      <div className="p-12 flex justify-center">
+        <Spinner size="lg" />
       </div>
     );
   }
@@ -148,13 +144,10 @@ export default function SoundtrackDetailPage() {
       <section>
         <Button
           onClick={toggleFavorite}
-          disabled={favLoading}
-          aria-disabled={favLoading}
+          loading={favLoading}
           variant={isFav ? "danger" : "primary"}
         >
-          {isFav
-            ? "Remove from Favorites"
-            : "Save to Favorites"}
+          {isFav ? "Remove from Favorites" : "Save to Favorites"}
         </Button>
 
         {/* Auth / error message */}
