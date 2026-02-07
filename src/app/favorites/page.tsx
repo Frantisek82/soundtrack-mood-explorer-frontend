@@ -1,21 +1,43 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
-import {
-  getFavorites,
-  removeFavorite,
-  Soundtrack,
-} from "@/src/services/favorites";
+import { getFavorites } from "@/src/services/favorites";
+import { isAuthenticated } from "@/src/utils/auth";
+
+/* =====================
+   Types
+===================== */
+
+type Soundtrack = {
+  _id: string;
+  title: string;
+  movie: string;
+  composer: string;
+  moods: string[];
+  spotifyTrackId?: string;
+};
+
+/* =====================
+   Page
+===================== */
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<Soundtrack[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
+  const emptyRef = useRef<HTMLDivElement>(null);
+
+  /* Load favorites */
   useEffect(() => {
     async function loadFavorites() {
+      if (!isAuthenticated()) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const data = await getFavorites();
         setFavorites(data);
@@ -29,85 +51,113 @@ export default function FavoritesPage() {
     loadFavorites();
   }, []);
 
-  async function handleRemove(soundtrackId: string) {
-    try {
-      await removeFavorite(soundtrackId);
-      setFavorites((prev) =>
-        prev.filter((s) => s._id !== soundtrackId)
-      );
-    } catch (err: any) {
-      alert(err.message || "Failed to remove favorite");
+  /* Focus empty state */
+  useEffect(() => {
+    if (!loading && favorites.length === 0) {
+      emptyRef.current?.focus();
     }
-  }
+  }, [loading, favorites.length]);
+
+  /* =====================
+     States
+  ===================== */
 
   if (loading) {
     return (
-      <div className="p-8 text-center text-gray-400">
+      <div
+        role="status"
+        aria-live="polite"
+        className="p-8 text-center text-gray-400"
+      >
         Loading favorites…
+      </div>
+    );
+  }
+
+  if (!isAuthenticated()) {
+    return (
+      <div
+        ref={emptyRef}
+        tabIndex={-1}
+        role="alert"
+        className="p-8 text-center text-red-400 outline-none"
+      >
+        <p className="text-lg font-medium">
+          You need to be logged in to view favorites.
+        </p>
+        <Link
+          href="/login"
+          className="inline-block mt-4 underline text-white"
+        >
+          Login
+        </Link>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-8 text-center text-red-400">
+      <div
+        role="alert"
+        className="p-8 text-center text-red-400"
+      >
         {error}
       </div>
     );
   }
 
+  /* =====================
+     UI
+  ===================== */
+
   return (
-    <div className="max-w-6xl mx-auto p-8 space-y-8">
+    <main className="max-w-6xl mx-auto p-8 space-y-8">
       {/* Header */}
-      <div>
+      <header>
         <h1 className="text-3xl font-semibold mb-2">
           Your Favorites
         </h1>
         <p className="text-gray-400">
-          Soundtracks you’ve saved for later
+          Soundtracks you’ve saved for later.
         </p>
-      </div>
+      </header>
 
+      {/* Results */}
       {favorites.length === 0 ? (
         <div
+          ref={emptyRef}
+          tabIndex={-1}
           role="status"
           aria-live="polite"
-          className="text-center text-gray-400 mt-16 space-y-3"
+          className="mt-12 text-center text-gray-400 outline-none"
         >
-          <p className="text-xl font-semibold">
-            No favorites yet
+          <p className="text-lg font-medium">
+            You don’t have any favorites yet.
           </p>
-          <p className="text-sm max-w-md mx-auto">
-            Save soundtracks you love to quickly find them here later.
+          <p className="mt-2 text-sm">
+            Browse soundtracks and save the ones you love.
           </p>
 
           <Link
             href="/explore"
-            className="inline-block mt-4 underline text-white hover:text-gray-200"
+            className="inline-block mt-4 underline text-white"
           >
             Explore soundtracks
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {favorites.map((soundtrack) => (
-            <div key={soundtrack._id} className="relative">
-              <SoundtrackCard
-                soundtrack={soundtrack}
-                href={`/soundtrack/${soundtrack._id}`}
-              />
-
-              {/* Remove button */}
-              <button
-                onClick={() => handleRemove(soundtrack._id)}
-                className="absolute top-3 right-3 text-xs text-red-400 hover:text-red-300 bg-black/70 px-2 py-1 rounded"
-              >
-                Remove
-              </button>
-            </div>
+            <Link
+              key={soundtrack._id}
+              href={`/soundtrack/${soundtrack._id}`}
+              className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
+            >
+              <SoundtrackCard soundtrack={soundtrack} />
+            </Link>
           ))}
-        </div>
+        </section>
       )}
-    </div>
+    </main>
   );
 }
