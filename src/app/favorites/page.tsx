@@ -2,14 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Spinner from "@/src/components/Spinner";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
+import SoundtrackCardSkeleton from "@/src/components/SoundtrackCardSkeleton";
 import { getFavorites } from "@/src/services/favorites";
-import { isAuthenticated } from "@/src/utils/auth";
-
-/* =====================
-   Types
-===================== */
 
 type Soundtrack = {
   _id: string;
@@ -20,25 +15,15 @@ type Soundtrack = {
   spotifyTrackId?: string;
 };
 
-/* =====================
-   Page
-===================== */
-
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<Soundtrack[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
-  const emptyRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
-  /* Load favorites */
   useEffect(() => {
     async function loadFavorites() {
-      if (!isAuthenticated()) {
-        setLoading(false);
-        return;
-      }
-
       try {
         const data = await getFavorites();
         setFavorites(data);
@@ -52,108 +37,74 @@ export default function FavoritesPage() {
     loadFavorites();
   }, []);
 
-  /* Focus empty state */
+  // 🎯 Focus heading after load
   useEffect(() => {
-    if (!loading && favorites.length === 0) {
-      emptyRef.current?.focus();
+    if (!loading && headingRef.current) {
+      headingRef.current.focus();
     }
-  }, [loading, favorites.length]);
-
-  /* =====================
-     States
-  ===================== */
+  }, [loading]);
 
   if (loading) {
-  return (
-    <div className="p-12 flex justify-center">
-      <Spinner size="lg" />
-    </div>
-  );
-}
-
-  if (!isAuthenticated()) {
     return (
-      <div
-        ref={emptyRef}
-        tabIndex={-1}
-        role="alert"
-        className="p-8 text-center text-red-400 outline-none"
-      >
-        <p className="text-lg font-medium">
-          You need to be logged in to view favorites.
-        </p>
-        <Link
-          href="/login"
-          className="inline-block mt-4 underline text-white"
-        >
-          Login
-        </Link>
-      </div>
+      <main className="max-w-6xl mx-auto p-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <SoundtrackCardSkeleton />
+            </div>
+          ))}
+        </div>
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div
-        role="alert"
-        className="p-8 text-center text-red-400"
-      >
+      <main className="p-8 text-center text-red-400" role="alert">
         {error}
-      </div>
+      </main>
     );
   }
-
-  /* =====================
-     UI
-  ===================== */
 
   return (
     <main className="max-w-6xl mx-auto p-8 space-y-8">
       {/* Header */}
       <header>
-        <h1 className="text-3xl font-semibold mb-2">
+        <h1
+          ref={headingRef}
+          tabIndex={-1}
+          className="text-3xl font-semibold mb-2 focus:outline-none"
+        >
           Your Favorites
         </h1>
         <p className="text-gray-400">
-          Soundtracks you’ve saved for later.
+          Soundtracks you’ve saved for later
         </p>
       </header>
 
-      {/* Results */}
+      {/* Content */}
       {favorites.length === 0 ? (
-        <div
-          ref={emptyRef}
-          tabIndex={-1}
+        <p
           role="status"
           aria-live="polite"
-          className="mt-12 text-center text-gray-400 outline-none"
+          className="text-center text-gray-400 mt-12"
         >
-          <p className="text-lg font-medium">
-            You don’t have any favorites yet.
-          </p>
-          <p className="mt-2 text-sm">
-            Browse soundtracks and save the ones you love.
-          </p>
-
-          <Link
-            href="/explore"
-            className="inline-block mt-4 underline text-gray-400"
-          >
-            Explore soundtracks
-          </Link>
-        </div>
+          You haven’t added any favorites yet.
+        </p>
       ) : (
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {favorites.map((soundtrack) => (
             <Link
               key={soundtrack._id}
               href={`/soundtrack/${soundtrack._id}`}
-              className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
             >
               <SoundtrackCard soundtrack={soundtrack} />
             </Link>
           ))}
-        </section>
+        </div>
       )}
     </main>
   );

@@ -2,14 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Spinner from "@/src/components/Spinner";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
+import SoundtrackCardSkeleton from "@/src/components/SoundtrackCardSkeleton";
 import MoodSelector from "@/src/components/MoodSelector";
 import { getSoundtracks } from "@/src/services/soundtracks";
-
-/* =====================
-   Types
-===================== */
 
 type Soundtrack = {
   _id: string;
@@ -17,22 +13,16 @@ type Soundtrack = {
   movie: string;
   composer: string;
   moods: string[];
-  spotifyTrackId?: string;
 };
-
-/* =====================
-   Page
-===================== */
 
 export default function ExplorePage() {
   const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
-  const emptyRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
-  /* Load soundtracks */
   useEffect(() => {
     async function loadSoundtracks() {
       try {
@@ -48,7 +38,7 @@ export default function ExplorePage() {
     loadSoundtracks();
   }, []);
 
-  /* Filter by mood */
+  // 🔍 Filter by mood
   const filteredSoundtracks = selectedMood
     ? soundtracks.filter(
         (s) =>
@@ -56,49 +46,51 @@ export default function ExplorePage() {
       )
     : soundtracks;
 
-  /* Focus empty state when results disappear */
+  // 🎯 Focus heading after load
   useEffect(() => {
-    if (!loading && filteredSoundtracks.length === 0) {
-      emptyRef.current?.focus();
+    if (!loading && headingRef.current) {
+      headingRef.current.focus();
     }
-  }, [loading, filteredSoundtracks.length]);
-
-  /* =====================
-     States
-  ===================== */
+  }, [loading]);
 
   if (loading) {
-  return (
-    <div className="p-12 flex justify-center">
-      <Spinner size="lg" />
-    </div>
-  );
-}
-
-  if (error) {
     return (
-      <div
-        role="alert"
-        className="p-8 text-center text-red-400"
-      >
-        {error}
-      </div>
+      <main className="max-w-6xl mx-auto p-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <SoundtrackCardSkeleton />
+            </div>
+          ))}
+        </div>
+      </main>
     );
   }
 
-  /* =====================
-     UI
-  ===================== */
+  if (error) {
+    return (
+      <main className="p-8 text-center text-red-400" role="alert">
+        {error}
+      </main>
+    );
+  }
 
   return (
     <main className="max-w-6xl mx-auto p-8 space-y-8">
       {/* Header */}
       <header>
-        <h1 className="text-3xl font-semibold mb-2">
+        <h1
+          ref={headingRef}
+          tabIndex={-1}
+          className="text-3xl font-semibold mb-2 focus:outline-none"
+        >
           Explore Soundtracks
         </h1>
         <p className="text-gray-400">
-          Discover movie soundtracks by mood.
+          Discover movie soundtracks by mood
         </p>
       </header>
 
@@ -110,32 +102,24 @@ export default function ExplorePage() {
 
       {/* Results */}
       {filteredSoundtracks.length === 0 ? (
-        <div
-          ref={emptyRef}
-          tabIndex={-1}
+        <p
           role="status"
           aria-live="polite"
-          className="mt-12 text-center text-gray-400 outline-none"
+          className="text-center text-gray-400 mt-12"
         >
-          <p className="text-lg font-medium">
-            No soundtracks match this mood.
-          </p>
-          <p className="mt-2 text-sm">
-            Try selecting a different mood.
-          </p>
-        </div>
+          No soundtracks match this mood.
+        </p>
       ) : (
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSoundtracks.map((soundtrack) => (
             <Link
               key={soundtrack._id}
               href={`/soundtrack/${soundtrack._id}`}
-              className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-xl"
             >
               <SoundtrackCard soundtrack={soundtrack} />
             </Link>
           ))}
-        </section>
+        </div>
       )}
     </main>
   );
