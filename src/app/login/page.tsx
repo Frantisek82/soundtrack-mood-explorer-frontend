@@ -44,7 +44,7 @@ export default function LoginPage() {
         </h1>
 
         {error && (
-          <p className="mb-4 text-sm text-red-400 text-center">
+          <p role="alert" className="mb-4 text-sm text-red-400 text-center">
             {error}
           </p>
         )}

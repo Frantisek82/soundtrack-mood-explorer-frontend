@@ -26,8 +26,9 @@ export default function ContactPage() {
         {!submitted ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm mb-1">Name</label>
+              <label htmlFor="contact-name" className="block text-sm mb-1">Name</label>
               <input
+                id="contact-name"
                 type="text"
                 required
                 placeholder="Your name"
@@ -41,8 +42,9 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label className="block text-sm mb-1">Email</label>
+              <label htmlFor="contact-email" className="block text-sm mb-1">Email</label>
               <input
+                id="contact-email"
                 type="email"
                 required
                 placeholder="Your email"
@@ -56,8 +58,9 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label className="block text-sm mb-1">Message</label>
+              <label htmlFor="contact-message" className="block text-sm mb-1">Message</label>
               <textarea
+                id="contact-message"
                 required
                 rows={4}
                 placeholder="Your message"

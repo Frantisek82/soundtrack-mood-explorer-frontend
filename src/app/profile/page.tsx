@@ -86,8 +86,9 @@ export default function ProfilePage() {
         {/* Password Form */}
         <form onSubmit={handlePasswordChange} className="space-y-4">
           <div>
-            <label className="block text-sm mb-1">New Password</label>
+            <label htmlFor="new-password" className="block text-sm mb-1">New Password</label>
             <input
+              id="new-password"
               type="password"
               placeholder="New password"
               value={password}
@@ -103,10 +104,11 @@ export default function ProfilePage() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1">
+            <label htmlFor="confirm-password" className="block text-sm mb-1">
               Confirm New Password
             </label>
             <input
+              id="confirm-password"
               type="password"
               placeholder="Confirm new password"
               value={confirmPassword}
@@ -126,13 +128,19 @@ export default function ProfilePage() {
           )}
 
           {/* Update password */}
-          <Button
+          <button
             type="submit"
             disabled={loading}
-            className="w-full mt-4"
+            aria-disabled={loading}
+            className={`w-full mt-4 px-6 py-3 rounded-lg font-medium transition
+    ${loading
+                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                : "bg-white text-black hover:bg-gray-200"
+              }
+  `}
           >
             {loading ? "Saving..." : "Update Password"}
-          </Button>
+          </button>
         </form>
       </section>
 

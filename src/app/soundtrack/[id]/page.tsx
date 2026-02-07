@@ -118,7 +118,7 @@ export default function SoundtrackDetailPage() {
 
         {/* Friendly inline auth message */}
         {authMessage && (
-          <p className="mt-2 text-sm text-red-400">
+          <p role="alert" className="mt-2 text-sm text-red-400">
             {authMessage}
             {!isAuthenticated() && (
               <Link
@@ -140,6 +140,7 @@ export default function SoundtrackDetailPage() {
           </h3>
 
           <iframe
+            title={`Spotify preview for ${soundtrack.title}`}
             src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
             width="100%"
             height="80"
