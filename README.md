@@ -1,23 +1,26 @@
 # 🎬🎵 Soundtrack Mood Explorer
-A full-stack web application that allows users to explore movie soundtracks, view detailed information, and manage a personal list of favorite soundtracks.
-Built as a portfolio project to demonstrate modern full-stack development with authentication, REST APIs, and database integration.
+A full-stack web application that allows users to explore movie soundtracks by mood, view detailed information, and manage a personal list of favorites.
+This project demonstrates modern full-stack development practices including authentication, REST APIs, database design, and accessibility-focused UI development.
 
 ## 🚀 Features
- - 🔍 Browse and explore movie soundtracks
- - 📄 View detailed soundtrack pages
- - 🔐 User authentication (JWT-based)
- - ⭐ Add and remove soundtracks from Favorites
- - 👤 Protected user profile & favorites pages
- - 🌐 REST API with protected routes
- - 💾 Persistent data storage with MongoDB
+- 🔍 Browse and explore movie soundtracks
+- 🎭 Filter soundtracks by mood
+- 📄 View detailed soundtrack pages
+- 🎧 Spotify preview integration
+- 🔐 User authentication (JWT-based)
+- ⭐ Add and remove soundtracks from Favorites
+- 👤 Protected user profile & favorites pages
+- 🌐 REST API with protected routes
+- ♿ Accessibility-focused UI (keyboard navigation, ARIA roles, focus management)
+- 💾 Persistent data storage with MongoDB
 
 ## 🛠 Tech Stack
 ### Frontend
- - Next.js (App Router)
- - React
- - TypeScript
- - Tailwind CSS
- - Fetch API for client–server communication
+- Next.js (App Router)
+- React (Client & Server Components)
+- TypeScript
+- Tailwind CSS
+- Fetch API for client–server communication
 
 ## 📂 Project Structure
 This project is split into two independent repositories:
@@ -32,12 +35,12 @@ frontend/
 The frontend and backend communicate only via HTTP requests, making them fully decoupled.
 
 ## 🔐 Authentication
- - Authentication is handled using JSON Web Tokens (JWT)
- - Tokens are stored client-side and sent via Authorization headers
- - Protected routes:
- - Favorites
- - Profile
- - Unauthorized users are redirected to the login page
+- Authentication is handled using JSON Web Tokens (JWT)
+- Tokens are stored client-side and sent via Authorization headers
+- Protected routes include:
+  - Favorites
+  - Profile
+- Unauthorized users are redirected to the login page
 
 ## ⭐ Favorites System
  - Users can add or remove soundtracks from favorites
@@ -46,11 +49,12 @@ The frontend and backend communicate only via HTTP requests, making them fully d
  - Backend ensures data consistency using userId + soundtrackId
 
 ## 🧠 Key Technical Highlights
- - Defensive frontend logic for authenticated / unauthenticated users
- - Idempotent REST API design
- - Proper MongoDB ObjectId handling
- - Next.js App Router compatibility (async route params)
- - Clean separation of concerns between layers
+- Defensive frontend logic for authenticated / unauthenticated users
+- Idempotent REST API design
+- Proper MongoDB ObjectId handling
+- Next.js App Router compatibility (async route params)
+- Clean separation of concerns between layers
+- Accessibility-first UI decisions (ARIA roles, focus management, keyboard navigation)
 
 ## ⚙️ Environment Variables
 ### Frontend
@@ -74,14 +78,15 @@ npm run dev
  - Proper behavior when logged out
 
 ## 📌 Future Improvements
- - Search & filtering
- - Pagination
- - User profile editing
- - Deployment (Vercel + MongoDB Atlas)
- - Unit and integration tests
+- Advanced search & filtering
+- Pagination
+- User profile editing
+- Deployment (Vercel + MongoDB Atlas)
+- Unit and integration tests
 
- 👨‍💻 Author
+## 👨‍💻 Author
 
-[Frantisek Babinsky]
-Junior Full-Stack Developer
-Built as part of a professional portfolio
+**Frantisek Babinsky**  
+Junior Full-Stack Developer  
+
+Built as part of a professional portfolio project.
