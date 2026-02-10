@@ -13,6 +13,23 @@ This repository contains the frontend application, built as a portfolio project 
 - 🌐 REST API consumption with protected routes
 - 💾 Persistent data via backend + MongoDB
 
+## 📸 Screenshots
+
+### Home
+![Home page](docs/screenshots/home.png)
+
+### Explore Soundtracks
+![Explore page](docs/screenshots/explore.png)
+
+### Soundtrack Details
+![Soundtrack detail](docs/screenshots/soundtrack-detail.png)
+
+### Favorites
+![Favorites page](docs/screenshots/favorites.png)
+
+### Login
+![Login page](docs/screenshots/login.png)
+
 ## 🛠 Tech Stack
 ### Frontend
 - Next.js (App Router)
