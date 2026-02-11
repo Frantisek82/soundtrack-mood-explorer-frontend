@@ -29,7 +29,7 @@ export default function HomePage() {
 
         {/* Mood preview (non-interactive) */}
         <div className="flex flex-wrap justify-center gap-3 pt-6">
-          {["Epic", "Calm", "Dark", "Emotional", "Hopeful"].map((mood) => (
+          {["Epic", "Calm", "Dark", "Emotional", "Hopeful", "Romantic"].map((mood) => (
             <span
               key={mood}
               className="px-3 py-1 rounded-full border border-zinc-700 text-sm text-gray-300"

@@ -40,10 +40,12 @@ export default function ExplorePage() {
 
   // 🔍 Filter by mood
   const filteredSoundtracks = selectedMood
-    ? soundtracks.filter(
-        (s) =>
-          Array.isArray(s.moods) && s.moods.includes(selectedMood)
+    ? soundtracks.filter((s) =>
+      Array.isArray(s.moods) &&
+      s.moods.some(
+        (m) => m.toLowerCase() === selectedMood.toLowerCase()
       )
+    )
     : soundtracks;
 
   // 🎯 Focus heading after load
@@ -94,11 +96,19 @@ export default function ExplorePage() {
         </p>
       </header>
 
-      {/* Mood selector */}
-      <MoodSelector
-        selectedMood={selectedMood}
-        onChange={setSelectedMood}
-      />
+      {/* Mood Selector Section */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-medium text-gray-400">
+            Filter by Mood
+          </h2>
+        </div>
+
+        <MoodSelector
+          selectedMood={selectedMood}
+          onChange={setSelectedMood}
+        />
+      </section>
 
       {/* Results */}
       {filteredSoundtracks.length === 0 ? (

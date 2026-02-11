@@ -1,40 +1,48 @@
-type MoodSelectorProps = {
-  moods?: string[];
+"use client";
+
+type Props = {
   selectedMood: string | null;
   onChange: (mood: string | null) => void;
 };
 
+const moods = ["Epic", "Calm", "Dark", "Emotional", "Hopeful", "Romantic"];
+
 export default function MoodSelector({
-  moods = [],
   selectedMood,
   onChange,
-}: MoodSelectorProps) {
-  if (moods.length === 0) return null;
-
+}: Props) {
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
+    <div className="flex flex-wrap gap-3 items-center">
+      {/* Clear filter button */}
       <button
+        type="button"
         onClick={() => onChange(null)}
-        className={`px-4 py-2 rounded-full text-sm border transition
+        className={`
+          px-4 py-2 rounded-full text-sm font-medium transition
           ${
             selectedMood === null
-              ? "bg-white text-black border-white"
-              : "border-zinc-700 text-gray-300 hover:border-white"
-          }`}
+              ? "bg-white text-black"
+              : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+          }
+        `}
       >
         All
       </button>
 
+      {/* Mood buttons */}
       {moods.map((mood) => (
         <button
           key={mood}
+          type="button"
           onClick={() => onChange(mood)}
-          className={`px-4 py-2 rounded-full text-sm border transition
+          className={`
+            px-4 py-2 rounded-full text-sm font-medium transition
             ${
               selectedMood === mood
-                ? "bg-white text-black border-white"
-                : "border-zinc-700 text-gray-300 hover:border-white"
-            }`}
+                ? "bg-white text-black"
+                : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+            }
+          `}
         >
           {mood}
         </button>
