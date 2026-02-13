@@ -2,8 +2,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getSoundtracks(mood?: string) {
   const url = mood
-    ? `${API_URL}/soundtracks?mood=${mood}`
-    : `${API_URL}/soundtracks`;
+    ? `${API_URL}/api/soundtracks?mood=${mood}`
+    : `${API_URL}/api/soundtracks`;
 
   const res = await fetch(url);
 
@@ -15,7 +15,7 @@ export async function getSoundtracks(mood?: string) {
 }
 
 export async function getSoundtrackById(id: string) {
-  const res = await fetch(`${API_URL}/soundtracks/${id}`);
+  const res = await fetch(`${API_URL}/api/soundtracks/${id}`);
 
   if (!res.ok) {
     throw new Error("Failed to fetch soundtrack");

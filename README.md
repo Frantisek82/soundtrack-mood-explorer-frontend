@@ -50,6 +50,12 @@ frontend/
 ```
 The frontend and backend communicate only via HTTP requests, making them fully decoupled and independently deployable.
 
+## 🏗 Project Architecture
+- Frontend: Next.js (Port 3001)
+- Backend API: Next.js API Routes (Port 3000)
+- Database: MongoDB (Local)
+The frontend communicates with the backend using the NEXT_PUBLIC_API_URL environment variable.
+
 ## 🔐 Authentication
 - Authentication is handled using JSON Web Tokens (JWT)
 - Tokens are stored client-side and sent via `Authorization` headers
@@ -128,17 +134,27 @@ The backend DELETE endpoint is idempotent, so repeated calls are safe.
 - Consistent UI/UX across Explore, Favorites, and Detail pages
 
 ## ⚙️ Environment Variables
-### Frontend
-No environment variables required for local development (API URL is local and defined in service files).
 
-## ▶️ Running the Project Locally
-### Frontend
-```bash
-cd frontend
+Create a .env.local file in the root of the frontend project with the following variable:
+```
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+This variable defines the base URL of the backend API.
+
+## ▶️ Running the Frontend
+1. Install dependencies:
+```
 npm install
+```
+2. Start the development server:
+```
 npm run dev
 ```
- - Frontend: http://localhost:3001
+The frontend will run at:
+```
+http://localhost:3001
+```
+⚠️ Make sure the backend server is running before accessing the Explore page.
 
  ## 🧪 Tested Use Cases
  - Register & login
