@@ -12,7 +12,7 @@ export type Soundtrack = {
   spotifyTrackId?: string;
 };
 
-const API_URL = "http://localhost:3000/api/favorites";
+const API_URL = "/api/soundtracks";
 
 /**
  * Get all favorite soundtracks
