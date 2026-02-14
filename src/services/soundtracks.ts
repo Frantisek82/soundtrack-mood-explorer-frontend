@@ -1,24 +1,40 @@
-const API_URL = "/api/soundtracks";
+const API_BASE = "http://localhost:3000/api";
 
-export async function getSoundtracks(mood?: string) {
-  const url = mood
-    ? `${API_URL}/api/soundtracks?mood=${mood}`
-    : `${API_URL}/api/soundtracks`;
+/**
+ * Shared Soundtrack type
+ */
+export type Soundtrack = {
+  _id: string;
+  title: string;
+  movie: string;
+  composer: string;
+  moods: string[];
+  spotifyTrackId?: string;
+};
 
-  const res = await fetch(url);
+/**
+ * Get all soundtracks
+ */
+export async function getSoundtracks(): Promise<Soundtrack[]> {
+  const res = await fetch(`${API_BASE}/soundtracks`);
 
   if (!res.ok) {
-    throw new Error("Failed to fetch soundtracks");
+    throw new Error("Failed to load soundtracks");
   }
 
   return res.json();
 }
 
-export async function getSoundtrackById(id: string) {
-  const res = await fetch(`${API_URL}/api/soundtracks/${id}`);
+/**
+ * Get single soundtrack by ID
+ */
+export async function getSoundtrackById(
+  id: string
+): Promise<Soundtrack> {
+  const res = await fetch(`${API_BASE}/soundtracks/${id}`);
 
   if (!res.ok) {
-    throw new Error("Failed to fetch soundtrack");
+    throw new Error("Failed to load soundtrack");
   }
 
   return res.json();
