@@ -19,6 +19,20 @@ Built as a full-stack portfolio project.
 - ♿ Accessible UI (ARIA roles, focus management)
 - 💅 Clean responsive design (Tailwind CSS)
 
+## 📸 Screenshots
+
+### Explore Page
+![Explore Page](docs/screenshots/explore.png)
+
+### Soundtrack Detail with Spotify Preview
+![Detail Page](docs/screenshots/detail.png)
+
+### Favorites Page
+![Favorites Page](docs/screenshots/favorites.png)
+
+### Login Page
+![Login Page](docs/screenshots/login.png)
+
 ## 🛠 Tech Stack
 - Next.js (App Router)
 - React
