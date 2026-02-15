@@ -8,6 +8,7 @@ This application allows users to:
 - Preview tracks via Spotify
 - Register & login
 - Save favorites
+
 Built as a full-stack portfolio project.
 
 ## 🚀 Features
