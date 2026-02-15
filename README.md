@@ -1,180 +1,153 @@
-# 🎬🎵 Soundtrack Mood Explorer
-A full-stack web application that allows users to explore movie soundtracks, view detailed information, and manage a personal list of favorite soundtracks.
+# 🎬 Soundtrack Mood Explorer — Frontend
+Frontend application for the Soundtrack Mood Explorer project.
 
-This repository contains the frontend application, built as a portfolio project to demonstrate modern full-stack development with authentication, REST APIs, accessibility, and clean UI/UX practices
+This application allows users to:
+- Discover movie soundtracks
+- Filter by mood
+- View detailed soundtrack information
+- Preview tracks via Spotify
+- Register & login
+- Save favorites
+Built as a full-stack portfolio project.
 
 ## 🚀 Features
-- 🔍 Browse and explore movie soundtracks
-- 📄 View detailed soundtrack pages
-- 🔐 User authentication (JWT-based)
-- ⭐ Add and remove soundtracks from Favorites
-- 👤 Protected user profile & favorites pages
-- ♿ Accessibility-focused UI (ARIA roles, focus management)
-- 🌐 REST API consumption with protected routes
-- 💾 Persistent data via backend + MongoDB
-
-## 📸 Screenshots
-
-### Home
-![Home page](docs/screenshots/home.png)
-
-### Explore Soundtracks
-![Explore page](docs/screenshots/explore.png)
-
-### Soundtrack Details
-![Soundtrack detail](docs/screenshots/soundtrack-detail.png)
-
-### Favorites
-![Favorites page](docs/screenshots/favorites.png)
-
-### Login
-![Login page](docs/screenshots/login.png)
+- 🎵 Browse soundtracks
+- 🔍 Dynamic soundtrack detail pages
+- ⭐ Add / remove favorites
+- 🔐 JWT-based authentication
+- 🎧 Spotify preview integration
+- ♿ Accessible UI (ARIA roles, focus management)
+- 💅 Clean responsive design (Tailwind CSS)
 
 ## 🛠 Tech Stack
-### Frontend
 - Next.js (App Router)
 - React
 - TypeScript
 - Tailwind CSS
-- Fetch API for client–server communication
+- JWT Authentication
+- REST API communication
 
-## 📂 Project Structure
-This project is split into two independent repositories:
-```bash
-frontend/
- ├── src/app
- ├── src/components
- ├── src/services
- ├── src/utils
- └── ...
+## 🔗 Backend Requirement
+The frontend requires the backend API to be running.
+
+Backend repository:
+👉 `soundtrack-mood-explorer-backend`
+
+Backend must run on:
 ```
-The frontend and backend communicate only via HTTP requests, making them fully decoupled and independently deployable.
-
-## 🏗 Project Architecture
-- Frontend: Next.js (Port 3001)
-- Backend API: Next.js API Routes (Port 3000)
-- Database: MongoDB (Local)
-The frontend communicates with the backend using the NEXT_PUBLIC_API_URL environment variable.
-
-## 🔐 Authentication
-- Authentication is handled using JSON Web Tokens (JWT)
-- Tokens are stored client-side and sent via `Authorization` headers
-- Protected frontend routes:
-  - Favorites
-  - Profile
-- Unauthorized users are redirected to the login page or shown friendly inline messages
-
-### 🔌 API Usage Examples (Frontend)
-
-The frontend communicates with the backend exclusively via HTTP requests using the Fetch API.
-All authenticated requests include a JWT token in the `Authorization` header.
-
-## 🔐 Login
-
-Used in `src/services/auth.ts`
-```ts
-await fetch("http://localhost:3000/api/auth/login", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    email: "user@example.com",
-    password: "password123",
-  }),
-});
+http://localhost:3000
 ```
-On success, the backend returns a JWT token which is stored client-side and reused for protected requests.
-
-## ⭐ Add to Favorites
-
-Used in src/services/favorites.ts
-```ts
-await fetch("http://localhost:3000/api/favorites", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  },
-  body: JSON.stringify({
-    soundtrackId: "6978077a7e6d488aba392d46",
-  }),
-});
-```
-
-## ❌ Remove from Favorites
-```ts
-await fetch(
-  `http://localhost:3000/api/favorites/${soundtrackId}`,
-  {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
-```
-The backend DELETE endpoint is idempotent, so repeated calls are safe.
-
-## ⭐ Favorites System
- - Users can add or remove soundtracks from favorites
- - Favorites are stored per user in the backend database
- - Frontend handles:
-   - Optimistic UI updates
-   - Loading indicators
-   - Graceful behavior when logged out
-
-## 🧠 Key Technical Highlights
-- Defensive frontend logic for authenticated / unauthenticated users
-- Reusable UI components (Buttons, Cards, Skeletons, Spinners)
-- Accessibility best practices:
-  - `aria-live`, `role="alert"`, focus management
-- Idempotent REST API consumption
-- Clean separation of concerns between UI, services, and utilities
-- Consistent UI/UX across Explore, Favorites, and Detail pages
-
-## ⚙️ Environment Variables
-
-Create a .env.local file in the root of the frontend project with the following variable:
-```
-NEXT_PUBLIC_API_URL=http://localhost:3000
-```
-This variable defines the base URL of the backend API.
-
-## ▶️ Running the Frontend
-1. Install dependencies:
-```
-npm install
-```
-2. Start the development server:
-```
-npm run dev
-```
-The frontend will run at:
+The frontend runs on:
 ```
 http://localhost:3001
 ```
-⚠️ Make sure the backend server is running before accessing the Explore page.
 
- ## 🧪 Tested Use Cases
- - Register & login
- - Browse soundtracks
- - View soundtrack details
- - Add/remove favorites
- - Persistent favorites after refresh
- - Proper behavior when logged out
- - Accessible keyboard navigation and focus states
+## 🌍 API Configuration
+The frontend communicates directly with the backend using:
+```
+http://localhost:3000/api
+```
+No frontend environment variables are required for local development.
 
-## 📌 Future Improvements
-- Search & filtering
-- Pagination
-- User profile editing
+Earlier versions used an environment variable (`NEXT_PUBLIC_API_URL`), but this was removed to simplify configuration and avoid cross-origin inconsistencies between development environments (Linux vs Windows).
+
+## ▶️ Running the Frontend
+Install dependencies:
+```
+npm install
+```
+Start development server:
+```
+npm run dev
+```
+Open:
+```
+http://localhost:3001
+```
+
+## 🔐 Authentication Strategy
+Authentication is implemented using JWT stored in localStorage.
+
+- Token is saved after login.
+- Protected pages (`/favorites`, `/profile`) check authentication client-side.
+- If not authenticated, users are redirected to `/login`.
+
+A previous server-side proxy middleware was removed because it expected cookie-based authentication and conflicted with the chosen localStorage-based JWT strategy.
+
+For production, authentication should be migrated to secure httpOnly cookies.
+
+## 🌱 Seeding the Database (Important for Testing)
+To populate demo data including Spotify previews:
+1. Start the backend.
+2. Open browser console.
+3. Run:
+```
+fetch("http://localhost:3000/api/seed", { method: "POST" })
+  .then(res => res.json())
+  .then(console.log);
+```
+Expected response:
+```
+{ "message": "Database seeded" }
+```
+This inserts demo soundtracks with valid Spotify track IDs.
+
+## 🎧 Spotify Preview
+Soundtracks may include a `spotifyTrackId`.
+
+If present, a Spotify embed player is displayed on the detail page.
+
+If not present, a fallback message is shown.
+
+ ## 📁 Project Structure
+ ```
+src/
+ ├── app/
+ │    ├── explore/
+ │    ├── soundtrack/[id]/
+ │    ├── favorites/
+ │    ├── profile/
+ │    ├── login/
+ │    └── register/
+ ├── components/
+ ├── services/
+ └── utils/
+ ```
+## 🏷 Version
+Current frontend version:
+```
+v1.2.0
+```
+
+### v1.2.0 Updates
+- Stabilized API configuration
+- Removed incompatible proxy middleware
+- Fixed cross-platform development issue (Linux vs Windows)
+- Enabled Spotify preview support
+- Updated documentation
+- Added clear seeding instructions
+
+## 🧠 Architecture Notes
+This project uses:
+
+- Separate frontend and backend repositories
+- REST API communication
+- Client-side route protection
+- MongoDB via backend API
+
+Designed to demonstrate real-world full-stack development concepts.
+
+## 🧩 Future Improvements
+- Server-side auth with httpOnly cookies
+- Pagination and filtering
 - Deployment (Vercel + MongoDB Atlas)
-- Unit and integration tests
+- Dark/light theme toggle
+- Improved error handling
 
 ## 👨‍💻 Author
 
-**Frantisek Babinsky**  
+Frantisek Babinsky
+
 Junior Full-Stack Developer  
 
-Built as part of a professional portfolio project.
+Built as a professional portfolio project.
