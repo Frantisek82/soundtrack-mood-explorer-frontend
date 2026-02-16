@@ -3,13 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, logout } from "@/src/utils/auth";
+import { updatePassword, deleteAccount } from "@/src/services/user";
+import ConfirmDialog from "@/src/components/ConfirmDialog";
 import Button from "@/src/components/Button";
 
 export default function ProfilePage() {
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
+
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<
     "error" | "success" | null
@@ -32,7 +39,7 @@ export default function ProfilePage() {
   }, [router]);
 
   /* =====================
-     Focus message
+     Focus feedback message
   ===================== */
   useEffect(() => {
     if (message) {
@@ -40,12 +47,10 @@ export default function ProfilePage() {
     }
   }, [message]);
 
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   /* =====================
-     Handlers
+     Update password
   ===================== */
   async function handlePasswordChange(e: React.FormEvent) {
     e.preventDefault();
@@ -67,18 +72,38 @@ export default function ProfilePage() {
     try {
       setLoading(true);
 
-      // 🔧 Placeholder for future backend integration
-      // await updatePassword(password);
+      await updatePassword(password);
 
       setPassword("");
       setConfirmPassword("");
+
       setMessage("Password updated successfully.");
       setMessageType("success");
-    } catch {
-      setMessage("Failed to update password.");
+    } catch (err: any) {
+      setMessage(err.message || "Failed to update password.");
       setMessageType("error");
     } finally {
       setLoading(false);
+    }
+  }
+
+  /* =====================
+     Confirm Delete Account
+  ===================== */
+  async function handleDeleteAccount() {
+    try {
+      setDeleteLoading(true);
+
+      await deleteAccount();
+
+      logout();
+      router.push("/");
+
+    } catch {
+      alert("Failed to delete account.");
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteDialog(false);
     }
   }
 
@@ -87,7 +112,7 @@ export default function ProfilePage() {
   ===================== */
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
-      {/* Page Header */}
+      {/* Header */}
       <header className="mb-10">
         <h1 className="text-3xl font-bold mb-2">Profile</h1>
         <p className="text-gray-400">
@@ -95,31 +120,11 @@ export default function ProfilePage() {
         </p>
       </header>
 
-      {/* Profile Card */}
+      {/* Password Card */}
       <section className="bg-zinc-900 rounded-xl p-6">
-        {/* Avatar */}
-        <div className="flex items-center gap-4 mb-6">
-          <div
-            className="w-16 h-16 rounded-full bg-zinc-700 flex items-center justify-center text-xl font-bold"
-            aria-hidden="true"
-          >
-            U
-          </div>
-          <div>
-            <p className="font-semibold">Your Account</p>
-            <p className="text-sm text-gray-400">
-              Update your password below
-            </p>
-          </div>
-        </div>
-
-        {/* Password Form */}
         <form onSubmit={handlePasswordChange} className="space-y-4">
           <div>
-            <label
-              htmlFor="new-password"
-              className="block text-sm mb-1"
-            >
+            <label htmlFor="new-password" className="block text-sm mb-1">
               New Password
             </label>
             <input
@@ -134,10 +139,7 @@ export default function ProfilePage() {
           </div>
 
           <div>
-            <label
-              htmlFor="confirm-password"
-              className="block text-sm mb-1"
-            >
+            <label htmlFor="confirm-password" className="block text-sm mb-1">
               Confirm New Password
             </label>
             <input
@@ -153,20 +155,13 @@ export default function ProfilePage() {
             />
           </div>
 
-          {/* Feedback message */}
           {message && (
             <p
               ref={messageRef}
               tabIndex={-1}
-              role={
-                messageType === "error"
-                  ? "alert"
-                  : "status"
-              }
+              role={messageType === "error" ? "alert" : "status"}
               aria-live={
-                messageType === "error"
-                  ? "assertive"
-                  : "polite"
+                messageType === "error" ? "assertive" : "polite"
               }
               className={`text-sm outline-none ${
                 messageType === "error"
@@ -178,31 +173,50 @@ export default function ProfilePage() {
             </p>
           )}
 
-          {/* Update password */}
           <Button
             type="submit"
-            disabled={loading}
             loading={loading}
-            aria-disabled={loading}
-            className="w-full mt-4"
+            disabled={loading}
+            className="w-full"
           >
             Update Password
           </Button>
         </form>
       </section>
 
-      {/* Logout */}
-      <div className="mt-6">
+      {/* Danger Zone */}
+      <section className="mt-8 border-t border-zinc-800 pt-6 space-y-4">
         <Button
           variant="danger"
+          onClick={() => setShowDeleteDialog(true)}
+          className="w-full"
+        >
+          Delete Account
+        </Button>
+
+        <Button
+          variant="secondary"
           onClick={() => {
             logout();
             router.push("/login");
           }}
+          className="w-full"
         >
           Logout
         </Button>
-      </div>
+      </section>
+
+      {/* Reusable Confirm Dialog */}
+      <ConfirmDialog
+        open={showDeleteDialog}
+        title="Delete Account"
+        description="This action will permanently delete your account and all associated data, including your saved favorites. This cannot be undone."
+        confirmLabel="Yes, Delete Account"
+        cancelLabel="Cancel"
+        loading={deleteLoading}
+        onCancel={() => setShowDeleteDialog(false)}
+        onConfirm={handleDeleteAccount}
+      />
     </main>
   );
 }
