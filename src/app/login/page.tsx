@@ -6,6 +6,8 @@ import Link from "next/link";
 import { loginUser } from "@/src/services/auth";
 import Button from "@/src/components/Button";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -17,17 +19,30 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    if (!emailRegex.test(normalizedEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
 
     try {
+      setLoading(true);
+
       await loginUser({
-        email,
+        email: normalizedEmail,
         password,
       });
 
       router.push("/explore");
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      setError(err.message || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
@@ -44,7 +59,10 @@ export default function LoginPage() {
         </h1>
 
         {error && (
-          <p role="alert" className="mb-4 text-sm text-red-400 text-center">
+          <p
+            role="alert"
+            className="mb-4 text-sm text-red-400 text-center"
+          >
             {error}
           </p>
         )}
@@ -77,7 +95,6 @@ export default function LoginPage() {
           "
         />
 
-        {/* Primary action */}
         <Button
           type="submit"
           className="w-full"

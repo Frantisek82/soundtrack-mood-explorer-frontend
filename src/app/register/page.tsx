@@ -6,6 +6,8 @@ import Link from "next/link";
 import { registerUser } from "@/src/services/auth";
 import Button from "@/src/components/Button";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 export default function RegisterPage() {
   const router = useRouter();
 
@@ -34,8 +36,28 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
+    const name = form.name.trim();
+    const email = form.email.trim().toLowerCase();
+    const password = form.password;
+    const confirmPassword = form.confirmPassword;
+
+    if (!name || !email || !password || !confirmPassword) {
+      setError("All fields are required.");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
@@ -43,14 +65,14 @@ export default function RegisterPage() {
       setLoading(true);
 
       await registerUser({
-        name: form.name,
-        email: form.email,
-        password: form.password,
+        name,
+        email,
+        password,
       });
 
       router.push("/login");
     } catch (err: any) {
-      setError(err.message || "Registration failed");
+      setError(err.message || "Registration failed.");
     } finally {
       setLoading(false);
     }
@@ -67,7 +89,10 @@ export default function RegisterPage() {
         </h1>
 
         {error && (
-          <p role="alert" className="mb-4 text-sm text-red-400 text-center">
+          <p
+            role="alert"
+            className="mb-4 text-sm text-red-400 text-center"
+          >
             {error}
           </p>
         )}
@@ -91,7 +116,6 @@ export default function RegisterPage() {
           />
         ))}
 
-        {/* Primary action */}
         <Button
           type="submit"
           className="w-full"
