@@ -6,6 +6,8 @@ import Link from "next/link";
 import Spinner from "@/src/components/Spinner";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import Button from "@/src/components/Button";
+import SpotifyPreview from "@/src/components/SpotifyPreview";
+
 import {
   addFavorite,
   removeFavorite,
@@ -44,10 +46,6 @@ export default function SoundtrackDetailPage() {
   const [authMessage, setAuthMessage] =
     useState<string | null>(null);
 
-  // ✅ Spotify fallback state
-  const [spotifyLoaded, setSpotifyLoaded] = useState(false);
-  const [spotifyError, setSpotifyError] = useState(false);
-
   const errorRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLParagraphElement>(null);
 
@@ -56,6 +54,7 @@ export default function SoundtrackDetailPage() {
   /* =====================
      Load soundtrack
   ===================== */
+
   useEffect(() => {
     async function loadSoundtrack() {
       try {
@@ -79,23 +78,9 @@ export default function SoundtrackDetailPage() {
   }, [id]);
 
   /* =====================
-     Spotify fallback logic
-  ===================== */
-  useEffect(() => {
-    if (!soundtrack?.spotifyTrackId) return;
-
-    const timeout = setTimeout(() => {
-      if (!spotifyLoaded) {
-        setSpotifyError(true);
-      }
-    }, 4000); // wait 4 seconds
-
-    return () => clearTimeout(timeout);
-  }, [spotifyLoaded, soundtrack?.spotifyTrackId]);
-
-  /* =====================
      Focus management
   ===================== */
+
   useEffect(() => {
     if (error) {
       errorRef.current?.focus();
@@ -111,6 +96,7 @@ export default function SoundtrackDetailPage() {
   /* =====================
      Toggle favorites
   ===================== */
+
   async function toggleFavorite() {
     if (!soundtrack) return;
 
@@ -176,6 +162,7 @@ export default function SoundtrackDetailPage() {
 
   return (
     <main className="max-w-3xl mx-auto p-8 space-y-8">
+      {/* Unified card */}
       <SoundtrackCard soundtrack={soundtrack} />
 
       {/* Favorite action */}
@@ -186,7 +173,9 @@ export default function SoundtrackDetailPage() {
           variant={isFav ? "danger" : "primary"}
           aria-disabled={favLoading}
         >
-          {isFav ? "Remove from Favorites" : "Save to Favorites"}
+          {isFav
+            ? "Remove from Favorites"
+            : "Save to Favorites"}
         </Button>
 
         {authMessage && (
@@ -210,48 +199,16 @@ export default function SoundtrackDetailPage() {
         )}
       </section>
 
-      {/* Spotify preview */}
+      {/* Spotify Preview */}
       <section className="pt-6 border-t border-zinc-800">
         <h3 className="text-sm uppercase tracking-wide text-gray-400 mb-3">
           Spotify Preview
         </h3>
 
-        {soundtrack.spotifyTrackId ? (
-          <>
-            {!spotifyError && (
-              <iframe
-                src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
-                width="100%"
-                height="80"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-                className="rounded-lg border-none"
-                title={`Spotify preview for ${soundtrack.title}`}
-                onLoad={() => setSpotifyLoaded(true)}
-              />
-            )}
-
-            {spotifyError && (
-              <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-sm text-gray-400">
-                <p className="mb-2">
-                  Spotify preview is unavailable on your current network.
-                </p>
-                <a
-                  href={`https://open.spotify.com/track/${soundtrack.spotifyTrackId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white underline hover:text-gray-300 transition"
-                >
-                  Open in Spotify →
-                </a>
-              </div>
-            )}
-          </>
-        ) : (
-          <p className="text-sm text-gray-400">
-            Spotify preview is not available for this soundtrack.
-          </p>
-        )}
+        <SpotifyPreview
+          trackId={soundtrack.spotifyTrackId}
+          title={soundtrack.title}
+        />
       </section>
     </main>
   );
