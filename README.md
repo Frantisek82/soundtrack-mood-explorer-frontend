@@ -1,5 +1,6 @@
 # 🎬 Soundtrack Mood Explorer — Frontend
-Frontend application for the Soundtrack Mood Explorer project.
+
+Frontend application for the Soundtrack Mood Explorer full-stack project.
 
 This application allows users to:
 - Discover movie soundtracks
@@ -7,16 +8,23 @@ This application allows users to:
 - View detailed soundtrack information
 - Preview tracks via Spotify
 - Register & login
+- Manage profile
+- Update password
+- Delete account
 - Save favorites
 
-Built as a full-stack portfolio project.
+Built as a production-style full-stack portfolio project.
 
 ## 🚀 Features
+
 - 🎵 Browse soundtracks
 - 🔍 Dynamic soundtrack detail pages
 - ⭐ Add / remove favorites
 - 🔐 JWT-based authentication
-- 🎧 Spotify preview integration
+- 👤 Full user account management (CRUD)
+- 🗑 Account deletion with confirmation modal
+- 📧 Robust email format validation (client & server)
+- 🎧 Spotify preview integration with graceful fallback
 - ♿ Accessible UI (ARIA roles, focus management)
 - 💅 Clean responsive design (Tailwind CSS)
 
@@ -35,12 +43,14 @@ Built as a full-stack portfolio project.
 ![Login Page](docs/screenshots/login.png)
 
 ## 🛠 Tech Stack
+
 - Next.js (App Router)
 - React
 - TypeScript
 - Tailwind CSS
 - JWT Authentication
 - REST API communication
+- Node.js 20 LTS (standardized)
 
 ## 🔗 Backend Requirement
 The frontend requires the backend API to be running.
@@ -52,7 +62,7 @@ Backend must run on:
 ```
 http://localhost:3000
 ```
-The frontend runs on:
+Frontend runs on:
 ```
 http://localhost:3001
 ```
@@ -64,7 +74,7 @@ http://localhost:3000/api
 ```
 No frontend environment variables are required for local development.
 
-Earlier versions used an environment variable (`NEXT_PUBLIC_API_URL`), but this was removed to simplify configuration and avoid cross-origin inconsistencies between development environments (Linux vs Windows).
+Earlier versions used an environment variable (`NEXT_PUBLIC_API_URL`), but this was removed to simplify configuration and prevent cross-platform inconsistencies (Linux vs Windows).
 
 ## ▶️ Running the Frontend
 Install dependencies:
@@ -81,18 +91,58 @@ http://localhost:3001
 ```
 
 ## 🔐 Authentication Strategy
-Authentication is implemented using JWT stored in localStorage.
 
-- Token is saved after login.
-- Protected pages (`/favorites`, `/profile`) check authentication client-side.
-- If not authenticated, users are redirected to `/login`.
+Authentication is implemented using JWT stored in `localStorage`.
 
-A previous server-side proxy middleware was removed because it expected cookie-based authentication and conflicted with the chosen localStorage-based JWT strategy.
+- Token is saved after login
+- Protected pages (`/favorites`, `/profile`) check authentication client-side
+- If not authenticated, users are redirected to `/login`
+- Logout clears stored token
 
-For production, authentication should be migrated to secure httpOnly cookies.
+⚠️ For production, authentication should be migrated to secure httpOnly cookies.
+
+## 👤 User Account Management (Full CRUD)
+
+As of v1.3.0, the project includes complete CRUD operations for the user model:
+
+- Create – Register
+- Read – Fetch profile (`/api/user/me`)
+- Update – Change password
+- Delete – Delete account
+
+Account deletion:
+
+- Requires confirmation via reusable modal component
+- Logs user out automatically
+- Removes JWT from localStorage
+- Cascades deletion of user favorites
+
+## 📧 Email Validation
+
+Email format is validated:
+
+- Client-side (before submission)
+- Server-side (API route validation)
+
+Prevents invalid registrations such as `fran@f`.
+
+## 🎧 Spotify Preview (v1.3.1 Improvement)
+
+Spotify embed logic was extracted into a reusable `SpotifyPreview` component.
+
+Features:
+
+- Graceful fallback UI if embed fails
+- Handles unstable networks (e.g., mobile hotspot)
+- Prevents blank UI on third-party failure
+- Maintains layout and accessibility
+
+If Spotify preview cannot load, users are offered a direct link to open the track in Spotify.
 
 ## 🌱 Seeding the Database (Important for Testing)
+
 To populate demo data including Spotify previews:
+
 1. Start the backend.
 2. Open browser console.
 3. Run:
@@ -107,14 +157,7 @@ Expected response:
 ```
 This inserts demo soundtracks with valid Spotify track IDs.
 
-## 🎧 Spotify Preview
-Soundtracks may include a `spotifyTrackId`.
-
-If present, a Spotify embed player is displayed on the detail page.
-
-If not present, a fallback message is shown.
-
- ## 📁 Project Structure
+## 📁 Project Structure
  ```
 src/
  ├── app/
@@ -125,44 +168,61 @@ src/
  │    ├── login/
  │    └── register/
  ├── components/
+ │    ├── SpotifyPreview.tsx
+ │    ├── ConfirmationModal.tsx
+ │    └── ...
  ├── services/
  └── utils/
+
  ```
+
 ## 🏷 Version
 Current frontend version:
 ```
-v1.2.0
+v1.3.1
 ```
 
-### v1.2.0 Updates
-- Stabilized API configuration
-- Removed incompatible proxy middleware
-- Fixed cross-platform development issue (Linux vs Windows)
-- Enabled Spotify preview support
-- Updated documentation
-- Added clear seeding instructions
+### v1.3.1
+
+- Extracted reusable `SpotifyPreview` component
+- Added graceful network failure fallback
+- Improved third-party embed resilience
+- Synchronized lockfile after Node 20 standardization
+
+### v1.3.0
+
+- Implemented full user CRUD (Create, Read, Update, Delete)
+- Added account deletion with confirmation modal
+- Added robust email format validation
+- Improved authentication stability
 
 ## 🧠 Architecture Notes
-This project uses:
+
+This project demonstrates:
 
 - Separate frontend and backend repositories
 - REST API communication
+- JWT-based authentication
 - Client-side route protection
+- Modular component architecture
+- Resilient third-party integration
 - MongoDB via backend API
 
-Designed to demonstrate real-world full-stack development concepts.
+Designed to reflect real-world full-stack development practices.
 
 ## 🧩 Future Improvements
+
 - Server-side auth with httpOnly cookies
-- Pagination and filtering
+- Pagination & advanced filtering
 - Deployment (Vercel + MongoDB Atlas)
 - Dark/light theme toggle
-- Improved error handling
+- Rate limiting & security hardening
+- Unit testing (Jest / React Testing Library)
 
 ## 👨‍💻 Author
 
 Frantisek Babinsky
 
-Junior Full-Stack Developer  
+Junior Full-Stack Developer
 
 Built as a professional portfolio project.
