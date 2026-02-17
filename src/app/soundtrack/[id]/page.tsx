@@ -44,6 +44,10 @@ export default function SoundtrackDetailPage() {
   const [authMessage, setAuthMessage] =
     useState<string | null>(null);
 
+  // ✅ Spotify fallback state
+  const [spotifyLoaded, setSpotifyLoaded] = useState(false);
+  const [spotifyError, setSpotifyError] = useState(false);
+
   const errorRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLParagraphElement>(null);
 
@@ -73,6 +77,21 @@ export default function SoundtrackDetailPage() {
 
     loadSoundtrack();
   }, [id]);
+
+  /* =====================
+     Spotify fallback logic
+  ===================== */
+  useEffect(() => {
+    if (!soundtrack?.spotifyTrackId) return;
+
+    const timeout = setTimeout(() => {
+      if (!spotifyLoaded) {
+        setSpotifyError(true);
+      }
+    }, 4000); // wait 4 seconds
+
+    return () => clearTimeout(timeout);
+  }, [spotifyLoaded, soundtrack?.spotifyTrackId]);
 
   /* =====================
      Focus management
@@ -157,7 +176,6 @@ export default function SoundtrackDetailPage() {
 
   return (
     <main className="max-w-3xl mx-auto p-8 space-y-8">
-      {/* Unified card */}
       <SoundtrackCard soundtrack={soundtrack} />
 
       {/* Favorite action */}
@@ -171,7 +189,6 @@ export default function SoundtrackDetailPage() {
           {isFav ? "Remove from Favorites" : "Save to Favorites"}
         </Button>
 
-        {/* Auth / error message */}
         {authMessage && (
           <p
             ref={authRef}
@@ -200,21 +217,38 @@ export default function SoundtrackDetailPage() {
         </h3>
 
         {soundtrack.spotifyTrackId ? (
-          <iframe
-            src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
-            width="100%"
-            height="80"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-            className="rounded-lg border-none"
-            title={`Spotify preview for ${soundtrack.title}`}
-          />
+          <>
+            {!spotifyError && (
+              <iframe
+                src={`https://open.spotify.com/embed/track/${soundtrack.spotifyTrackId}`}
+                width="100%"
+                height="80"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                className="rounded-lg border-none"
+                title={`Spotify preview for ${soundtrack.title}`}
+                onLoad={() => setSpotifyLoaded(true)}
+              />
+            )}
+
+            {spotifyError && (
+              <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-sm text-gray-400">
+                <p className="mb-2">
+                  Spotify preview is unavailable on your current network.
+                </p>
+                <a
+                  href={`https://open.spotify.com/track/${soundtrack.spotifyTrackId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white underline hover:text-gray-300 transition"
+                >
+                  Open in Spotify →
+                </a>
+              </div>
+            )}
+          </>
         ) : (
-          <p
-            role="status"
-            aria-live="polite"
-            className="text-sm text-gray-400"
-          >
+          <p className="text-sm text-gray-400">
             Spotify preview is not available for this soundtrack.
           </p>
         )}
