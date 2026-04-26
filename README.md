@@ -1,168 +1,181 @@
 # 🎬 Soundtrack Mood Explorer — Frontend
+
 Frontend application for the Soundtrack Mood Explorer project.
 
 This application allows users to:
-- Discover movie soundtracks
-- Filter by mood
-- View detailed soundtrack information
-- Preview tracks via Spotify
-- Register & login
-- Save favorites
+
+* Discover movie soundtracks
+* Filter by mood
+* View detailed soundtrack information
+* Preview tracks via Spotify
+* Register & login
+* Save and manage favorites
 
 Built as a full-stack portfolio project.
 
+---
+
 ## 🚀 Features
-- 🎵 Browse soundtracks
-- 🔍 Dynamic soundtrack detail pages
-- ⭐ Add / remove favorites
-- 🔐 JWT-based authentication
-- 🎧 Spotify preview integration
-- ♿ Accessible UI (ARIA roles, focus management)
-- 💅 Clean responsive design (Tailwind CSS)
+
+* 🎵 Browse soundtracks
+* 🔍 Dynamic soundtrack detail pages
+* ⭐ Add / remove favorites (persistent)
+* 🔐 Secure authentication (httpOnly cookies)
+* 🎧 Spotify preview integration (with fallback)
+* ♿ Accessible UI (ARIA roles, focus management)
+* 💅 Clean responsive design (Tailwind CSS)
+
+---
+
+## 🔐 Authentication (v1.4.0)
+
+Authentication is now implemented using **httpOnly cookies**:
+
+* Token is stored securely in a cookie (not accessible via JS)
+* All requests use `credentials: "include"`
+* Protected pages validate auth via backend (`/api/user/me`)
+* Logout clears cookie server-side
+
+👉 This replaces the previous `localStorage`-based approach and aligns with production best practices.
+
+---
+
+## ⭐ Favorites System
+
+* Add soundtrack to favorites
+* Remove from favorites
+* Real-time UI updates
+* Fully persistent via backend (MongoDB)
+* Favorite status checked per soundtrack
+
+---
 
 ## 📸 Screenshots
 
 ### Explore Page
+
 ![Explore Page](docs/screenshots/explore.png)
 
-### Soundtrack Detail with Spotify Preview
+### Soundtrack Detail
+
 ![Detail Page](docs/screenshots/detail.png)
 
 ### Favorites Page
+
 ![Favorites Page](docs/screenshots/favorites.png)
 
-### Login Page
-![Login Page](docs/screenshots/login.png)
+---
 
 ## 🛠 Tech Stack
-- Next.js (App Router)
-- React
-- TypeScript
-- Tailwind CSS
-- JWT Authentication
-- REST API communication
+
+* Next.js (App Router)
+* React
+* TypeScript
+* Tailwind CSS
+* REST API communication
+
+---
 
 ## 🔗 Backend Requirement
-The frontend requires the backend API to be running.
 
-Backend repository:
-👉 `soundtrack-mood-explorer-backend`
+Backend must be running at:
 
-Backend must run on:
 ```
 http://localhost:3000
 ```
-The frontend runs on:
+
+Frontend runs at:
+
 ```
 http://localhost:3001
 ```
 
+---
+
 ## 🌍 API Configuration
-The frontend communicates directly with the backend using:
+
+Frontend communicates directly with:
+
 ```
 http://localhost:3000/api
 ```
-No frontend environment variables are required for local development.
 
-Earlier versions used an environment variable (`NEXT_PUBLIC_API_URL`), but this was removed to simplify configuration and avoid cross-origin inconsistencies between development environments (Linux vs Windows).
+All authenticated requests include:
+
+```
+credentials: "include"
+```
+
+---
 
 ## ▶️ Running the Frontend
-Install dependencies:
-```
+
+```bash
 npm install
-```
-Start development server:
-```
 npm run dev
 ```
+
 Open:
+
 ```
 http://localhost:3001
 ```
 
-## 🔐 Authentication Strategy
-Authentication is implemented using JWT stored in localStorage.
+---
 
-- Token is saved after login.
-- Protected pages (`/favorites`, `/profile`) check authentication client-side.
-- If not authenticated, users are redirected to `/login`.
+## 🌱 Seeding the Database
 
-A previous server-side proxy middleware was removed because it expected cookie-based authentication and conflicted with the chosen localStorage-based JWT strategy.
-
-For production, authentication should be migrated to secure httpOnly cookies.
-
-## 🌱 Seeding the Database (Important for Testing)
-To populate demo data including Spotify previews:
-1. Start the backend.
-2. Open browser console.
-3. Run:
-```
+```js
 fetch("http://localhost:3000/api/seed", { method: "POST" })
   .then(res => res.json())
   .then(console.log);
 ```
-Expected response:
+
+---
+
+## 📁 Project Structure
+
 ```
-{ "message": "Database seeded" }
-```
-This inserts demo soundtracks with valid Spotify track IDs.
-
-## 🎧 Spotify Preview
-Soundtracks may include a `spotifyTrackId`.
-
-If present, a Spotify embed player is displayed on the detail page.
-
-If not present, a fallback message is shown.
-
- ## 📁 Project Structure
- ```
 src/
  ├── app/
- │    ├── explore/
- │    ├── soundtrack/[id]/
- │    ├── favorites/
- │    ├── profile/
- │    ├── login/
- │    └── register/
  ├── components/
  ├── services/
  └── utils/
- ```
+```
+
+---
+
 ## 🏷 Version
-Current frontend version:
+
+Current version:
+
 ```
-v1.2.0
+v1.4.0
 ```
 
-### v1.2.0 Updates
-- Stabilized API configuration
-- Removed incompatible proxy middleware
-- Fixed cross-platform development issue (Linux vs Windows)
-- Enabled Spotify preview support
-- Updated documentation
-- Added clear seeding instructions
+### v1.4.0 Highlights
 
-## 🧠 Architecture Notes
-This project uses:
+* 🔐 Migrated to httpOnly cookie authentication
+* ⭐ Completed favorites system (add/remove/persist)
+* 🎧 Extracted reusable SpotifyPreview component
+* 🎨 Improved UI consistency
+* 🧠 Stabilized API communication
 
-- Separate frontend and backend repositories
-- REST API communication
-- Client-side route protection
-- MongoDB via backend API
-
-Designed to demonstrate real-world full-stack development concepts.
+---
 
 ## 🧩 Future Improvements
-- Server-side auth with httpOnly cookies
-- Pagination and filtering
-- Deployment (Vercel + MongoDB Atlas)
-- Dark/light theme toggle
-- Improved error handling
+
+* Deployment (Vercel + MongoDB Atlas)
+* Pagination and filtering
+* Toast notifications instead of alerts
+* Server-side rendering improvements
+* Dark/light theme toggle
+
+---
 
 ## 👨‍💻 Author
 
-Frantisek Babinsky
-
-Junior Full-Stack Developer  
+Frantisek Babinsky,
+Junior Full-Stack Developer
 
 Built as a professional portfolio project.
