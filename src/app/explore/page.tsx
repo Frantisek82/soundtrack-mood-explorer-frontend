@@ -38,7 +38,7 @@ export default function ExplorePage() {
     loadSoundtracks();
   }, []);
 
-  // 🔍 Filter by mood
+  // Filter by mood
   const filteredSoundtracks = selectedMood
     ? soundtracks.filter((s) =>
       Array.isArray(s.moods) &&
@@ -48,7 +48,7 @@ export default function ExplorePage() {
     )
     : soundtracks;
 
-  // 🎯 Focus heading after load
+  // Focus heading after load
   useEffect(() => {
     if (!loading && headingRef.current) {
       headingRef.current.focus();

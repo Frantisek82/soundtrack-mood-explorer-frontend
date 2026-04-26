@@ -10,7 +10,7 @@ import Button from "@/src/components/Button";
 export default function ProfilePage() {
   const router = useRouter();
 
-  const [mounted, setMounted] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -28,14 +28,21 @@ export default function ProfilePage() {
   const messageRef = useRef<HTMLParagraphElement>(null);
 
   /* =====================
-     Protect page
+     Protect page (ASYNC)
   ===================== */
   useEffect(() => {
-    setMounted(true);
+    async function checkAuth() {
+      const isAuth = await isAuthenticated();
 
-    if (!isAuthenticated()) {
-      router.push("/login");
+      if (!isAuth) {
+        router.push("/login");
+        return;
+      }
+
+      setAuthChecked(true);
     }
+
+    checkAuth();
   }, [router]);
 
   /* =====================
@@ -47,7 +54,16 @@ export default function ProfilePage() {
     }
   }, [message]);
 
-  if (!mounted) return null;
+  /* =====================
+     Loading guard
+  ===================== */
+  if (!authChecked) {
+    return (
+      <div className="p-12 flex justify-center">
+        Loading...
+      </div>
+    );
+  }
 
   /* =====================
      Update password
@@ -96,7 +112,7 @@ export default function ProfilePage() {
 
       await deleteAccount();
 
-      logout();
+      await logout(); // IMPORTANT
       router.push("/");
 
     } catch {
@@ -105,6 +121,14 @@ export default function ProfilePage() {
       setDeleteLoading(false);
       setShowDeleteDialog(false);
     }
+  }
+
+  /* =====================
+     Logout
+  ===================== */
+  async function handleLogout() {
+    await logout(); // IMPORTANT
+    router.push("/login");
   }
 
   /* =====================
@@ -163,11 +187,10 @@ export default function ProfilePage() {
               aria-live={
                 messageType === "error" ? "assertive" : "polite"
               }
-              className={`text-sm outline-none ${
-                messageType === "error"
+              className={`text-sm outline-none ${messageType === "error"
                   ? "text-red-400"
                   : "text-green-400"
-              }`}
+                }`}
             >
               {message}
             </p>
@@ -196,17 +219,14 @@ export default function ProfilePage() {
 
         <Button
           variant="secondary"
-          onClick={() => {
-            logout();
-            router.push("/login");
-          }}
+          onClick={handleLogout}
           className="w-full"
         >
           Logout
         </Button>
       </section>
 
-      {/* Reusable Confirm Dialog */}
+      {/* Confirm Dialog */}
       <ConfirmDialog
         open={showDeleteDialog}
         title="Delete Account"

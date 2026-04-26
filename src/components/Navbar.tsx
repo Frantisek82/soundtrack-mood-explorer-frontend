@@ -9,16 +9,25 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [mounted, setMounted] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = loading
 
+  /* =====================
+     Check auth (ASYNC)
+  ===================== */
   useEffect(() => {
-    setMounted(true);
-    setLoggedIn(isAuthenticated());
+    async function checkAuth() {
+      const isAuth = await isAuthenticated();
+      setLoggedIn(isAuth);
+    }
+
+    checkAuth();
   }, [pathname]);
 
-  function handleLogout() {
-    logout();
+  /* =====================
+     Logout
+  ===================== */
+  async function handleLogout() {
+    await logout(); // important
     setLoggedIn(false);
     router.push("/login");
   }
@@ -28,15 +37,20 @@ export default function Navbar() {
       ? "text-white font-semibold"
       : "text-gray-400 hover:text-white transition";
 
-  // ⛔ Prevent hydration mismatch
-  if (!mounted) {
-    return null;
+  /* =====================
+     Loading guard
+  ===================== */
+  if (loggedIn === null) {
+    return null; // or skeleton if you want
   }
 
   return (
     <nav className="border-b border-zinc-800 bg-black">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-xl font-semibold text-zinc-200 hover:text-white transition">
+        <Link
+          href="/"
+          className="text-xl font-semibold text-zinc-200 hover:text-white transition"
+        >
           Soundtrack Mood Explorer
         </Link>
 

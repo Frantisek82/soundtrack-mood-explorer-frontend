@@ -1,89 +1,68 @@
-import { getAuthHeaders } from "@/src/utils/auth";
+const API_URL = "http://localhost:3000/api/favorites";
 
-const API_BASE = "http://localhost:3000/api";
+/* =====================
+   Get favorites
+===================== */
 
-/**
- * Shared Soundtrack type
- */
-export type Soundtrack = {
-  _id: string;
-  title: string;
-  movie: string;
-  composer: string;
-  moods: string[];
-  spotifyTrackId?: string;
-};
-
-/**
- * Get all favorite soundtracks
- */
-export async function getFavorites(): Promise<Soundtrack[]> {
-  const res = await fetch(`${API_BASE}/favorites`, {
-    headers: getAuthHeaders(),
+export async function getFavorites() {
+  const res = await fetch(API_URL, {
+    credentials: "include",
   });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Failed to load favorites");
+    throw new Error("Failed to fetch favorites");
   }
 
   return res.json();
 }
 
-/**
- * Add soundtrack to favorites
- */
-export async function addFavorite(
-  soundtrackId: string
-): Promise<void> {
-  const res = await fetch(`${API_BASE}/favorites`, {
+/* =====================
+   Add favorite
+===================== */
+
+export async function addFavorite(soundtrackId: string) {
+  const res = await fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeaders(),
     },
+    credentials: "include",
     body: JSON.stringify({ soundtrackId }),
   });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Failed to add favorite");
+    throw new Error("Failed to add favorite");
   }
 }
 
-/**
- * Remove soundtrack from favorites
- */
-export async function removeFavorite(
-  soundtrackId: string
-): Promise<void> {
-  const res = await fetch(
-    `${API_BASE}/favorites/${soundtrackId}`,
-    {
-      method: "DELETE",
-      headers: getAuthHeaders(),
-    }
-  );
+/* =====================
+   Remove favorite
+===================== */
+
+export async function removeFavorite(trackId: string) {
+  const res = await fetch(`${API_URL}/${trackId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Failed to remove favorite");
+    throw new Error("Failed to remove favorite");
   }
 }
 
-/**
- * Check if soundtrack is favorite
- * Safe if user not logged in
- */
-export async function isFavorite(
-  soundtrackId: string
-): Promise<boolean> {
-  try {
-    const favorites = await getFavorites();
-    return favorites.some(
-      (s) => s._id === soundtrackId
-    );
-  } catch {
+/* =====================
+   Check favorite
+===================== */
+
+export async function isFavorite(trackId: string) {
+  const res = await fetch(`${API_URL}/${trackId}`, {
+    credentials: "include",
+  });
+
+  if (!res.ok) {
     return false;
   }
+
+  const data = await res.json();
+  return data.isFavorite;
 }

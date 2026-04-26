@@ -1,10 +1,12 @@
-import { getAuthHeaders } from "@/src/utils/auth";
-
 const API_URL = "http://localhost:3000/api/user/me";
+
+/* =====================
+   Get current user
+===================== */
 
 export async function getCurrentUser() {
   const res = await fetch(API_URL, {
-    headers: getAuthHeaders(),
+    credentials: "include", // cookie-based auth
   });
 
   if (!res.ok) {
@@ -14,13 +16,17 @@ export async function getCurrentUser() {
   return res.json();
 }
 
+/* =====================
+   Update password
+===================== */
+
 export async function updatePassword(password: string) {
   const res = await fetch(API_URL, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeaders(),
     },
+    credentials: "include",
     body: JSON.stringify({ password }),
   });
 
@@ -30,10 +36,14 @@ export async function updatePassword(password: string) {
   }
 }
 
+/* =====================
+   Delete account
+===================== */
+
 export async function deleteAccount() {
   const res = await fetch(API_URL, {
     method: "DELETE",
-    headers: getAuthHeaders(),
+    credentials: "include",
   });
 
   if (!res.ok) {

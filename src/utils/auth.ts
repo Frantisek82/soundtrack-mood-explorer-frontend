@@ -1,29 +1,28 @@
-/**
- * Returns Authorization headers for authenticated requests
- */
-export function getAuthHeaders(): HeadersInit {
-  if (typeof window === "undefined") return {};
+const API_URL = "http://localhost:3000/api";
 
-  const token = localStorage.getItem("token");
-  if (!token) return {};
+/* =====================
+   Check authentication (server-based)
+===================== */
 
-  return {
-    Authorization: `Bearer ${token}`,
-  };
+export async function isAuthenticated(): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/user/me`, {
+      credentials: "include",
+    });
+
+    return res.ok;
+  } catch {
+    return false;
+  }
 }
 
-/**
- * Check if the user is authenticated
- */
-export function isAuthenticated(): boolean {
-  if (typeof window === "undefined") return false;
-  return Boolean(localStorage.getItem("token"));
-}
+/* =====================
+   Logout (server-based)
+===================== */
 
-/**
- * Log the user out
- */
-export function logout(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem("token");
+export async function logout(): Promise<void> {
+  await fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
 }

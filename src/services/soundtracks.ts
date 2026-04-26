@@ -16,7 +16,9 @@ export type Soundtrack = {
  * Get all soundtracks
  */
 export async function getSoundtracks(): Promise<Soundtrack[]> {
-  const res = await fetch(`${API_BASE}/soundtracks`);
+  const res = await fetch(`${API_BASE}/soundtracks`, {
+    cache: "no-store", // always get fresh data
+  });
 
   if (!res.ok) {
     throw new Error("Failed to load soundtracks");
@@ -28,10 +30,10 @@ export async function getSoundtracks(): Promise<Soundtrack[]> {
 /**
  * Get single soundtrack by ID
  */
-export async function getSoundtrackById(
-  id: string
-): Promise<Soundtrack> {
-  const res = await fetch(`${API_BASE}/soundtracks/${id}`);
+export async function getSoundtrackById(id: string): Promise<Soundtrack> {
+  const res = await fetch(`${API_BASE}/soundtracks/${id}`, {
+    cache: "no-store", // always get fresh data
+  });
 
   if (!res.ok) {
     throw new Error("Failed to load soundtrack");

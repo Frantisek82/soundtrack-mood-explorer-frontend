@@ -46,10 +46,26 @@ export default function SoundtrackDetailPage() {
   const [authMessage, setAuthMessage] =
     useState<string | null>(null);
 
+  // NEW: auth state
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
   const errorRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLParagraphElement>(null);
 
-  const loggedIn = isAuthenticated();
+  /* =====================
+     Check authentication
+  ===================== */
+
+  useEffect(() => {
+    async function checkAuth() {
+      const isAuth = await isAuthenticated();
+      setLoggedIn(isAuth);
+      setAuthChecked(true);
+    }
+
+    checkAuth();
+  }, []);
 
   /* =====================
      Load soundtrack
@@ -131,7 +147,7 @@ export default function SoundtrackDetailPage() {
      States
   ===================== */
 
-  if (loading) {
+  if (loading || !authChecked) {
     return (
       <div
         className="p-12 flex justify-center"

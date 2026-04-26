@@ -37,7 +37,7 @@ export async function registerUser(data: RegisterData) {
 }
 
 /* =====================
-   Login
+   Login (cookie-based)
 ===================== */
 
 export async function loginUser(data: LoginData): Promise<void> {
@@ -46,6 +46,7 @@ export async function loginUser(data: LoginData): Promise<void> {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include", // VERY IMPORTANT
     body: JSON.stringify(data),
   });
 
@@ -55,14 +56,17 @@ export async function loginUser(data: LoginData): Promise<void> {
     throw new Error(result.message || "Invalid credentials");
   }
 
-  // 🔑 THIS WAS MISSING — THE CORE BUG
-  localStorage.setItem("token", result.token);
+  // No localStorage anymore
+  // Cookie is set automatically by browser
 }
 
 /* =====================
-   Logout
+   Logout (API-based)
 ===================== */
 
-export function logoutUser(): void {
-  localStorage.removeItem("token");
+export async function logoutUser(): Promise<void> {
+  await fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include", // send cookie
+  });
 }
