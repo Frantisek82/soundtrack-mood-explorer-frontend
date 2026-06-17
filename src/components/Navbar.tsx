@@ -46,15 +46,15 @@ export default function Navbar() {
 
   return (
     <nav className="border-b border-zinc-800 bg-black">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <Link
           href="/"
-          className="text-xl font-semibold text-zinc-200 hover:text-white transition"
+          className="text-lg md:text-xl font-semibold text-zinc-200 hover:text-white transition text-center"
         >
           Soundtrack Mood Explorer
         </Link>
 
-        <div className="flex gap-6 items-center">
+        <div className="flex flex-wrap justify-center md:justify-end gap-4 items-center">
           <Link href="/explore" className={linkClass("/explore")}>
             Explore
           </Link>
