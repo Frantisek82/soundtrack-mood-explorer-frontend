@@ -9,10 +9,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [loggedIn, setLoggedIn] = useState<boolean | null>(null); // null = loading
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   /* =====================
-     Check auth (ASYNC)
+  Check auth (ASYNC)
   ===================== */
   useEffect(() => {
     async function checkAuth() {
@@ -21,14 +22,16 @@ export default function Navbar() {
     }
 
     checkAuth();
+
   }, [pathname]);
 
   /* =====================
-     Logout
+  Logout
   ===================== */
   async function handleLogout() {
-    await logout(); // important
+    await logout();
     setLoggedIn(false);
+    setMenuOpen(false);
     router.push("/login");
   }
 
@@ -38,61 +41,138 @@ export default function Navbar() {
       : "text-gray-400 hover:text-white transition";
 
   /* =====================
-     Loading guard
+  Loading guard
   ===================== */
   if (loggedIn === null) {
-    return null; // or skeleton if you want
+    return null;
   }
 
   return (
     <nav className="border-b border-zinc-800 bg-black">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <Link
-          href="/"
-          className="text-lg md:text-xl font-semibold text-zinc-200 hover:text-white transition text-center"
-        >
-          Soundtrack Mood Explorer
-        </Link>
-
-        <div className="flex flex-wrap justify-center md:justify-end gap-4 items-center">
-          <Link href="/explore" className={linkClass("/explore")}>
-            Explore
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        {/* Top Bar */}
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-lg md:text-xl font-semibold text-zinc-200 hover:text-white transition" >
+            Soundtrack Mood Explorer
           </Link>
 
-          <Link href="/contact" className={linkClass("/contact")}>
-            Contact
-          </Link>
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden text-zinc-200 text-2xl"
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
 
-          {loggedIn ? (
-            <>
-              <Link href="/favorites" className={linkClass("/favorites")}>
-                Favorites
-              </Link>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex gap-6 items-center">
+            <Link href="/explore" className={linkClass("/explore")}>
+              Explore
+            </Link>
 
-              <Link href="/profile" className={linkClass("/profile")}>
-                Profile
-              </Link>
+            <Link href="/contact" className={linkClass("/contact")}>
+              Contact
+            </Link>
 
-              <button
-                onClick={handleLogout}
-                className="text-red-400 hover:text-red-300 transition"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className={linkClass("/login")}>
-                Login
-              </Link>
+            {loggedIn ? (
+              <>
+                <Link href="/favorites" className={linkClass("/favorites")}>
+                  Favorites
+                </Link>
 
-              <Link href="/register" className={linkClass("/register")}>
-                Register
-              </Link>
-            </>
-          )}
+                <Link href="/profile" className={linkClass("/profile")}>
+                  Profile
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="text-red-400 hover:text-red-300 transition"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className={linkClass("/login")}>
+                  Login
+                </Link>
+
+                <Link href="/register" className={linkClass("/register")}>
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {menuOpen && (
+          <div className="md:hidden flex flex-col gap-4 mt-4 text-center border-t border-zinc-800 pt-4">
+            <Link
+              href="/explore"
+              className={linkClass("/explore")}
+              onClick={() => setMenuOpen(false)}
+            >
+              Explore
+            </Link>
+
+            <Link
+              href="/contact"
+              className={linkClass("/contact")}
+              onClick={() => setMenuOpen(false)}
+            >
+              Contact
+            </Link>
+
+            {loggedIn ? (
+              <>
+                <Link
+                  href="/favorites"
+                  className={linkClass("/favorites")}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Favorites
+                </Link>
+
+                <Link
+                  href="/profile"
+                  className={linkClass("/profile")}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Profile
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="text-red-400 hover:text-red-300 transition"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className={linkClass("/login")}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/register"
+                  className={linkClass("/register")}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </nav>
+
   );
 }
