@@ -27,6 +27,28 @@ Built as a full-stack portfolio project.
 
 ---
 
+## 🚀 Deployment
+
+Frontend is hosted on Vercel.
+
+Backend is hosted on Vercel.
+
+Database is hosted on MongoDB Atlas.
+
+Authentication uses secure httpOnly cookies with cross-origin support.
+
+---
+
+## 🌐 Live Demo
+
+Frontend:
+https://soundtrack-mood-explorer-frontend.vercel.app
+
+Backend API:
+https://soundtrack-mood-explorer-backend.vercel.app
+
+---
+
 ## 🔐 Authentication (v1.4.0)
 
 Authentication is now implemented using **httpOnly cookies**:
@@ -78,26 +100,38 @@ Authentication is now implemented using **httpOnly cookies**:
 
 ## 🔗 Backend Requirement
 
-Backend must be running at:
+Development:
 
 ```
-http://localhost:3000
+Backend: http://localhost:3000
+```
+```
+Frontend: http://localhost:3001
 ```
 
-Frontend runs at:
+Production:
 
 ```
-http://localhost:3001
+Backend: https://soundtrack-mood-explorer-backend.vercel.app
+```
+```
+Frontend: https://soundtrack-mood-explorer-frontend.vercel.app
 ```
 
 ---
 
 ## 🌍 API Configuration
 
-Frontend communicates directly with:
+Development:
 
 ```
 http://localhost:3000/api
+```
+
+Production:
+
+```
+https://soundtrack-mood-explorer-backend.vercel.app/api
 ```
 
 All authenticated requests include:
@@ -150,25 +184,29 @@ src/
 Current version:
 
 ```
-v1.4.0
+v1.5.0
 ```
 
-### v1.4.0 Highlights
+### v1.5.0 Highlights
 
-* 🔐 Migrated to httpOnly cookie authentication
-* ⭐ Completed favorites system (add/remove/persist)
-* 🎧 Extracted reusable SpotifyPreview component
-* 🎨 Improved UI consistency
-* 🧠 Stabilized API communication
+* 🚀 Deployed frontend to Vercel
+* ☁️ Connected backend to MongoDB Atlas
+* 🔐 Production-ready httpOnly cookie authentication
+* 🌍 Environment-based API configuration
+* ⭐ Persistent favorites system
+* 🎧 Spotify preview integration
+* 🛡️ Production CORS and security improvements
 
 ---
 
 ## 🧩 Future Improvements
 
-* Deployment (Vercel + MongoDB Atlas)
+* Advanced soundtrack search
 * Pagination and filtering
 * Toast notifications instead of alerts
-* Server-side rendering improvements
+* User playlists
+* Spotify OAuth integration
+* AI-powered soundtrack recommendations
 * Dark/light theme toggle
 
 ---
