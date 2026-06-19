@@ -173,6 +173,39 @@ v1.4.0
 
 ---
 
+## Backlog
+
+### Safari Cross-Site Cookie Compatibility
+
+**Status:** Known limitation
+
+The application uses JWT authentication stored in httpOnly cookies.
+
+Authentication works correctly in Chrome and other browsers, but Safari may block authentication when **Prevent Cross-Site Tracking** is enabled because the frontend and backend are deployed on separate domains.
+
+Frontend:
+- soundtrack-mood-explorer-frontend.vercel.app
+
+Backend:
+- soundtrack-mood-explorer-backend.vercel.app
+
+#### Observed behavior
+
+- Chrome: Authentication works correctly.
+- Safari with Cross-Site Tracking disabled: Authentication works correctly.
+- Safari with Cross-Site Tracking enabled: Authentication cookie may be blocked, causing the user to appear logged out.
+
+#### Potential future solutions
+
+1. Deploy frontend and backend under the same domain.
+2. Merge frontend and backend into a single Next.js application.
+3. Use a custom domain with proper cookie configuration.
+4. Investigate alternative authentication approaches if cross-domain deployment is retained.
+
+**Priority:** Medium
+
+---
+
 ## 👨‍💻 Author
 
 Frantisek Babinsky,
