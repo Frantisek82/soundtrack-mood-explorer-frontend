@@ -4,12 +4,12 @@ Frontend application for the Soundtrack Mood Explorer project.
 
 This application allows users to:
 
-* Discover movie soundtracks
-* Filter by mood
-* View detailed soundtrack information
-* Preview tracks via Spotify
-* Register & login
-* Save and manage favorites
+- Discover movie soundtracks
+- Filter by mood
+- View detailed soundtrack information
+- Preview tracks via Spotify
+- Register & login
+- Save and manage favorites
 
 Built as a full-stack portfolio project.
 
@@ -17,13 +17,13 @@ Built as a full-stack portfolio project.
 
 ## 🚀 Features
 
-* 🎵 Browse soundtracks
-* 🔍 Dynamic soundtrack detail pages
-* ⭐ Add / remove favorites (persistent)
-* 🔐 Secure authentication (httpOnly cookies)
-* 🎧 Spotify preview integration (with fallback)
-* ♿ Accessible UI (ARIA roles, focus management)
-* 💅 Clean responsive design (Tailwind CSS)
+- 🎵 Browse soundtracks
+- 🔍 Dynamic soundtrack detail pages
+- ⭐ Add / remove favorites (persistent)
+- 🔐 Secure authentication (httpOnly cookies)
+- 🎧 Spotify preview integration (with fallback)
+- ♿ Accessible UI (ARIA roles, focus management)
+- 💅 Clean responsive design (Tailwind CSS)
 
 ---
 
@@ -53,10 +53,10 @@ https://soundtrack-mood-explorer-backend.vercel.app
 
 Authentication is now implemented using **httpOnly cookies**:
 
-* Token is stored securely in a cookie (not accessible via JS)
-* All requests use `credentials: "include"`
-* Protected pages validate auth via backend (`/api/user/me`)
-* Logout clears cookie server-side
+- Token is stored securely in a cookie (not accessible via JS)
+- All requests use `credentials: "include"`
+- Protected pages validate auth via backend (`/api/user/me`)
+- Logout clears cookie server-side
 
 👉 This replaces the previous `localStorage`-based approach and aligns with production best practices.
 
@@ -64,11 +64,11 @@ Authentication is now implemented using **httpOnly cookies**:
 
 ## ⭐ Favorites System
 
-* Add soundtrack to favorites
-* Remove from favorites
-* Real-time UI updates
-* Fully persistent via backend (MongoDB)
-* Favorite status checked per soundtrack
+- Add soundtrack to favorites
+- Remove from favorites
+- Real-time UI updates
+- Fully persistent via backend (MongoDB)
+- Favorite status checked per soundtrack
 
 ---
 
@@ -90,11 +90,11 @@ Authentication is now implemented using **httpOnly cookies**:
 
 ## 🛠 Tech Stack
 
-* Next.js (App Router)
-* React
-* TypeScript
-* Tailwind CSS
-* REST API communication
+- Next.js (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+- REST API communication
 
 ---
 
@@ -105,6 +105,7 @@ Development:
 ```
 Backend: http://localhost:3000
 ```
+
 ```
 Frontend: http://localhost:3001
 ```
@@ -114,6 +115,7 @@ Production:
 ```
 Backend: https://soundtrack-mood-explorer-backend.vercel.app
 ```
+
 ```
 Frontend: https://soundtrack-mood-explorer-frontend.vercel.app
 ```
@@ -161,7 +163,7 @@ http://localhost:3001
 
 ```js
 fetch("http://localhost:3000/api/seed", { method: "POST" })
-  .then(res => res.json())
+  .then((res) => res.json())
   .then(console.log);
 ```
 
@@ -184,63 +186,54 @@ src/
 Current version:
 
 ```
-v1.5.0
+v1.5.1
 ```
 
-### v1.5.0 Highlights
+### v1.5.1 Highlights
 
-* 🚀 Deployed frontend to Vercel
-* ☁️ Connected backend to MongoDB Atlas
-* 🔐 Production-ready httpOnly cookie authentication
-* 🌍 Environment-based API configuration
-* ⭐ Persistent favorites system
-* 🎧 Spotify preview integration
-* 🛡️ Production CORS and security improvements
+- 🚀 Deployed frontend to Vercel
+- ☁️ Connected backend to MongoDB Atlas
+- 🔐 Production-ready httpOnly cookie authentication
+- 🌍 Environment-based API configuration
+- ⭐ Persistent favorites system
+- 🎧 Spotify preview integration
+- 🛡️ Production CORS and security improvements
+- 📱 Mobile hamburger navigation
+- 📋 GitHub Issues roadmap and project backlog
+- 📖 Improved project documentation
 
 ---
 
 ## 🧩 Future Improvements
 
-* Advanced soundtrack search
-* Pagination and filtering
-* Toast notifications instead of alerts
-* User playlists
-* Spotify OAuth integration
-* AI-powered soundtrack recommendations
-* Dark/light theme toggle
+Future improvements are tracked through GitHub Issues.
+
+Examples include:
+
+- Advanced soundtrack search
+- Pagination and filtering
+- Toast notifications
+- User playlists
+- Spotify OAuth integration
+- AI-powered soundtrack recommendations
+- Dark/light theme toggle
+
+See the Issues tab for the latest roadmap and planned features.
 
 ---
 
-## Backlog
+## Roadmap
 
-### Safari Cross-Site Cookie Compatibility
+Future improvements and known limitations are tracked through GitHub Issues.
 
-**Status:** Known limitation
+Current focus areas:
 
-The application uses JWT authentication stored in httpOnly cookies.
+- Search soundtracks (#1)
+- Improved empty states (#2)
+- Profile statistics (#3)
+- Safari cookie compatibility (#4)
 
-Authentication works correctly in Chrome and other browsers, but Safari may block authentication when **Prevent Cross-Site Tracking** is enabled because the frontend and backend are deployed on separate domains.
-
-Frontend:
-- soundtrack-mood-explorer-frontend.vercel.app
-
-Backend:
-- soundtrack-mood-explorer-backend.vercel.app
-
-#### Observed behavior
-
-- Chrome: Authentication works correctly.
-- Safari with Cross-Site Tracking disabled: Authentication works correctly.
-- Safari with Cross-Site Tracking enabled: Authentication cookie may be blocked, causing the user to appear logged out.
-
-#### Potential future solutions
-
-1. Deploy frontend and backend under the same domain.
-2. Merge frontend and backend into a single Next.js application.
-3. Use a custom domain with proper cookie configuration.
-4. Investigate alternative authentication approaches if cross-domain deployment is retained.
-
-**Priority:** Medium
+See the Issues tab for the latest roadmap.
 
 ---
 
