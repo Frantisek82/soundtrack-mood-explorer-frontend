@@ -18,6 +18,7 @@ type Soundtrack = {
 export default function ExplorePage() {
   const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -38,15 +39,25 @@ export default function ExplorePage() {
     loadSoundtracks();
   }, []);
 
-  // Filter by mood
-  const filteredSoundtracks = selectedMood
-    ? soundtracks.filter((s) =>
-      Array.isArray(s.moods) &&
-      s.moods.some(
-        (m) => m.toLowerCase() === selectedMood.toLowerCase()
-      )
-    )
-    : soundtracks;
+  // Filter by search + mood
+  const filteredSoundtracks = soundtracks.filter((soundtrack) => {
+    const matchesMood =
+      !selectedMood ||
+      (Array.isArray(soundtrack.moods) &&
+        soundtrack.moods.some(
+          (m) => m.toLowerCase() === selectedMood.toLowerCase()
+        ));
+
+    const search = searchTerm.toLowerCase().trim();
+
+    const matchesSearch =
+      !search ||
+      soundtrack.title.toLowerCase().includes(search) ||
+      soundtrack.movie.toLowerCase().includes(search) ||
+      soundtrack.composer.toLowerCase().includes(search);
+
+    return matchesMood && matchesSearch;
+  });
 
   // Focus heading after load
   useEffect(() => {
@@ -91,10 +102,30 @@ export default function ExplorePage() {
         >
           Explore Soundtracks
         </h1>
+
         <p className="text-gray-400">
           Discover movie soundtracks by mood
         </p>
       </header>
+
+      {/* Search */}
+      <section className="space-y-2">
+        <label
+          htmlFor="search"
+          className="block text-lg font-medium text-gray-400"
+        >
+          Search Soundtracks
+        </label>
+
+        <input
+          id="search"
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by title, movie, or composer..."
+          className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+        />
+      </section>
 
       {/* Mood Selector Section */}
       <section className="space-y-4">
@@ -117,7 +148,9 @@ export default function ExplorePage() {
           aria-live="polite"
           className="text-center text-gray-400 mt-12"
         >
-          No soundtracks match this mood.
+          No soundtracks found.
+          <br />
+          Try a different search term or mood.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
