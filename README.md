@@ -1,6 +1,12 @@
 # 🎬 Soundtrack Mood Explorer — Frontend
 
-Frontend application for the Soundtrack Mood Explorer project.
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Version](https://img.shields.io/badge/version-v1.6.0-blue)
+
+Frontend application for the Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
 
 This application allows users to:
 
@@ -17,23 +23,22 @@ Built as a full-stack portfolio project.
 
 ## 🚀 Features
 
-- 🎵 Browse soundtracks
-- 🔍 Dynamic soundtrack detail pages
-- ⭐ Add / remove favorites (persistent)
-- 🔐 Secure authentication (httpOnly cookies)
-- 🎧 Spotify preview integration (with fallback)
-- ♿ Accessible UI (ARIA roles, focus management)
-- 💅 Clean responsive design (Tailwind CSS)
+- 🎵 Browse movie soundtracks
+- 🔍 Search by title, movie or composer
+- 🎭 Filter by mood
+- ⭐ Persistent favorites
+- 🔐 Secure authentication
+- 🎧 Spotify preview integration
+- ♿ Accessible UI
+- 📱 Responsive design
 
 ---
 
 ## 🚀 Deployment
 
-Frontend is hosted on Vercel.
-
-Backend is hosted on Vercel.
-
-Database is hosted on MongoDB Atlas.
+- Frontend: Vercel
+- Backend: Vercel
+- Database: MongoDB Atlas
 
 Authentication uses secure httpOnly cookies with cross-origin support.
 
@@ -41,11 +46,8 @@ Authentication uses secure httpOnly cookies with cross-origin support.
 
 ## 🌐 Live Demo
 
-Frontend:
-https://soundtrack-mood-explorer-frontend.vercel.app
-
-Backend API:
-https://soundtrack-mood-explorer-backend.vercel.app
+- **Frontend:** https://soundtrack-mood-explorer-frontend.vercel.app
+- **Backend API:** https://soundtrack-mood-explorer-backend.vercel.app
 
 ---
 
@@ -59,6 +61,21 @@ Authentication is now implemented using **httpOnly cookies**:
 - Logout clears cookie server-side
 
 👉 This replaces the previous `localStorage`-based approach and aligns with production best practices.
+
+---
+
+## 🌐 Browser Compatibility
+
+Tested successfully on:
+
+* Google Chrome
+* Microsoft Edge
+* Firefox
+* Safari (macOS/iOS)
+
+### Note
+
+Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-site authentication cookies. Some Safari configurations may require privacy settings to be adjusted during testing.
 
 ---
 
@@ -181,26 +198,62 @@ src/
 
 ---
 
+## 🏗 Architecture
+
+```text
+User
+  │
+  ▼
+Next.js Frontend
+  │
+  ▼
+REST API
+  │
+  ▼
+Next.js Backend
+  │
+  ▼
+MongoDB Atlas
+```
+
+---
+
 ## 🏷 Version
 
 Current version:
 
 ```
-v1.5.1
+v1.6.0
 ```
 
-### v1.5.1 Highlights
+### v1.6.0 Highlights
+
+* 🔍 Added soundtrack search (title, movie and composer)
+* 🎭 Search works together with mood filtering
+* 📱 Improved mobile search experience
+* ♿ Improved accessibility and focus management
+* ⭐ Favorites remain fully persistent
+* 🔐 Secure authentication using httpOnly cookies
+* 📖 Updated project documentation
+
+---
+
+## 📦 Release History
+
+### v1.6.0
+
+- 🔍 Added soundtrack search
+- 🎭 Combined search with mood filtering
+- 📱 Improved mobile search experience
+- 📖 Updated project documentation
+
+### v1.5.1
 
 - 🚀 Deployed frontend to Vercel
-- ☁️ Connected backend to MongoDB Atlas
-- 🔐 Production-ready httpOnly cookie authentication
-- 🌍 Environment-based API configuration
-- ⭐ Persistent favorites system
-- 🎧 Spotify preview integration
-- 🛡️ Production CORS and security improvements
-- 📱 Mobile hamburger navigation
-- 📋 GitHub Issues roadmap and project backlog
-- 📖 Improved project documentation
+- ⭐ Added persistent favorites
+- 🎧 Integrated Spotify previews
+- 📱 Implemented responsive mobile navigation
+- 📋 Introduced GitHub Issues roadmap
 
 ---
 
@@ -210,30 +263,49 @@ Future improvements are tracked through GitHub Issues.
 
 Examples include:
 
-- Advanced soundtrack search
-- Pagination and filtering
-- Toast notifications
-- User playlists
-- Spotify OAuth integration
-- AI-powered soundtrack recommendations
-- Dark/light theme toggle
+- Playlist support
+- Spotify OAuth
+- AI recommendations
+- Admin dashboard
+- Unit & integration testing
 
 See the Issues tab for the latest roadmap and planned features.
 
 ---
 
-## Roadmap
+## 🗺 Roadmap
 
-Future improvements and known limitations are tracked through GitHub Issues.
+### ✅ Completed
 
-Current focus areas:
+- User authentication
+- Favorites management
+- Responsive navigation
+- Soundtrack search
+- Mood filtering
+- Spotify preview integration
 
-- Search soundtracks (#1)
-- Improved empty states (#2)
-- Profile statistics (#3)
-- Safari cookie compatibility (#4)
+### 🚧 Planned
 
-See the Issues tab for the latest roadmap.
+- Improved empty states
+- Profile statistics
+- Improve Safari authentication compatibility
+- Advanced filtering
+- AI-powered soundtrack recommendations
+
+See the GitHub Issues tab for the latest roadmap.
+
+---
+
+## 📋 Project Management
+
+Development is managed using GitHub Issues and feature branches.
+
+- Feature requests
+- Bug reports
+- Roadmap
+- Release planning
+
+See the **Issues** tab for current work and future improvements.
 
 ---
 
