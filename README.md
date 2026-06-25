@@ -312,6 +312,6 @@ See the **Issues** tab for current work and future improvements.
 ## 👨‍💻 Author
 
 Frantisek Babinsky,
-Junior Full-Stack Developer
+Full-Stack Developer
 
 Built as a professional portfolio project.
