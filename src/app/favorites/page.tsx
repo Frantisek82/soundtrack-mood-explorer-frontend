@@ -7,6 +7,7 @@ import Link from "next/link";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import SoundtrackCardSkeleton from "@/src/components/SoundtrackCardSkeleton";
 import Button from "@/src/components/Button";
+import EmptyState from "@/src/components/EmptyState";
 
 import {
   getFavorites,
@@ -36,7 +37,7 @@ export default function FavoritesPage() {
   // NEW: track which item is being removed
   const [removingId, setRemovingId] = useState<string | null>(null);
 
-  const emptyStateRef = useRef<HTMLParagraphElement>(null);
+  const emptyStateRef = useRef<HTMLDivElement>(null);
 
   /* =====================
      Auth check
@@ -149,15 +150,14 @@ export default function FavoritesPage() {
 
       {/* Content */}
       {favorites.length === 0 ? (
-        <p
+        <EmptyState
           ref={emptyStateRef}
-          tabIndex={-1}
-          role="status"
-          aria-live="polite"
-          className="text-center text-gray-400 mt-12 outline-none"
-        >
-          You haven’t added any favorites yet.
-        </p>
+          icon="⭐"
+          title="No favorites yet"
+          description="Start exploring soundtracks and save your favorites here."
+          buttonText="Explore Soundtracks"
+          buttonHref="/explore"
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {favorites.map((soundtrack) => (
