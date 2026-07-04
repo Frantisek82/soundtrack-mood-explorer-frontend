@@ -46,6 +46,7 @@ export default function Button({
 
   return (
     <button
+      type={props.type ?? "button"}
       {...props}
       disabled={isDisabled}
       aria-disabled={isDisabled}

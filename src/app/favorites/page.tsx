@@ -34,10 +34,11 @@ export default function FavoritesPage() {
   // Auth state
   const [authChecked, setAuthChecked] = useState(false);
 
-  // NEW: track which item is being removed
+  // Track which item is being removed
   const [removingId, setRemovingId] = useState<string | null>(null);
 
   const emptyStateRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   /* =====================
      Auth check
@@ -67,8 +68,12 @@ export default function FavoritesPage() {
       try {
         const data = await getFavorites();
         setFavorites(data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load favorites");
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Failed to load favorites",
+        );
       } finally {
         setLoading(false);
       }
@@ -81,10 +86,14 @@ export default function FavoritesPage() {
      Focus empty state
   ===================== */
   useEffect(() => {
-    if (!loading && favorites.length === 0) {
+    if (loading) return;
+
+    if (favorites.length === 0) {
       emptyStateRef.current?.focus();
+    } else {
+      headingRef.current?.focus();
     }
-  }, [loading, favorites]);
+  }, [loading, favorites.length]);
 
   /* =====================
      Remove favorite
@@ -140,7 +149,11 @@ export default function FavoritesPage() {
     <main className="max-w-6xl mx-auto p-8 space-y-8">
       {/* Header */}
       <header>
-        <h1 className="text-3xl font-semibold mb-2">
+        <h1
+          ref={headingRef}
+          tabIndex={-1}
+          className="text-3xl font-semibold mb-2 focus:outline-none"
+        >
           Your Favorites
         </h1>
         <p className="text-gray-400">

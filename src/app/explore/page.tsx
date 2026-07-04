@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import SoundtrackCard from "@/src/components/SoundtrackCard";
 import SoundtrackCardSkeleton from "@/src/components/SoundtrackCardSkeleton";
 import MoodSelector from "@/src/components/MoodSelector";
+import EmptyState from "@/src/components/EmptyState";
 import { getSoundtracks } from "@/src/services/soundtracks";
 
 type Soundtrack = {
@@ -22,15 +23,17 @@ export default function ExplorePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const headingRef = useRef<HTMLHeadingElement>(null);
-
   useEffect(() => {
     async function loadSoundtracks() {
       try {
         const data = await getSoundtracks();
         setSoundtracks(data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load soundtracks");
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Failed to load soundtracks",
+        );
       } finally {
         setLoading(false);
       }
@@ -45,30 +48,32 @@ export default function ExplorePage() {
       !selectedMood ||
       (Array.isArray(soundtrack.moods) &&
         soundtrack.moods.some(
-          (m) => m.toLowerCase() === selectedMood.toLowerCase()
+          (m) => m.toLowerCase() === selectedMood.toLowerCase(),
         ));
 
-    const search = searchTerm.toLowerCase().trim();
+    const normalizedSearch = searchTerm.toLowerCase().trim();
 
     const matchesSearch =
-      !search ||
-      soundtrack.title.toLowerCase().includes(search) ||
-      soundtrack.movie.toLowerCase().includes(search) ||
-      soundtrack.composer.toLowerCase().includes(search);
+      !normalizedSearch ||
+      soundtrack.title.toLowerCase().includes(normalizedSearch) ||
+      soundtrack.movie.toLowerCase().includes(normalizedSearch) ||
+      soundtrack.composer.toLowerCase().includes(normalizedSearch);
 
     return matchesMood && matchesSearch;
   });
 
-  // Focus heading after load
-  useEffect(() => {
-    if (!loading && headingRef.current) {
-      headingRef.current.focus();
-    }
-  }, [loading]);
+  const emptyStateDescription =
+    searchTerm && selectedMood
+      ? "Try adjusting your search or choosing a different mood."
+      : searchTerm
+        ? "Try searching for another title, movie, or composer."
+        : selectedMood
+          ? "Try selecting a different mood."
+          : "No soundtracks are available yet.";
 
   if (loading) {
     return (
-      <main className="max-w-6xl mx-auto p-8">
+      <main className="max-w-6xl mx-auto p-8" aria-busy="true">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
@@ -85,7 +90,10 @@ export default function ExplorePage() {
 
   if (error) {
     return (
-      <main className="p-8 text-center text-red-400" role="alert">
+      <main
+        className="p-8 text-center text-red-400"
+        role="alert"
+      >
         {error}
       </main>
     );
@@ -95,11 +103,7 @@ export default function ExplorePage() {
     <main className="max-w-6xl mx-auto p-8 space-y-8">
       {/* Header */}
       <header>
-        <h1
-          ref={headingRef}
-          tabIndex={-1}
-          className="text-3xl font-semibold mb-2 focus:outline-none"
-        >
+        <h1 className="text-3xl font-semibold mb-2">
           Explore Soundtracks
         </h1>
 
@@ -127,7 +131,7 @@ export default function ExplorePage() {
         />
       </section>
 
-      {/* Mood Selector Section */}
+      {/* Mood Selector */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-medium text-gray-400">
@@ -143,21 +147,18 @@ export default function ExplorePage() {
 
       {/* Results */}
       {filteredSoundtracks.length === 0 ? (
-        <p
-          role="status"
-          aria-live="polite"
-          className="text-center text-gray-400 mt-12"
-        >
-          No soundtracks found.
-          <br />
-          Try a different search term or mood.
-        </p>
+        <EmptyState
+          icon="🔍"
+          title="No soundtracks found"
+          description={emptyStateDescription}
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSoundtracks.map((soundtrack) => (
             <Link
               key={soundtrack._id}
               href={`/soundtrack/${soundtrack._id}`}
+              className="block focus:outline-none focus:ring-2 focus:ring-white/60 rounded-xl"
             >
               <SoundtrackCard soundtrack={soundtrack} />
             </Link>
