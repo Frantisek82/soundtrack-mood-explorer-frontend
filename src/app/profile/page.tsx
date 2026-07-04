@@ -3,14 +3,24 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, logout } from "@/src/utils/auth";
-import { updatePassword, deleteAccount } from "@/src/services/user";
+import {
+  getCurrentUser,
+  updatePassword,
+  deleteAccount,
+  type User,
+} from "@/src/services/user";
+import { getFavorites } from "@/src/services/favorites";
 import ConfirmDialog from "@/src/components/ConfirmDialog";
 import Button from "@/src/components/Button";
+import StatCard from "@/src/components/StatCard";
 
 export default function ProfilePage() {
   const router = useRouter();
 
   const [authChecked, setAuthChecked] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [favoriteCount, setFavoriteCount] = useState(0);
+  const [favoriteMood, setFavoriteMood] = useState("—");
 
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -38,6 +48,27 @@ export default function ProfilePage() {
         router.push("/login");
         return;
       }
+
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+
+      const favorites = await getFavorites();
+      setFavoriteCount(favorites.length);
+
+      const moodCounts: Record<string, number> = {};
+
+      favorites.forEach((favorite) => {
+        favorite.moods.forEach((mood: string) => {
+          moodCounts[mood] = (moodCounts[mood] ?? 0) + 1;
+        });
+      });
+
+      const mostCommonMood =
+        Object.entries(moodCounts).sort(
+          (a, b) => b[1] - a[1],
+        )[0]?.[0] ?? "No favorites yet";
+
+      setFavoriteMood(mostCommonMood);
 
       setAuthChecked(true);
     }
@@ -95,8 +126,12 @@ export default function ProfilePage() {
 
       setMessage("Password updated successfully.");
       setMessageType("success");
-    } catch (err: any) {
-      setMessage(err.message || "Failed to update password.");
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Failed to update password.",
+      );
       setMessageType("error");
     } finally {
       setLoading(false);
@@ -131,6 +166,14 @@ export default function ProfilePage() {
     router.push("/login");
   }
 
+  const memberSince = user
+    ? new Date(user.createdAt).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    : "";
+
   /* =====================
      UI
   ===================== */
@@ -143,6 +186,27 @@ export default function ProfilePage() {
           Manage your account settings.
         </p>
       </header>
+
+      {/* Statistics */}
+      <section className="grid gap-6 mb-10 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard
+          icon="📅"
+          label="Member Since"
+          value={memberSince}
+        />
+
+        <StatCard
+          icon="⭐"
+          label="Favorites"
+          value={favoriteCount}
+        />
+
+        <StatCard
+          icon="🎭"
+          label="Favorite Mood"
+          value={favoriteMood}
+        />
+      </section>
 
       {/* Password Card */}
       <section className="bg-zinc-900 rounded-xl p-6">
@@ -188,8 +252,8 @@ export default function ProfilePage() {
                 messageType === "error" ? "assertive" : "polite"
               }
               className={`text-sm outline-none ${messageType === "error"
-                  ? "text-red-400"
-                  : "text-green-400"
+                ? "text-red-400"
+                : "text-green-400"
                 }`}
             >
               {message}

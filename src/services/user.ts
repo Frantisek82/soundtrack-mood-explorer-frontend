@@ -2,20 +2,28 @@ const API_URL = `${
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
 }/user/me`;
 
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /* =====================
    Get current user
 ===================== */
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<User> {
   const res = await fetch(API_URL, {
-    credentials: "include", // cookie-based auth
+    credentials: "include",
   });
 
   if (!res.ok) {
     throw new Error("Failed to fetch user");
   }
 
-  return res.json();
+  return (await res.json()) as User;
 }
 
 /* =====================

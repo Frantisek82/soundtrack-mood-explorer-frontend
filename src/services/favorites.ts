@@ -2,11 +2,20 @@ const API_URL = `${
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
 }/favorites`;
 
+export type Favorite = {
+  _id: string;
+  title: string;
+  movie: string;
+  composer: string;
+  moods: string[];
+  spotifyTrackId?: string;
+};
+
 /* =====================
    Get favorites
 ===================== */
 
-export async function getFavorites() {
+export async function getFavorites(): Promise<Favorite[]> {
   const res = await fetch(API_URL, {
     credentials: "include",
   });
@@ -15,7 +24,7 @@ export async function getFavorites() {
     throw new Error("Failed to fetch favorites");
   }
 
-  return res.json();
+  return (await res.json()) as Favorite[];
 }
 
 /* =====================
