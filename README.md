@@ -4,9 +4,9 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/version-v1.6.0-blue)
+![Version](https://img.shields.io/badge/version-v1.6.1-blue)
 
-Frontend application for the Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
+Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
 
 This application allows users to:
 
@@ -79,13 +79,12 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 
 ---
 
-## ⭐ Favorites System
+## ⭐ Favorites
 
-- Add soundtrack to favorites
-- Remove from favorites
+- Add and remove favorites
+- Persistent across sessions
+- Synced with MongoDB
 - Real-time UI updates
-- Fully persistent via backend (MongoDB)
-- Favorite status checked per soundtrack
 
 ---
 
@@ -112,10 +111,11 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 - TypeScript
 - Tailwind CSS
 - REST API communication
+- Vercel
 
 ---
 
-## 🔗 Backend Requirement
+## 🌍 Environment Configuration
 
 Development:
 
@@ -223,37 +223,20 @@ MongoDB Atlas
 Current version:
 
 ```
-v1.6.0
+v1.6.1
 ```
-
-### v1.6.0 Highlights
-
-* 🔍 Added soundtrack search (title, movie and composer)
-* 🎭 Search works together with mood filtering
-* 📱 Improved mobile search experience
-* ♿ Improved accessibility and focus management
-* ⭐ Favorites remain fully persistent
-* 🔐 Secure authentication using httpOnly cookies
-* 📖 Updated project documentation
 
 ---
 
-## 📦 Release History
+## ✨ Current Highlights
 
-### v1.6.0
-
-- 🔍 Added soundtrack search
-- 🎭 Combined search with mood filtering
-- 📱 Improved mobile search experience
-- 📖 Updated project documentation
-
-### v1.5.1
-
-- 🚀 Deployed frontend to Vercel
-- ⭐ Added persistent favorites
-- 🎧 Integrated Spotify previews
-- 📱 Implemented responsive mobile navigation
-- 📋 Introduced GitHub Issues roadmap
+- 🔍 Search soundtracks by title, movie, or composer
+- 🎭 Combined search and mood filtering
+- ⭐ Persistent favorites with reusable EmptyState component
+- 🔐 Secure authentication using httpOnly cookies
+- 🎧 Spotify preview integration
+- ♿ Accessible, keyboard-friendly interface
+- 📱 Responsive design for desktop and mobile
 
 ---
 
@@ -261,15 +244,16 @@ v1.6.0
 
 Future improvements are tracked through GitHub Issues.
 
-Examples include:
+Planned enhancements include:
 
-- Playlist support
-- Spotify OAuth
-- AI recommendations
-- Admin dashboard
-- Unit & integration testing
+- 👤 User profile statistics
+- 🎼 Playlist support
+- 🎵 Spotify OAuth integration
+- 🤖 AI-powered soundtrack recommendations
+- 🎛 Advanced filtering
+- 🧪 Unit and integration testing
 
-See the Issues tab for the latest roadmap and planned features.
+See the Issues tab for the latest roadmap.
 
 ---
 
@@ -283,12 +267,13 @@ See the Issues tab for the latest roadmap and planned features.
 - Soundtrack search
 - Mood filtering
 - Spotify preview integration
+- Reusable EmptyState component
+- Improved empty states
 
 ### 🚧 Planned
 
-- Improved empty states
 - Profile statistics
-- Improve Safari authentication compatibility
+- Improve Safari cross-site cookie compatibility
 - Advanced filtering
 - AI-powered soundtrack recommendations
 
