@@ -4,7 +4,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/version-v1.6.1-blue)
+![Version](https://img.shields.io/badge/version-v1.7.0-blue)
 
 Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
 
@@ -27,6 +27,7 @@ Built as a full-stack portfolio project.
 - 🔍 Search by title, movie or composer
 - 🎭 Filter by mood
 - ⭐ Persistent favorites
+- 👤 Profile statistics
 - 🔐 Secure authentication
 - 🎧 Spotify preview integration
 - ♿ Accessible UI
@@ -223,7 +224,7 @@ MongoDB Atlas
 Current version:
 
 ```
-v1.6.1
+v1.7.0
 ```
 
 ---
@@ -233,6 +234,10 @@ v1.6.1
 - 🔍 Search soundtracks by title, movie, or composer
 - 🎭 Combined search and mood filtering
 - ⭐ Persistent favorites with reusable EmptyState component
+- 👤 Profile statistics dashboard
+- 📅 Member Since information
+- 🎼 Favorite count and most common mood
+- 🧩 Reusable StatCard component
 - 🔐 Secure authentication using httpOnly cookies
 - 🎧 Spotify preview integration
 - ♿ Accessible, keyboard-friendly interface
@@ -246,7 +251,6 @@ Future improvements are tracked through GitHub Issues.
 
 Planned enhancements include:
 
-- 👤 User profile statistics
 - 🎼 Playlist support
 - 🎵 Spotify OAuth integration
 - 🤖 AI-powered soundtrack recommendations
@@ -269,13 +273,17 @@ See the Issues tab for the latest roadmap.
 - Spotify preview integration
 - Reusable EmptyState component
 - Improved empty states
+- Profile statistics
+- Reusable StatCard component
 
 ### 🚧 Planned
 
-- Profile statistics
+- Playlist support
+- Spotify OAuth integration
 - Improve Safari cross-site cookie compatibility
 - Advanced filtering
 - AI-powered soundtrack recommendations
+- Unit & integration testing
 
 See the GitHub Issues tab for the latest roadmap.
 
