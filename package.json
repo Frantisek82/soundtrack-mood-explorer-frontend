@@ -8,12 +8,12 @@
     "start": "next start, nodemon",
     "lint": "eslint"
   },
-  "engines":{
+  "engines": {
     "node": ">=20 <21"
   },
   "dependencies": {
     "cors": "^2.8.6",
-    "next": "^16.1.4",
+    "next": "^16.2.10",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },

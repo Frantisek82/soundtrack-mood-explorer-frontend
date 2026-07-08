@@ -2,13 +2,46 @@
 
 import { useState } from "react";
 import Button from "@/src/components/Button";
+import { sendContactMessage } from "@/src/services/contact";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>,
+  ) {
     e.preventDefault();
-    setSubmitted(true);
+
+    try {
+      setLoading(true);
+
+      await sendContactMessage({
+        name,
+        email,
+        subject,
+        message,
+      });
+
+      setSubmitted(true);
+
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    } catch (error) {
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to send message.",
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -26,12 +59,19 @@ export default function ContactPage() {
         {!submitted ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="contact-name" className="block text-sm mb-1">Name</label>
+              <label
+                htmlFor="contact-name"
+                className="block text-sm mb-1"
+              >
+                Name
+              </label>
               <input
                 id="contact-name"
                 type="text"
                 required
-                placeholder="Your name"
+                placeholder="John Smith"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="
     w-full px-4 py-2 rounded-lg
     bg-black border border-zinc-700
@@ -42,12 +82,19 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="contact-email" className="block text-sm mb-1">Email</label>
+              <label
+                htmlFor="contact-email"
+                className="block text-sm mb-1"
+              >
+                Email
+              </label>
               <input
                 id="contact-email"
                 type="email"
                 required
-                placeholder="Your email"
+                placeholder="john@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="
     w-full px-4 py-2 rounded-lg
     bg-black border border-zinc-700
@@ -58,12 +105,42 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="contact-message" className="block text-sm mb-1">Message</label>
+              <label
+                htmlFor="contact-subject"
+                className="block text-sm mb-1"
+              >
+                Subject
+              </label>
+
+              <input
+                id="contact-subject"
+                type="text"
+                required
+                placeholder="Project collaboration"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                className="
+    w-full px-4 py-2 rounded-lg
+    bg-black border border-zinc-700
+    text-white placeholder:text-gray-500
+    focus:outline-none focus:border-white
+  "
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="contact-message"
+                className="block text-sm mb-1"
+              >
+                Message
+              </label>
               <textarea
                 id="contact-message"
                 required
-                rows={4}
-                placeholder="Your message"
+                rows={6}
+                placeholder="Tell me about your project..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 className="
     w-full px-4 py-2 rounded-lg
     bg-black border border-zinc-700
@@ -71,23 +148,34 @@ export default function ContactPage() {
     focus:outline-none focus:border-white
     resize-none
   "
+
               />
             </div>
 
             {/* Primary action */}
-            <Button type="submit">
-              Send message
+            <Button
+              type="submit"
+              loading={loading}
+              disabled={loading}
+              className="w-full"
+            >
+              Send Message
             </Button>
           </form>
         ) : (
-          <p
+          <div
             role="status"
             aria-live="polite"
-            className="text-center text-gray-300"
+            className="space-y-2 text-center"
           >
-            Thanks for your message!
-            I’ll get back to you as soon as possible.
-          </p>
+            <p className="text-lg font-semibold text-white">
+              Message sent!
+            </p>
+
+            <p className="text-gray-400">
+              Thank you for getting in touch. I'll reply as soon as possible.
+            </p>
+          </div>
         )}
       </section>
     </main>
