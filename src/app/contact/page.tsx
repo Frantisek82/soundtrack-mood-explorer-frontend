@@ -169,11 +169,11 @@ export default function ContactPage() {
             className="space-y-2 text-center"
           >
             <p className="text-lg font-semibold text-white">
-              Message sent!
+              Message sent successfully!
             </p>
 
             <p className="text-gray-400">
-              Thank you for getting in touch. I'll reply as soon as possible.
+              Thank you for your message. I've received it and will get back to you as soon as possible.
             </p>
           </div>
         )}
