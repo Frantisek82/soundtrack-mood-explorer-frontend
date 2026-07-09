@@ -73,9 +73,7 @@ Authentication is now implemented using **httpOnly cookies**:
 Tested successfully on:
 
 * Google Chrome
-* Microsoft Edge
-* Firefox
-* Safari (macOS/iOS)
+* Safari iOS
 
 ### Note
 
