@@ -4,7 +4,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/version-v1.7.0-blue)
+![Version](https://img.shields.io/badge/version-v1.8.0-blue)
 
 Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
 
@@ -14,8 +14,10 @@ This application allows users to:
 - Filter by mood
 - View detailed soundtrack information
 - Preview tracks via Spotify
-- Register & login
+- Register & login securely
 - Save and manage favorites
+- View personal profile statistics
+- Contact the developer through a built-in contact form
 
 Built as a full-stack portfolio project.
 
@@ -28,6 +30,7 @@ Built as a full-stack portfolio project.
 - 🎭 Filter by mood
 - ⭐ Persistent favorites
 - 👤 Profile statistics
+- 📬 Contact form with email delivery
 - 🔐 Secure authentication
 - 🎧 Spotify preview integration
 - ♿ Accessible UI
@@ -102,6 +105,14 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 ### Favorites Page
 
 ![Favorites Page](docs/screenshots/favorites.png)
+
+### Profile Page
+
+![Profile Page](docs/screenshots/profile.png)
+
+### Contact Page
+
+![Contact Page](docs/screenshots/contact.png)
 
 ---
 
@@ -224,7 +235,7 @@ MongoDB Atlas
 Current version:
 
 ```
-v1.7.0
+v1.8.0
 ```
 
 ---
@@ -235,6 +246,7 @@ v1.7.0
 - 🎭 Combined search and mood filtering
 - ⭐ Persistent favorites with reusable EmptyState component
 - 👤 Profile statistics dashboard
+- 📬 Functional contact form with email delivery
 - 📅 Member Since information
 - 🎼 Favorite count and most common mood
 - 🧩 Reusable StatCard component
@@ -275,6 +287,8 @@ See the Issues tab for the latest roadmap.
 - Improved empty states
 - Profile statistics
 - Reusable StatCard component
+- Contact form
+- Email delivery
 
 ### 🚧 Planned
 
