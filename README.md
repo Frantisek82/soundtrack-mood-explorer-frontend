@@ -4,7 +4,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/version-v1.8.0-blue)
+![Version](https://img.shields.io/badge/version-v1.8.1-blue)
 
 Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
 
@@ -35,6 +35,7 @@ Built as a full-stack portfolio project.
 - 🎧 Spotify preview integration
 - ♿ Accessible UI
 - 📱 Responsive design
+- 🎨 Consistent Heroicons throughout the UI
 
 ---
 
@@ -43,6 +44,7 @@ Built as a full-stack portfolio project.
 - Frontend: Vercel
 - Backend: Vercel
 - Database: MongoDB Atlas
+- Email: Resend
 
 Authentication uses secure httpOnly cookies with cross-origin support.
 
@@ -123,7 +125,9 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 - React
 - TypeScript
 - Tailwind CSS
+- Heroicons
 - REST API communication
+- Resend
 - Vercel
 
 ---
@@ -236,7 +240,7 @@ MongoDB Atlas
 Current version:
 
 ```
-v1.8.0
+v1.8.1
 ```
 
 ---
@@ -245,7 +249,7 @@ v1.8.0
 
 - 🔍 Search soundtracks by title, movie, or composer
 - 🎭 Combined search and mood filtering
-- ⭐ Persistent favorites with reusable EmptyState component
+- ⭐ Persistent favorites synchronized with MongoDB
 - 👤 Profile statistics dashboard
 - 📬 Functional contact form with email delivery
 - 📅 Member Since information
@@ -255,6 +259,7 @@ v1.8.0
 - 🎧 Spotify preview integration
 - ♿ Accessible, keyboard-friendly interface
 - 📱 Responsive design for desktop and mobile
+- 🎨 Consistent Heroicons across reusable UI components
 
 ---
 
@@ -270,7 +275,7 @@ Planned enhancements include:
 - 🎛 Advanced filtering
 - 🧪 Unit and integration testing
 
-See the Issues tab for the latest roadmap.
+See the GitHub Issues and Milestones for the latest roadmap and planned releases.
 
 ---
 
@@ -290,6 +295,7 @@ See the Issues tab for the latest roadmap.
 - Reusable StatCard component
 - Contact form
 - Email delivery
+- Heroicons integration
 
 ### 🚧 Planned
 
