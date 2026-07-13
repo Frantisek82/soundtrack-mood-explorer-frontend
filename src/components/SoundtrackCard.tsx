@@ -15,7 +15,21 @@ type Props = {
 
 export default function SoundtrackCard({ soundtrack, href }: Props) {
   const CardContent = (
-    <div className="bg-zinc-900 rounded-xl p-5 transition hover:bg-zinc-800">
+    <div
+      className="
+    rounded-xl
+    border border-zinc-700
+    bg-zinc-900
+    p-5
+    shadow-sm
+    transition-all
+    duration-200
+    ease-in-out
+    hover:-translate-y-1
+    hover:bg-zinc-800
+    hover:shadow-md
+  "
+    >
       {/* Title */}
       <h3 className="text-lg text-white font-semibold mb-1">
         {soundtrack.title}

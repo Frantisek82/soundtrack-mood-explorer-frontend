@@ -159,7 +159,7 @@ export default function ExplorePage() {
             <Link
               key={soundtrack._id}
               href={`/soundtrack/${soundtrack._id}`}
-              className="block focus:outline-none focus:ring-2 focus:ring-white/60 rounded-xl"
+              className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             >
               <SoundtrackCard soundtrack={soundtrack} />
             </Link>
