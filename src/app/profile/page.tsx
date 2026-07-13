@@ -193,7 +193,10 @@ export default function ProfilePage() {
       </header>
 
       {/* Statistics */}
-      <section className="grid gap-6 mb-10 sm:grid-cols-2 lg:grid-cols-3">
+      <section
+        aria-label="Profile statistics"
+        className="grid gap-6 mb-10 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <StatCard
           icon={CalendarDaysIcon}
           label="Member Since"

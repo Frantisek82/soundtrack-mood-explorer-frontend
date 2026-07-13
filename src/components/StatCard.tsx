@@ -14,8 +14,8 @@ export default function StatCard({
   const Icon = icon;
 
   return (
-    <section
-      aria-label={label}
+    <article
+      aria-labelledby={`${label}-title`}
       className="
         rounded-xl
         border border-zinc-700
@@ -30,13 +30,16 @@ export default function StatCard({
         aria-hidden="true"
       />
 
-      <p className="text-sm text-gray-400">
+      <p
+        id={`${label}-title`}
+        className="text-sm text-gray-400"
+      >
         {label}
       </p>
 
       <p className="mt-2 text-2xl font-semibold text-white">
         {value}
       </p>
-    </section>
+    </article>
   );
 }
