@@ -7,6 +7,7 @@ import SoundtrackCardSkeleton from "@/src/components/SoundtrackCardSkeleton";
 import MoodSelector from "@/src/components/MoodSelector";
 import EmptyState from "@/src/components/EmptyState";
 import { getSoundtracks } from "@/src/services/soundtracks";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 type Soundtrack = {
   _id: string;
@@ -148,7 +149,7 @@ export default function ExplorePage() {
       {/* Results */}
       {filteredSoundtracks.length === 0 ? (
         <EmptyState
-          icon="🔍"
+          icon={MagnifyingGlassIcon}
           title="No soundtracks found"
           description={emptyStateDescription}
         />

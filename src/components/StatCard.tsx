@@ -1,5 +1,7 @@
+import type { ComponentType, SVGProps } from "react";
+
 type StatCardProps = {
-  icon: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   label: string;
   value: string | number;
 };
@@ -9,6 +11,8 @@ export default function StatCard({
   label,
   value,
 }: StatCardProps) {
+  const Icon = icon;
+
   return (
     <section
       aria-label={label}
@@ -21,12 +25,10 @@ export default function StatCard({
         shadow-sm
       "
     >
-      <div
-        className="text-4xl mb-3"
+      <Icon
+        className="mx-auto mb-3 h-12 w-12 text-zinc-200"
         aria-hidden="true"
-      >
-        {icon}
-      </div>
+      />
 
       <p className="text-sm text-gray-400">
         {label}

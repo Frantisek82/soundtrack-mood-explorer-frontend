@@ -8,7 +8,7 @@ import SoundtrackCard from "@/src/components/SoundtrackCard";
 import SoundtrackCardSkeleton from "@/src/components/SoundtrackCardSkeleton";
 import Button from "@/src/components/Button";
 import EmptyState from "@/src/components/EmptyState";
-
+import { StarIcon } from "@heroicons/react/24/outline";
 import {
   getFavorites,
   removeFavorite,
@@ -165,7 +165,7 @@ export default function FavoritesPage() {
       {favorites.length === 0 ? (
         <EmptyState
           ref={emptyStateRef}
-          icon="⭐"
+          icon={StarIcon}
           title="No favorites yet"
           description="Start exploring soundtracks and save your favorites here."
           buttonText="Explore Soundtracks"

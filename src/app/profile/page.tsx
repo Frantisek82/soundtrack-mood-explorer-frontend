@@ -13,6 +13,11 @@ import { getFavorites } from "@/src/services/favorites";
 import ConfirmDialog from "@/src/components/ConfirmDialog";
 import Button from "@/src/components/Button";
 import StatCard from "@/src/components/StatCard";
+import {
+  CalendarDaysIcon,
+  StarIcon,
+  FaceSmileIcon,
+} from "@heroicons/react/24/outline";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -190,20 +195,20 @@ export default function ProfilePage() {
       {/* Statistics */}
       <section className="grid gap-6 mb-10 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
-          icon="📅"
+          icon={CalendarDaysIcon}
           label="Member Since"
           value={memberSince}
         />
 
         <StatCard
-          icon="⭐"
-          label="Favorites"
+          icon={StarIcon}
+          label="Favorite Count"
           value={favoriteCount}
         />
 
         <StatCard
-          icon="🎭"
-          label="Favorite Mood"
+          icon={FaceSmileIcon}
+          label="Most Common Mood"
           value={favoriteMood}
         />
       </section>

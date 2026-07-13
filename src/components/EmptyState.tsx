@@ -1,10 +1,14 @@
-import { forwardRef } from "react";
+import {
+  forwardRef,
+  type ComponentType,
+  type SVGProps,
+} from "react";
 import Link from "next/link";
 
 import Button from "./Button";
 
 type EmptyStateProps = {
-  icon?: string;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
   title: string;
   description: string;
   buttonText?: string;
@@ -14,7 +18,7 @@ type EmptyStateProps = {
 const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
   (
     {
-      icon = "📭",
+      icon: Icon,
       title,
       description,
       buttonText,
@@ -29,7 +33,12 @@ const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
       aria-live="polite"
       className="flex flex-col items-center justify-center text-center py-16 px-4 outline-none"
     >
-      <div className="text-5xl mb-4">{icon}</div>
+      {Icon && (
+        <Icon
+          className="mb-4 h-16 w-16 text-zinc-300"
+          aria-hidden="true"
+        />
+      )}
 
       <h2 className="text-2xl font-semibold text-white mb-2">
         {title}
