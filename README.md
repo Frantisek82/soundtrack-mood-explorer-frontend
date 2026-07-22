@@ -128,6 +128,8 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 - TypeScript
 - Tailwind CSS
 - Heroicons
+- Jest
+- React Testing Library
 - REST API communication
 - Resend
 - Vercel
@@ -192,6 +194,26 @@ Open:
 ```
 http://localhost:3001
 ```
+
+---
+
+## 🧪 Testing
+
+This project uses **Jest** and **React Testing Library** for frontend unit testing.
+
+Run the test suite:
+
+```bash
+npm test
+```
+
+Run the test suite with code coverage:
+
+```bash
+npm run test:coverage
+```
+
+The current test suite includes reusable UI components, with additional tests for services, utilities, and integration scenarios planned for future releases.
 
 ---
 
@@ -265,6 +287,7 @@ v1.9.0
 - ✨ Refined soundtrack card hover animations
 - ⏳ Improved skeleton loading experience
 - ♿ Enhanced accessibility for profile statistics
+- 🧪 Automated component testing with Jest and React Testing Library
 
 ---
 
@@ -278,7 +301,7 @@ Planned enhancements include:
 - 🎵 Spotify OAuth integration
 - 🤖 AI-powered soundtrack recommendations
 - 🎛 Advanced filtering
-- 🧪 Unit and integration testing
+- 🧪 Expand automated testing (services, utilities, and integration tests)
 
 See the GitHub Issues and Milestones for the latest roadmap, planned features, and upcoming releases.
 
@@ -304,6 +327,8 @@ See the GitHub Issues and Milestones for the latest roadmap, planned features, a
 - Improved card animations
 - Enhanced loading skeletons
 - Improved statistics accessibility
+- Frontend testing infrastructure
+- Component unit testing
 
 ### 🚧 Planned
 
@@ -312,7 +337,8 @@ See the GitHub Issues and Milestones for the latest roadmap, planned features, a
 - Improve Safari cross-site cookie compatibility
 - Advanced filtering
 - AI-powered soundtrack recommendations
-- Unit & integration testing
+- Service and utility tests
+- Integration testing
 
 See the GitHub Issues tab for the latest roadmap.
 
