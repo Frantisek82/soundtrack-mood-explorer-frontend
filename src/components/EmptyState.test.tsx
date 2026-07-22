@@ -31,4 +31,22 @@ describe("EmptyState", () => {
       screen.queryByRole("link")
     ).not.toBeInTheDocument();
   });
+
+  it("renders an action link when buttonText and buttonHref are provided", () => {
+    render(
+      <EmptyState
+        title="No results"
+        description="Try another search."
+        buttonText="Go home"
+        buttonHref="/"
+      />
+    );
+
+    const link = screen.getByRole("link", {
+      name: /go home/i,
+    });
+
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/");
+  });
 });
