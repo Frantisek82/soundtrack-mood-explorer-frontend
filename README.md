@@ -5,6 +5,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Version](https://img.shields.io/badge/version-v1.9.0-blue)
+[![Frontend CI](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml)
 
 Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
 
@@ -19,7 +20,7 @@ This application allows users to:
 - View personal profile statistics
 - Contact the developer through a built-in contact form
 
-Built as a modern full-stack portfolio project showcasing secure authentication, responsive UI design, accessibility, and REST API integration..
+Built as a modern full-stack portfolio project showcasing secure authentication, responsive UI design, accessibility, and REST API integration.
 
 ---
 
@@ -213,7 +214,27 @@ Run the test suite with code coverage:
 npm run test:coverage
 ```
 
-The current test suite includes reusable UI components, with additional tests for services, utilities, and integration scenarios planned for future releases.
+The automated test suite currently covers:
+
+- Reusable UI components
+- Shared service modules
+- Utility functions
+
+Continuous Integration is configured with **GitHub Actions**, which automatically runs the test suite and verifies the production build on every push and pull request.
+
+---
+
+## 🔄 Continuous Integration
+
+This project uses **GitHub Actions** for Continuous Integration.
+
+On every push and pull request, the workflow automatically:
+
+- Installs project dependencies using `npm ci`
+- Runs the complete Jest test suite
+- Builds the production application with `npm run build`
+
+This helps ensure that all changes are validated before being merged.
 
 ---
 
@@ -287,7 +308,8 @@ v1.9.0
 - ✨ Refined soundtrack card hover animations
 - ⏳ Improved skeleton loading experience
 - ♿ Enhanced accessibility for profile statistics
-- 🧪 Automated component testing with Jest and React Testing Library
+- 🧪 Automated unit testing for components, services, and utilities
+- ✅ Continuous Integration with GitHub Actions
 
 ---
 
@@ -301,7 +323,7 @@ Planned enhancements include:
 - 🎵 Spotify OAuth integration
 - 🤖 AI-powered soundtrack recommendations
 - 🎛 Advanced filtering
-- 🧪 Expand automated testing (services, utilities, and integration tests)
+- 🧪 Expand integration and end-to-end testing
 
 See the GitHub Issues and Milestones for the latest roadmap, planned features, and upcoming releases.
 
@@ -329,6 +351,8 @@ See the GitHub Issues and Milestones for the latest roadmap, planned features, a
 - Improved statistics accessibility
 - Frontend testing infrastructure
 - Component unit testing
+- Service and utility unit testing
+- Continuous Integration with GitHub Actions
 
 ### 🚧 Planned
 
@@ -337,7 +361,6 @@ See the GitHub Issues and Milestones for the latest roadmap, planned features, a
 - Improve Safari cross-site cookie compatibility
 - Advanced filtering
 - AI-powered soundtrack recommendations
-- Service and utility tests
 - Integration testing
 
 See the GitHub Issues tab for the latest roadmap.
