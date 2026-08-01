@@ -4,7 +4,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/version-v1.9.0-blue)
+![Version](https://img.shields.io/badge/version-v2.0.0-blue)
 [![Frontend CI](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml)
 
 Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
@@ -131,6 +131,7 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 - Heroicons
 - Jest
 - React Testing Library
+- GitHub Actions
 - REST API communication
 - Resend
 - Vercel
@@ -214,7 +215,7 @@ Run the test suite with code coverage:
 npm run test:coverage
 ```
 
-The automated test suite currently covers:
+The automated test suite currently includes:
 
 - Reusable UI components
 - Shared service modules
@@ -285,7 +286,7 @@ MongoDB Atlas
 Current version:
 
 ```
-v1.9.0
+v2.0.0
 ```
 
 ---
@@ -310,6 +311,7 @@ v1.9.0
 - ♿ Enhanced accessibility for profile statistics
 - 🧪 Automated unit testing for components, services, and utilities
 - ✅ Continuous Integration with GitHub Actions
+- 🚀 Automated production build verification
 
 ---
 
@@ -351,7 +353,7 @@ See the GitHub Issues and Milestones for the latest roadmap, planned features, a
 - Improved statistics accessibility
 - Frontend testing infrastructure
 - Component unit testing
-- Service and utility unit testing
+- Shared service and utility unit testing
 - Continuous Integration with GitHub Actions
 
 ### 🚧 Planned
