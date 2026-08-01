@@ -29,16 +29,10 @@ export default function Navbar() {
   Logout
   ===================== */
   async function handleLogout() {
-    console.log("Logout clicked");
-
     await logout();
-
-    console.log("Logout request completed");
 
     setLoggedIn(false);
     setMenuOpen(false);
-
-    console.log("Setting loggedIn=false");
 
     router.push("/login");
   }
