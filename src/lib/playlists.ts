@@ -34,6 +34,29 @@ export async function createPlaylist(data: {
   return response.json();
 }
 
+export async function updatePlaylist(
+  id: string,
+  data: {
+    name: string;
+    description?: string;
+  },
+): Promise<Playlist> {
+  const response = await fetch(`${API_URL}/playlists/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update playlist");
+  }
+
+  return response.json();
+}
+
 export async function deletePlaylist(id: string): Promise<void> {
   const response = await fetch(`${API_URL}/playlists/${id}`, {
     method: "DELETE",
