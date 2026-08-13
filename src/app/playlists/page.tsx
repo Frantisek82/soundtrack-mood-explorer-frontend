@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
 
 import Spinner from "@/src/components/Spinner";
 import EmptyState from "@/src/components/EmptyState";
+import PlaylistCard from "@/src/components/PlaylistCard";
+import ConfirmDialog from "@/src/components/ConfirmDialog";
+import PlaylistForm from "@/src/components/PlaylistForm";
 
-import { getPlaylists, createPlaylist } from "@/src/lib/playlists";
+import {
+  getPlaylists,
+  createPlaylist,
+  deletePlaylist,
+} from "@/src/lib/playlists";
 import { Playlist } from "@/src/types/playlist";
 
 export default function PlaylistsPage() {
@@ -16,6 +23,14 @@ export default function PlaylistsPage() {
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [createError, setCreateError] = useState("");
+
+  const [playlistToDelete, setPlaylistToDelete] = useState<Playlist | null>(
+    null,
+  );
+
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
     async function loadPlaylists() {
@@ -35,11 +50,14 @@ export default function PlaylistsPage() {
     loadPlaylists();
   }, []);
 
-  async function handleCreatePlaylist() {
+  async function handleCreatePlaylist(e?: FormEvent<HTMLFormElement>) {
+    e?.preventDefault();
+
     if (!newName.trim()) return;
 
     try {
       setSubmitting(true);
+      setCreateError("");
 
       const playlist = await createPlaylist({
         name: newName.trim(),
@@ -50,13 +68,89 @@ export default function PlaylistsPage() {
 
       setNewName("");
       setNewDescription("");
+      setCreateError("");
       setShowForm(false);
     } catch {
-      alert("Failed to create playlist");
+      setCreateError("Failed to create playlist. Please try again.");
     } finally {
       setSubmitting(false);
     }
   }
+
+  function handleDeletePlaylist(id: string) {
+    const playlist = playlists.find((p) => p._id === id);
+
+    if (playlist) {
+      setDeleteError("");
+      setPlaylistToDelete(playlist);
+    }
+  }
+
+  async function confirmDeletePlaylist() {
+    if (!playlistToDelete) return;
+
+    try {
+      setDeleting(true);
+
+      await deletePlaylist(playlistToDelete._id);
+
+      setPlaylists((prev) =>
+        prev.filter((p) => p._id !== playlistToDelete._id),
+      );
+
+      setDeleteError("");
+      setPlaylistToDelete(null);
+    } catch {
+      setDeleteError("Failed to delete playlist. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  function handleDescriptionKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleCreatePlaylist();
+    }
+  }
+
+  function toggleCreateForm() {
+    setCreateError("");
+
+    if (showForm) {
+      setNewName("");
+      setNewDescription("");
+    }
+
+    setShowForm((prev) => !prev);
+  }
+
+  const header = (
+    <div className="mb-8 flex items-center justify-between">
+      <h1 className="text-4xl font-bold">My Playlists</h1>
+
+      <button
+        type="button"
+        onClick={toggleCreateForm}
+        className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+      >
+        {showForm ? "Cancel" : "New Playlist"}
+      </button>
+    </div>
+  );
+
+  const playlistForm = (
+    <PlaylistForm
+      name={newName}
+      description={newDescription}
+      onNameChange={setNewName}
+      onDescriptionChange={setNewDescription}
+      onSubmit={handleCreatePlaylist}
+      onDescriptionKeyDown={handleDescriptionKeyDown}
+      submitting={submitting}
+      error={createError}
+    />
+  );
 
   if (loading) {
     return (
@@ -77,59 +171,9 @@ export default function PlaylistsPage() {
   if (playlists.length === 0) {
     return (
       <main className="mx-auto max-w-4xl px-4 py-10">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-4xl font-bold">My Playlists</h1>
+        {header}
 
-          <button
-            onClick={() => setShowForm((prev) => !prev)}
-            className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500"
-          >
-            {showForm ? "Cancel" : "New Playlist"}
-          </button>
-        </div>
-
-        {showForm && (
-          <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-            <div className="space-y-4">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-300">
-                  Playlist name
-                </label>
-
-                <input
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="My favorite soundtracks"
-                  className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-300">
-                  Description
-                </label>
-
-                <textarea
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                  placeholder="Optional description"
-                  rows={3}
-                  className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
-                />
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  onClick={handleCreatePlaylist}
-                  disabled={submitting || !newName.trim()}
-                  className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {submitting ? "Creating..." : "Create Playlist"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {showForm && playlistForm}
 
         <EmptyState
           title="No playlists yet"
@@ -141,78 +185,38 @@ export default function PlaylistsPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-4xl font-bold">My Playlists</h1>
+      {header}
 
-        <button
-          onClick={() => setShowForm((prev) => !prev)}
-          className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500"
-        >
-          {showForm ? "Cancel" : "New Playlist"}
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-          <div className="space-y-4">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-300">
-                Playlist name
-              </label>
-
-              <input
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="My favorite soundtracks"
-                className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-300">
-                Description
-              </label>
-
-              <textarea
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)}
-                placeholder="Optional description"
-                rows={3}
-                className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
-              />
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                onClick={handleCreatePlaylist}
-                disabled={submitting || !newName.trim()}
-                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {submitting ? "Creating..." : "Create Playlist"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {showForm && playlistForm}
 
       <div className="grid gap-4">
         {playlists.map((playlist) => (
-          <div
+          <PlaylistCard
             key={playlist._id}
-            className="rounded-lg border border-gray-700 bg-gray-800 p-5"
-          >
-            <h2 className="text-xl font-semibold">{playlist.name}</h2>
-
-            {playlist.description && (
-              <p className="mt-2 text-gray-300">{playlist.description}</p>
-            )}
-
-            <p className="mt-4 text-sm text-gray-400">
-              {playlist.soundtracks.length} soundtracks
-            </p>
-          </div>
+            playlist={playlist}
+            onDelete={handleDeletePlaylist}
+          />
         ))}
       </div>
+
+      <ConfirmDialog
+        open={playlistToDelete !== null}
+        title="Delete playlist"
+        description={
+          playlistToDelete
+            ? `Are you sure you want to delete "${playlistToDelete.name}"? This action cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        loading={deleting}
+        error={deleteError}
+        onConfirm={confirmDeletePlaylist}
+        onCancel={() => {
+          setDeleteError("");
+          setPlaylistToDelete(null);
+        }}
+      />
     </main>
   );
 }

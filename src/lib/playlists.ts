@@ -33,3 +33,14 @@ export async function createPlaylist(data: {
 
   return response.json();
 }
+
+export async function deletePlaylist(id: string): Promise<void> {
+  const response = await fetch(`${API_URL}/playlists/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete playlist");
+  }
+}

@@ -10,6 +10,7 @@ type ConfirmDialogProps = {
   confirmLabel?: string;
   cancelLabel?: string;
   loading?: boolean;
+  error?: string;
   onConfirm: () => void;
   onCancel: () => void;
 };
@@ -21,6 +22,7 @@ export default function ConfirmDialog({
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   loading = false,
+  error,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -58,6 +60,8 @@ export default function ConfirmDialog({
       onClick={onCancel}
       aria-modal="true"
       role="dialog"
+      aria-labelledby="confirm-dialog-title"
+      aria-describedby="confirm-dialog-description"
     >
       <div
         ref={dialogRef}
@@ -65,25 +69,39 @@ export default function ConfirmDialog({
         className="bg-zinc-900 rounded-xl p-6 w-full max-w-md border border-zinc-800 outline-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl font-semibold mb-3 text-red-400">
+        <h2
+          id="confirm-dialog-title"
+          className="text-xl font-semibold mb-3 text-red-400"
+        >
           {title}
         </h2>
 
-        <p className="text-gray-300 text-sm mb-6">
+        <p
+          id="confirm-dialog-description"
+          className="text-gray-300 text-sm mb-6"
+        >
           {description}
         </p>
 
-        <div className="flex justify-end gap-3">
-          <Button
-            variant="secondary"
-            onClick={onCancel}
+        {error && (
+          <p
+            role="alert"
+            className="mb-4 rounded-lg border border-red-900 bg-red-950/50 px-3 py-2 text-sm text-red-300"
           >
+            {error}
+          </p>
+        )}
+
+        <div className="flex justify-end gap-3">
+          <Button type="button" variant="secondary" onClick={onCancel}>
             {cancelLabel}
           </Button>
 
           <Button
+            type="button"
             variant="danger"
             loading={loading}
+            loadingText={`${confirmLabel}...`}
             onClick={onConfirm}
           >
             {confirmLabel}

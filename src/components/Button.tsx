@@ -8,12 +8,14 @@ type ButtonVariant = "primary" | "secondary" | "danger";
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   loading?: boolean;
+  loadingText?: string;
 };
 
 export default function Button({
   children,
   variant = "primary",
   loading = false,
+  loadingText = "Loading",
   disabled,
   className = "",
   ...props
@@ -34,8 +36,7 @@ export default function Button({
   `;
 
   const variants: Record<ButtonVariant, string> = {
-    primary:
-      "bg-zinc-900 border border-zinc-700 text-white hover:bg-zinc-800",
+    primary: "bg-zinc-900 border border-zinc-700 text-white hover:bg-zinc-800",
 
     secondary:
       "bg-zinc-800 border border-zinc-600 text-gray-200 hover:bg-zinc-700",
@@ -46,8 +47,8 @@ export default function Button({
 
   return (
     <button
-      type={props.type ?? "button"}
       {...props}
+      type={props.type ?? "button"}
       disabled={isDisabled}
       aria-disabled={isDisabled}
       className={`${baseStyles} ${variants[variant]} ${className}`}
@@ -55,7 +56,7 @@ export default function Button({
       {loading ? (
         <span className="flex items-center justify-center gap-2">
           <Spinner size="sm" />
-          <span>Loading</span>
+          <span>{loadingText}</span>
         </span>
       ) : (
         children
