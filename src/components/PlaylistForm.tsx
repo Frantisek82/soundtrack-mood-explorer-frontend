@@ -9,6 +9,9 @@ type PlaylistFormProps = {
   onDescriptionKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   submitting: boolean;
   error?: string;
+  submitLabel?: string;
+  cancelLabel?: string;
+  onCancel?: () => void;
 };
 
 export default function PlaylistForm({
@@ -20,6 +23,9 @@ export default function PlaylistForm({
   onDescriptionKeyDown,
   submitting,
   error,
+  submitLabel = "Create Playlist",
+  cancelLabel = "Cancel",
+  onCancel,
 }: PlaylistFormProps) {
   return (
     <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
@@ -61,13 +67,24 @@ export default function PlaylistForm({
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-3">
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={submitting}
+              className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-gray-200 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {cancelLabel}
+            </button>
+          )}
+
           <button
             type="submit"
             disabled={submitting || !name.trim()}
             className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {submitting ? "Creating..." : "Create Playlist"}
+            {submitting ? "Saving..." : submitLabel}
           </button>
         </div>
       </form>

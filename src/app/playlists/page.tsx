@@ -11,6 +11,7 @@ import PlaylistForm from "@/src/components/PlaylistForm";
 import {
   getPlaylists,
   createPlaylist,
+  updatePlaylist,
   deletePlaylist,
 } from "@/src/lib/playlists";
 import { Playlist } from "@/src/types/playlist";
@@ -75,6 +76,22 @@ export default function PlaylistsPage() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function handleUpdatePlaylist(
+    id: string,
+    data: {
+      name: string;
+      description: string;
+    },
+  ) {
+    const updatedPlaylist = await updatePlaylist(id, data);
+
+    setPlaylists((prev) =>
+      prev.map((playlist) =>
+        playlist._id === updatedPlaylist._id ? updatedPlaylist : playlist,
+      ),
+    );
   }
 
   function handleDeletePlaylist(id: string) {
@@ -195,6 +212,7 @@ export default function PlaylistsPage() {
             key={playlist._id}
             playlist={playlist}
             onDelete={handleDeletePlaylist}
+            onUpdate={handleUpdatePlaylist}
           />
         ))}
       </div>
