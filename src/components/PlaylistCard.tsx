@@ -28,6 +28,8 @@ export default function PlaylistCard({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  const soundtrackCount = playlist.soundtracks.length;
+
   function startEditing() {
     setName(playlist.name);
     setDescription(playlist.description ?? "");
@@ -122,7 +124,7 @@ export default function PlaylistCard({
       </div>
 
       <p className="mt-4 text-sm text-gray-400">
-        {playlist.soundtracks.length} soundtracks
+        {soundtrackCount} {soundtrackCount === 1 ? "soundtrack" : "soundtracks"}
       </p>
     </div>
   );
