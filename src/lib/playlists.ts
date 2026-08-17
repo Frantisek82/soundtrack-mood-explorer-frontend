@@ -14,6 +14,18 @@ export async function getPlaylists(): Promise<Playlist[]> {
   return response.json();
 }
 
+export async function getPlaylist(id: string): Promise<Playlist> {
+  const response = await fetch(`${API_URL}/playlists/${id}`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch playlist");
+  }
+
+  return response.json();
+}
+
 export async function createPlaylist(data: {
   name: string;
   description?: string;

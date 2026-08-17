@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent, type KeyboardEvent } from "react";
 
 import PlaylistForm from "@/src/components/PlaylistForm";
@@ -105,6 +106,13 @@ export default function PlaylistCard({
         </div>
 
         <div className="flex gap-2">
+          <Link
+            href={`/playlists/${playlist._id}`}
+            className="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1 text-sm text-gray-200 transition hover:bg-zinc-700"
+          >
+            Open
+          </Link>
+
           <button
             type="button"
             onClick={startEditing}
