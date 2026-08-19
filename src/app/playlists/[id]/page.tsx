@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 import Spinner from "@/src/components/Spinner";
 
-import { getPlaylist } from "@/src/lib/playlists";
+import { getPlaylist, removeSoundtrackFromPlaylist } from "@/src/lib/playlists";
 import type { Playlist } from "@/src/types/playlist";
 import type { Soundtrack } from "@/src/types/soundtrack";
 
@@ -14,6 +14,8 @@ export default function PlaylistPage() {
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const [removeError, setRemoveError] = useState("");
 
   useEffect(() => {
     async function loadPlaylist() {
@@ -24,6 +26,7 @@ export default function PlaylistPage() {
         const data = await getPlaylist(params.id);
 
         setPlaylist(data);
+        setRemoveError("");
       } catch {
         setError("Failed to load playlist.");
       } finally {
@@ -61,6 +64,27 @@ export default function PlaylistPage() {
   const hasUnpopulatedSoundtracks =
     soundtrackCount > 0 && soundtracks.length === 0;
 
+  async function handleRemoveSoundtrack(soundtrackId: string) {
+    if (!playlist) return;
+
+    try {
+      setRemovingId(soundtrackId);
+      setRemoveError("");
+
+      const updatedPlaylist = await removeSoundtrackFromPlaylist(
+        playlist._id,
+        soundtrackId,
+      );
+
+      setPlaylist(updatedPlaylist);
+      setRemoveError("");
+    } catch {
+      setRemoveError("Failed to remove soundtrack. Please try again.");
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
       <h1 className="text-4xl font-bold">{playlist.name}</h1>
@@ -89,6 +113,15 @@ export default function PlaylistPage() {
         </p>
       )}
 
+      {removeError && (
+        <p
+          role="alert"
+          className="mt-4 rounded-lg border border-red-900 bg-red-950/50 px-4 py-3 text-sm text-red-300"
+        >
+          {removeError}
+        </p>
+      )}
+
       {soundtracks.length > 0 && (
         <div className="mt-8 space-y-4">
           <h2 className="text-2xl font-semibold">Soundtracks</h2>
@@ -99,13 +132,30 @@ export default function PlaylistPage() {
                 key={soundtrack._id}
                 className="rounded-lg border border-zinc-800 bg-zinc-900 p-4"
               >
-                <h3 className="text-lg font-semibold">{soundtrack.title}</h3>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">
+                      {soundtrack.title}
+                    </h3>
 
-                <p className="mt-1 text-sm text-gray-300">{soundtrack.movie}</p>
+                    <p className="mt-1 text-sm text-gray-300">
+                      {soundtrack.movie}
+                    </p>
 
-                <p className="mt-1 text-sm text-gray-400">
-                  {soundtrack.composer}
-                </p>
+                    <p className="mt-1 text-sm text-gray-400">
+                      {soundtrack.composer}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSoundtrack(soundtrack._id)}
+                    disabled={removingId === soundtrack._id}
+                    className="rounded-md border border-red-900 bg-red-950 px-3 py-1 text-sm text-red-300 transition hover:bg-red-900/50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {removingId === soundtrack._id ? "Removing..." : "Remove"}
+                  </button>
+                </div>
 
                 {soundtrack.moods.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
