@@ -98,3 +98,30 @@ export async function removeSoundtrackFromPlaylist(
 
   return response.json();
 }
+
+export async function addSoundtrackToPlaylist(
+  playlistId: string,
+  soundtrackId: string,
+): Promise<Playlist> {
+  const response = await fetch(
+    `${API_URL}/playlists/${playlistId}/soundtracks`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ soundtrackId }),
+    },
+  );
+
+  if (!response.ok) {
+    if (response.status === 409) {
+      throw new Error("Soundtrack is already in this playlist.");
+    }
+
+    throw new Error("Failed to add soundtrack to playlist.");
+  }
+
+  return response.json();
+}
