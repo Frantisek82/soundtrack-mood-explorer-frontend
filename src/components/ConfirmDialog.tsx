@@ -106,7 +106,7 @@ export default function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
       onClick={() => {
         if (!loading) onCancel();
       }}
@@ -118,7 +118,7 @@ export default function ConfirmDialog({
         aria-labelledby="confirm-dialog-title"
         aria-describedby="confirm-dialog-description"
         tabIndex={-1}
-        className="w-full max-w-md rounded-xl border border-zinc-800 bg-zinc-900 p-6 outline-none"
+        className="max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900 p-4 outline-none sm:p-6"
         onClick={(event) => event.stopPropagation()}
       >
         <h2
@@ -144,11 +144,12 @@ export default function ConfirmDialog({
           </p>
         )}
 
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
           <Button
             type="button"
             variant="secondary"
             disabled={loading}
+            className="min-h-11 w-full sm:w-auto"
             onClick={onCancel}
           >
             {cancelLabel}
@@ -159,6 +160,7 @@ export default function ConfirmDialog({
             variant="danger"
             loading={loading}
             loadingText={`${confirmLabel}...`}
+            className="min-h-11 w-full sm:w-auto"
             onClick={onConfirm}
           >
             {confirmLabel}
