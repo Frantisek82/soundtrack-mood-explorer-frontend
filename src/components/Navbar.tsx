@@ -22,7 +22,6 @@ export default function Navbar() {
     }
 
     checkAuth();
-
   }, [pathname]);
 
   /* =====================
@@ -54,7 +53,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Top Bar */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-lg md:text-xl font-semibold text-zinc-200 hover:text-white transition" >
+          <Link
+            href="/"
+            className="text-lg md:text-xl font-semibold text-zinc-200 hover:text-white transition"
+          >
             Soundtrack Mood Explorer
           </Link>
 
@@ -73,18 +75,22 @@ export default function Navbar() {
               Explore
             </Link>
 
-            <Link href="/contact" className={linkClass("/contact")}>
-              Contact
-            </Link>
-
             {loggedIn ? (
               <>
                 <Link href="/favorites" className={linkClass("/favorites")}>
                   Favorites
                 </Link>
 
+                <Link href="/playlists" className={linkClass("/playlists")}>
+                  Playlists
+                </Link>
+
                 <Link href="/profile" className={linkClass("/profile")}>
                   Profile
+                </Link>
+
+                <Link href="/contact" className={linkClass("/contact")}>
+                  Contact
                 </Link>
 
                 <button
@@ -96,6 +102,10 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                <Link href="/contact" className={linkClass("/contact")}>
+                  Contact
+                </Link>
+
                 <Link href="/login" className={linkClass("/login")}>
                   Login
                 </Link>
@@ -119,14 +129,6 @@ export default function Navbar() {
               Explore
             </Link>
 
-            <Link
-              href="/contact"
-              className={linkClass("/contact")}
-              onClick={() => setMenuOpen(false)}
-            >
-              Contact
-            </Link>
-
             {loggedIn ? (
               <>
                 <Link
@@ -138,11 +140,27 @@ export default function Navbar() {
                 </Link>
 
                 <Link
+                  href="/playlists"
+                  className={linkClass("/playlists")}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Playlists
+                </Link>
+
+                <Link
                   href="/profile"
                   className={linkClass("/profile")}
                   onClick={() => setMenuOpen(false)}
                 >
                   Profile
+                </Link>
+
+                <Link
+                  href="/contact"
+                  className={linkClass("/contact")}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Contact
                 </Link>
 
                 <button
@@ -154,6 +172,14 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                <Link
+                  href="/contact"
+                  className={linkClass("/contact")}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+
                 <Link
                   href="/login"
                   className={linkClass("/login")}
@@ -175,6 +201,5 @@ export default function Navbar() {
         )}
       </div>
     </nav>
-
   );
 }

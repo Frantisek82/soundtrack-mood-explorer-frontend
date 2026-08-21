@@ -4,25 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import SoundtrackCard from "@/src/components/SoundtrackCard";
 import SoundtrackCardSkeleton from "@/src/components/SoundtrackCardSkeleton";
 import Button from "@/src/components/Button";
 import EmptyState from "@/src/components/EmptyState";
 import { StarIcon } from "@heroicons/react/24/outline";
-import {
-  getFavorites,
-  removeFavorite,
-} from "@/src/services/favorites";
+import { getFavorites, removeFavorite } from "@/src/services/favorites";
 import { isAuthenticated } from "@/src/utils/auth";
-
-type Soundtrack = {
-  _id: string;
-  title: string;
-  movie: string;
-  composer: string;
-  moods: string[];
-  spotifyTrackId?: string;
-};
+import type { Soundtrack } from "@/src/types/soundtrack";
+import SpotifyPreview from "@/src/components/SpotifyPreview";
 
 export default function FavoritesPage() {
   const router = useRouter();
@@ -30,6 +19,7 @@ export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<Soundtrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [removeError, setRemoveError] = useState("");
 
   // Auth state
   const [authChecked, setAuthChecked] = useState(false);
@@ -70,9 +60,7 @@ export default function FavoritesPage() {
         setFavorites(data);
       } catch (error) {
         setError(
-          error instanceof Error
-            ? error.message
-            : "Failed to load favorites",
+          error instanceof Error ? error.message : "Failed to load favorites",
         );
       } finally {
         setLoading(false);
@@ -101,14 +89,14 @@ export default function FavoritesPage() {
   async function handleRemove(id: string) {
     try {
       setRemovingId(id);
+      setRemoveError("");
 
       await removeFavorite(id);
 
-      setFavorites((prev) =>
-        prev.filter((s) => s._id !== id)
-      );
+      setFavorites((prev) => prev.filter((s) => s._id !== id));
+      setRemoveError("");
     } catch {
-      alert("Failed to remove favorite");
+      setRemoveError("Failed to remove favorite. Please try again.");
     } finally {
       setRemovingId(null);
     }
@@ -156,10 +144,17 @@ export default function FavoritesPage() {
         >
           Your Favorites
         </h1>
-        <p className="text-gray-400">
-          Soundtracks you’ve saved for later
-        </p>
+        <p className="text-gray-400">Soundtracks you’ve saved for later</p>
       </header>
+
+      {removeError && (
+        <p
+          role="alert"
+          className="rounded-lg border border-red-900 bg-red-950/50 px-4 py-3 text-sm text-red-300"
+        >
+          {removeError}
+        </p>
+      )}
 
       {/* Content */}
       {favorites.length === 0 ? (
@@ -172,26 +167,62 @@ export default function FavoritesPage() {
           buttonHref="/explore"
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-4">
           {favorites.map((soundtrack) => (
-            <div key={soundtrack._id} className="space-y-3">
-              <Link
-                href={`/soundtrack/${soundtrack._id}`}
-                className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-              >
-                <SoundtrackCard soundtrack={soundtrack} />
-              </Link>
+            <div
+              key={soundtrack._id}
+              className="rounded-lg border border-zinc-800 bg-zinc-900 p-4"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <Link
+                  href={`/soundtrack/${soundtrack._id}`}
+                  className="min-w-0 flex-1 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                >
+                  <div>
+                    <h2 className="text-lg font-semibold">
+                      {soundtrack.title}
+                    </h2>
 
-              {/* Styled remove button */}
-              <div className="flex justify-end">
+                    <p className="mt-1 text-sm text-gray-300">
+                      {soundtrack.movie}
+                    </p>
+
+                    <p className="mt-1 text-sm text-gray-400">
+                      {soundtrack.composer}
+                    </p>
+
+                    {soundtrack.moods.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {soundtrack.moods.map((mood) => (
+                          <span
+                            key={mood}
+                            className="rounded-full border border-zinc-700 px-2 py-1 text-xs text-gray-300"
+                          >
+                            {mood}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+
                 <Button
                   variant="danger"
                   loading={removingId === soundtrack._id}
                   onClick={() => handleRemove(soundtrack._id)}
                 >
-                  Remove from Favorites
+                  Remove
                 </Button>
               </div>
+
+              {soundtrack.spotifyTrackId && (
+                <div className="mt-4 border-t border-zinc-800 pt-4">
+                  <SpotifyPreview
+                    trackId={soundtrack.spotifyTrackId}
+                    title={soundtrack.title}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
