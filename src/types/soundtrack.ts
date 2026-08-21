@@ -4,4 +4,5 @@ export interface Soundtrack {
   movie: string;
   composer: string;
   moods: string[];
+  spotifyTrackId?: string;
 }
