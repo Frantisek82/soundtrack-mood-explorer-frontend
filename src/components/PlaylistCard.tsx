@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, type FormEvent, type KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 
 import PlaylistForm from "@/src/components/PlaylistForm";
 import type { Playlist } from "@/src/types/playlist";
@@ -30,6 +31,12 @@ export default function PlaylistCard({
   const [error, setError] = useState("");
 
   const soundtrackCount = playlist.soundtracks.length;
+
+  const router = useRouter();
+
+  function openPlaylist() {
+    router.push(`/playlists/${playlist._id}`);
+  }
 
   function startEditing() {
     setName(playlist.name);
@@ -95,7 +102,18 @@ export default function PlaylistCard({
   }
 
   return (
-    <div className="rounded-lg border border-gray-700 bg-gray-800 p-5">
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={openPlaylist}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openPlaylist();
+        }
+      }}
+      className="cursor-pointer rounded-lg border border-gray-700 bg-gray-800 p-5 transition hover:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+    >
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold">{playlist.name}</h2>
@@ -108,6 +126,7 @@ export default function PlaylistCard({
         <div className="flex gap-2">
           <Link
             href={`/playlists/${playlist._id}`}
+            onClick={(e) => e.stopPropagation()}
             className="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1 text-sm text-gray-200 transition hover:bg-zinc-700"
           >
             Open
@@ -115,7 +134,10 @@ export default function PlaylistCard({
 
           <button
             type="button"
-            onClick={startEditing}
+            onClick={(e) => {
+              e.stopPropagation();
+              startEditing();
+            }}
             className="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1 text-sm text-gray-200 transition hover:bg-zinc-700"
           >
             Edit
@@ -123,7 +145,10 @@ export default function PlaylistCard({
 
           <button
             type="button"
-            onClick={() => onDelete(playlist._id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(playlist._id);
+            }}
             className="rounded-md border border-red-900 bg-red-950 px-3 py-1 text-sm text-red-300 transition hover:bg-red-900/50"
           >
             Delete
