@@ -3,9 +3,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
+import { MusicalNoteIcon } from "@heroicons/react/24/outline";
+
 import Spinner from "@/src/components/Spinner";
+import Button from "@/src/components/Button";
+import SpotifyPreview from "@/src/components/SpotifyPreview";
+import EmptyState from "@/src/components/EmptyState";
 
 import { getPlaylist, removeSoundtrackFromPlaylist } from "@/src/lib/playlists";
+
 import type { Playlist } from "@/src/types/playlist";
 import type { Soundtrack } from "@/src/types/soundtrack";
 
@@ -47,7 +53,7 @@ export default function PlaylistPage() {
 
   if (error || !playlist) {
     return (
-      <main className="mx-auto max-w-4xl px-4 py-10">
+      <main className="mx-auto max-w-6xl p-8 space-y-8">
         <p className="text-center text-red-500">
           {error || "Playlist not found."}
         </p>
@@ -86,27 +92,34 @@ export default function PlaylistPage() {
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-4xl font-bold">{playlist.name}</h1>
+    <main className="mx-auto max-w-6xl p-8 space-y-8">
+      <div className="max-w-4xl">
+        <h1 className="text-4xl font-bold">{playlist.name}</h1>
 
-      {playlist.description && (
-        <p className="mt-3 text-gray-300">{playlist.description}</p>
-      )}
+        {playlist.description && (
+          <p className="mt-3 text-gray-300">{playlist.description}</p>
+        )}
 
-      <p className="mt-4 text-sm text-gray-400">
-        {soundtrackCount} {soundtrackCount === 1 ? "soundtrack" : "soundtracks"}
-      </p>
+        <p className="mt-4 text-sm text-gray-400">
+          {soundtrackCount}{" "}
+          {soundtrackCount === 1 ? "soundtrack" : "soundtracks"}
+        </p>
+      </div>
 
       {soundtrackCount === 0 && (
-        <p className="mt-4 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-gray-300">
-          This playlist has no soundtracks yet.
-        </p>
+        <EmptyState
+          icon={MusicalNoteIcon}
+          title="No soundtracks yet"
+          description="Explore soundtracks and add them to this playlist."
+          buttonText="Explore Soundtracks"
+          buttonHref="/explore"
+        />
       )}
 
       {hasUnpopulatedSoundtracks && (
         <p
           role="status"
-          className="mt-4 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-gray-300"
+          className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-gray-300"
         >
           Soundtrack details are temporarily unavailable. Please try refreshing
           the page.
@@ -116,14 +129,14 @@ export default function PlaylistPage() {
       {removeError && (
         <p
           role="alert"
-          className="mt-4 rounded-lg border border-red-900 bg-red-950/50 px-4 py-3 text-sm text-red-300"
+          className="rounded-lg border border-red-900 bg-red-950/50 px-4 py-3 text-sm text-red-300"
         >
           {removeError}
         </p>
       )}
 
       {soundtracks.length > 0 && (
-        <div className="mt-8 space-y-4">
+        <div className="space-y-4">
           <h2 className="text-2xl font-semibold">Soundtracks</h2>
 
           <div className="grid gap-4">
@@ -147,14 +160,13 @@ export default function PlaylistPage() {
                     </p>
                   </div>
 
-                  <button
-                    type="button"
+                  <Button
+                    variant="danger"
+                    loading={removingId === soundtrack._id}
                     onClick={() => handleRemoveSoundtrack(soundtrack._id)}
-                    disabled={removingId === soundtrack._id}
-                    className="rounded-md border border-red-900 bg-red-950 px-3 py-1 text-sm text-red-300 transition hover:bg-red-900/50 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {removingId === soundtrack._id ? "Removing..." : "Remove"}
-                  </button>
+                    Remove
+                  </Button>
                 </div>
 
                 {soundtrack.moods.length > 0 && (
@@ -167,6 +179,15 @@ export default function PlaylistPage() {
                         {mood}
                       </span>
                     ))}
+                  </div>
+                )}
+
+                {soundtrack.spotifyTrackId && (
+                  <div className="mt-4 border-t border-zinc-800 pt-4">
+                    <SpotifyPreview
+                      trackId={soundtrack.spotifyTrackId}
+                      title={soundtrack.title}
+                    />
                   </div>
                 )}
               </div>
