@@ -95,9 +95,9 @@ export default function PlaylistCard({
   }
 
   return (
-    <article className="rounded-lg border border-gray-700 bg-gray-800 p-5 transition hover:border-zinc-500">
-      <div className="flex items-start justify-between gap-4">
-        <div>
+    <article className="rounded-lg border border-gray-700 bg-gray-800 p-4 transition hover:border-zinc-500 sm:p-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
           <h2 className="text-xl font-semibold">{playlist.name}</h2>
 
           {playlist.description && (
@@ -105,11 +105,11 @@ export default function PlaylistCard({
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:flex-nowrap">
           <Link
             href={`/playlists/${playlist._id}`}
             aria-label={`Open playlist ${playlist.name}`}
-            className="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1 text-sm text-gray-200 transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1 text-sm text-gray-200 transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 sm:flex-none"
           >
             Open
           </Link>
@@ -118,7 +118,7 @@ export default function PlaylistCard({
             type="button"
             aria-label={`Edit playlist ${playlist.name}`}
             onClick={startEditing}
-            className="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1 text-sm text-gray-200 transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1 text-sm text-gray-200 transition hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 sm:flex-none"
           >
             Edit
           </button>
@@ -127,7 +127,7 @@ export default function PlaylistCard({
             type="button"
             aria-label={`Delete playlist ${playlist.name}`}
             onClick={() => onDelete(playlist._id)}
-            className="rounded-md border border-red-900 bg-red-950 px-3 py-1 text-sm text-red-300 transition hover:bg-red-900/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+            className="inline-flex min-h-11 flex-1 items-center justify-center rounded-md border border-red-900 bg-red-950 px-3 py-1 text-sm text-red-300 transition hover:bg-red-900/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 sm:flex-none"
           >
             Delete
           </button>
