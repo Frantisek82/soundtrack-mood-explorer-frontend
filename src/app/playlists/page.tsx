@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import Spinner from "@/src/components/Spinner";
 import EmptyState from "@/src/components/EmptyState";
@@ -124,13 +124,6 @@ export default function PlaylistsPage() {
     }
   }
 
-  function handleDescriptionKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleCreatePlaylist();
-    }
-  }
-
   function toggleCreateForm() {
     setCreateError("");
 
@@ -163,7 +156,6 @@ export default function PlaylistsPage() {
       onNameChange={setNewName}
       onDescriptionChange={setNewDescription}
       onSubmit={handleCreatePlaylist}
-      onDescriptionKeyDown={handleDescriptionKeyDown}
       submitting={submitting}
       error={createError}
     />

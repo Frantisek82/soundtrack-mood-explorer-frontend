@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent, type KeyboardEvent } from "react";
+import { useState, type FormEvent } from "react";
 
 import PlaylistForm from "@/src/components/PlaylistForm";
 import type { Playlist } from "@/src/types/playlist";
@@ -67,13 +67,6 @@ export default function PlaylistCard({
     }
   }
 
-  function handleDescriptionKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  }
-
   if (editing) {
     return (
       <div className="rounded-lg border border-gray-700 bg-gray-800 p-5">
@@ -83,7 +76,6 @@ export default function PlaylistCard({
           onNameChange={setName}
           onDescriptionChange={setDescription}
           onSubmit={handleSubmit}
-          onDescriptionKeyDown={handleDescriptionKeyDown}
           submitting={submitting}
           error={error}
           submitLabel="Save Changes"

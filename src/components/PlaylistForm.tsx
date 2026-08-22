@@ -1,12 +1,13 @@
 "use client";
 
+import { useId } from "react";
+
 type PlaylistFormProps = {
   name: string;
   description: string;
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSubmit: (e?: React.FormEvent<HTMLFormElement>) => void;
-  onDescriptionKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   submitting: boolean;
   error?: string;
   submitLabel?: string;
@@ -20,17 +21,20 @@ export default function PlaylistForm({
   onNameChange,
   onDescriptionChange,
   onSubmit,
-  onDescriptionKeyDown,
   submitting,
   error,
   submitLabel = "Create Playlist",
   cancelLabel = "Cancel",
   onCancel,
 }: PlaylistFormProps) {
+  const nameId = useId();
+  const descriptionId = useId();
+  const errorId = useId();
   return (
     <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
       {error && (
         <p
+          id={errorId}
           role="alert"
           className="mb-4 rounded-lg border border-red-900 bg-red-950/50 px-3 py-2 text-sm text-red-300"
         >
@@ -38,13 +42,22 @@ export default function PlaylistForm({
         </p>
       )}
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form
+        onSubmit={onSubmit}
+        aria-describedby={error ? errorId : undefined}
+        className="space-y-4"
+      >
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-300">
+          <label
+            htmlFor={nameId}
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
             Playlist name
           </label>
 
           <input
+            id={nameId}
+            required
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             placeholder="My favorite soundtracks"
@@ -53,14 +66,17 @@ export default function PlaylistForm({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-300">
-            Description
+          <label
+            htmlFor={descriptionId}
+            className="mb-2 block text-sm font-medium text-gray-300"
+          >
+            Description (optional)
           </label>
 
           <textarea
+            id={descriptionId}
             value={description}
             onChange={(e) => onDescriptionChange(e.target.value)}
-            onKeyDown={onDescriptionKeyDown}
             placeholder="Optional description"
             rows={3}
             className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-zinc-500"
