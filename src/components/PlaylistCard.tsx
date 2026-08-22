@@ -69,7 +69,7 @@ export default function PlaylistCard({
 
   if (editing) {
     return (
-      <div className="rounded-lg border border-gray-700 bg-gray-800 p-5">
+      <div className="rounded-lg border border-gray-700 bg-gray-800 p-4 sm:p-5">
         <PlaylistForm
           name={name}
           description={description}

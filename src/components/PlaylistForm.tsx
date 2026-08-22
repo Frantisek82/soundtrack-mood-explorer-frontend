@@ -83,13 +83,13 @@ export default function PlaylistForm({
           />
         </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
               disabled={submitting}
-              className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-gray-200 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-11 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-gray-200 transition hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               {cancelLabel}
             </button>
@@ -98,7 +98,7 @@ export default function PlaylistForm({
           <button
             type="submit"
             disabled={submitting || !name.trim()}
-            className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-11 w-full rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {submitting ? "Saving..." : submitLabel}
           </button>
