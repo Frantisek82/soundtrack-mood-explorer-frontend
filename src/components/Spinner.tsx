@@ -3,11 +3,13 @@
 type SpinnerProps = {
   size?: "sm" | "md" | "lg";
   className?: string;
+  label?: string;
 };
 
 export default function Spinner({
   size = "md",
   className = "",
+  label = "Loading",
 }: SpinnerProps) {
   const sizes = {
     sm: "h-4 w-4 border-2",
@@ -19,7 +21,7 @@ export default function Spinner({
     <div
       role="status"
       aria-live="polite"
-      aria-label="Loading"
+      aria-label={label}
       className={`
         inline-block
         animate-spin

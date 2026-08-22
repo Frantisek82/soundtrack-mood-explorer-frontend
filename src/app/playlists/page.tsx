@@ -141,6 +141,8 @@ export default function PlaylistsPage() {
 
       <button
         type="button"
+        aria-expanded={showForm}
+        aria-controls="new-playlist-form"
         onClick={toggleCreateForm}
         className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500"
       >
@@ -150,21 +152,23 @@ export default function PlaylistsPage() {
   );
 
   const playlistForm = (
-    <PlaylistForm
-      name={newName}
-      description={newDescription}
-      onNameChange={setNewName}
-      onDescriptionChange={setNewDescription}
-      onSubmit={handleCreatePlaylist}
-      submitting={submitting}
-      error={createError}
-    />
+    <div id="new-playlist-form">
+      <PlaylistForm
+        name={newName}
+        description={newDescription}
+        onNameChange={setNewName}
+        onDescriptionChange={setNewDescription}
+        onSubmit={handleCreatePlaylist}
+        submitting={submitting}
+        error={createError}
+      />
+    </div>
   );
 
   if (loading) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center">
-        <Spinner />
+        <Spinner label="Loading playlists" />
       </main>
     );
   }
@@ -172,7 +176,9 @@ export default function PlaylistsPage() {
   if (error) {
     return (
       <main className="mx-auto max-w-4xl px-4 py-10">
-        <p className="text-center text-red-500">{error}</p>
+        <p role="alert" className="text-center text-red-500">
+          {error}
+        </p>
       </main>
     );
   }
