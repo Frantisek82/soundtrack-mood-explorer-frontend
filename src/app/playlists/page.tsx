@@ -136,15 +136,15 @@ export default function PlaylistsPage() {
   }
 
   const header = (
-    <div className="mb-8 flex items-center justify-between">
-      <h1 className="text-4xl font-bold">My Playlists</h1>
+    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <h1 className="text-3xl font-bold sm:text-4xl">My Playlists</h1>
 
       <button
         type="button"
         aria-expanded={showForm}
         aria-controls="new-playlist-form"
         onClick={toggleCreateForm}
-        className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+        className="min-h-11 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
       >
         {showForm ? "Cancel" : "New Playlist"}
       </button>
