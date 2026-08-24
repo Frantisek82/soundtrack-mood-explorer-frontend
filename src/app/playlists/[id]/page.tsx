@@ -46,7 +46,7 @@ export default function PlaylistPage() {
   if (loading) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center">
-        <Spinner />
+        <Spinner label="Loading playlist" />
       </main>
     );
   }
@@ -54,7 +54,7 @@ export default function PlaylistPage() {
   if (error || !playlist) {
     return (
       <main className="mx-auto max-w-6xl p-8 space-y-8">
-        <p className="text-center text-red-500">
+        <p role="alert" className="text-center text-red-500">
           {error || "Playlist not found."}
         </p>
       </main>
@@ -141,13 +141,18 @@ export default function PlaylistPage() {
 
           <div className="grid gap-4">
             {soundtracks.map((soundtrack) => (
-              <div
+              <article
                 key={soundtrack._id}
+                aria-labelledby={`soundtrack-${soundtrack._id}-title`}
+                aria-busy={removingId === soundtrack._id}
                 className="rounded-lg border border-zinc-800 bg-zinc-900 p-4"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold">
+                    <h3
+                      id={`soundtrack-${soundtrack._id}-title`}
+                      className="text-lg font-semibold"
+                    >
                       {soundtrack.title}
                     </h3>
 
@@ -162,7 +167,9 @@ export default function PlaylistPage() {
 
                   <Button
                     variant="danger"
+                    aria-label={`Remove ${soundtrack.title} from ${playlist.name}`}
                     loading={removingId === soundtrack._id}
+                    loadingText="Removing..."
                     onClick={() => handleRemoveSoundtrack(soundtrack._id)}
                   >
                     Remove
@@ -190,7 +197,7 @@ export default function PlaylistPage() {
                     />
                   </div>
                 )}
-              </div>
+              </article>
             ))}
           </div>
         </div>
