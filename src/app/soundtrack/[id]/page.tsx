@@ -23,8 +23,6 @@ import type { Playlist } from "@/src/types/playlist";
 
 import { isAuthenticated } from "@/src/utils/auth";
 
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-
 /* =====================
    Page
 ===================== */
@@ -47,11 +45,6 @@ export default function SoundtrackDetailPage() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
   const [playlistLoading, setPlaylistLoading] = useState(false);
   const [playlistMessage, setPlaylistMessage] = useState("");
-  const [playlistMenuOpen, setPlaylistMenuOpen] = useState(false);
-
-  const selectedPlaylist = playlists.find(
-    (playlist) => playlist._id === selectedPlaylistId,
-  );
 
   const errorRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLParagraphElement>(null);
@@ -265,58 +258,24 @@ export default function SoundtrackDetailPage() {
                 Choose a playlist
               </label>
 
-              <div
-                className={`overflow-hidden rounded-xl border bg-zinc-900 transition ${
-                  playlistMenuOpen
-                    ? "border-zinc-500 ring-2 ring-zinc-500"
-                    : "border-zinc-700"
-                }`}
+              <select
+                id="playlist"
+                value={selectedPlaylistId}
+                disabled={playlistLoading}
+                onChange={(event) => {
+                  setSelectedPlaylistId(event.target.value);
+                  setPlaylistMessage("");
+                }}
+                className="min-h-11 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <button
-                  id="playlist"
-                  type="button"
-                  onClick={() => setPlaylistMenuOpen((prev) => !prev)}
-                  aria-haspopup="listbox"
-                  aria-expanded={playlistMenuOpen}
-                  className={`flex w-full items-center justify-between px-4 py-3 text-left text-white focus:outline-none ${
-                    playlistMenuOpen ? "border-b border-zinc-700" : ""
-                  }`}
-                >
-                  <span>
-                    {selectedPlaylist
-                      ? selectedPlaylist.name
-                      : "Select a playlist"}
-                  </span>
+                <option value="">Select a playlist</option>
 
-                  <ChevronDownIcon
-                    aria-hidden="true"
-                    className={`h-5 w-5 shrink-0 text-gray-300 transition-transform ${
-                      playlistMenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {playlistMenuOpen && (
-                  <div role="listbox" aria-label="Choose a playlist">
-                    {playlists.map((playlist) => (
-                      <button
-                        key={playlist._id}
-                        type="button"
-                        role="option"
-                        aria-selected={selectedPlaylistId === playlist._id}
-                        onClick={() => {
-                          setSelectedPlaylistId(playlist._id);
-                          setPlaylistMessage("");
-                          setPlaylistMenuOpen(false);
-                        }}
-                        className="block w-full px-4 py-3 text-left text-white transition hover:bg-zinc-800 focus:bg-zinc-800 focus:outline-none"
-                      >
-                        {playlist.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+                {playlists.map((playlist) => (
+                  <option key={playlist._id} value={playlist._id}>
+                    {playlist.name}
+                  </option>
+                ))}
+              </select>
 
               <Button
                 type="button"
