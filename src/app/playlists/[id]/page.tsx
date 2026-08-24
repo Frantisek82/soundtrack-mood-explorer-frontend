@@ -53,7 +53,7 @@ export default function PlaylistPage() {
 
   if (error || !playlist) {
     return (
-      <main className="mx-auto max-w-6xl p-8 space-y-8">
+      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:p-8">
         <p role="alert" className="text-center text-red-500">
           {error || "Playlist not found."}
         </p>
@@ -92,12 +92,16 @@ export default function PlaylistPage() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl p-8 space-y-8">
+    <main className="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:p-8">
       <div className="max-w-4xl">
-        <h1 className="text-4xl font-bold">{playlist.name}</h1>
+        <h1 className="break-words text-3xl font-bold sm:text-4xl">
+          {playlist.name}
+        </h1>
 
         {playlist.description && (
-          <p className="mt-3 text-gray-300">{playlist.description}</p>
+          <p className="mt-3 break-words text-gray-300">
+            {playlist.description}
+          </p>
         )}
 
         <p className="mt-4 text-sm text-gray-400">
@@ -147,20 +151,20 @@ export default function PlaylistPage() {
                 aria-busy={removingId === soundtrack._id}
                 className="rounded-lg border border-zinc-800 bg-zinc-900 p-4"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
                     <h3
                       id={`soundtrack-${soundtrack._id}-title`}
-                      className="text-lg font-semibold"
+                      className="break-words text-lg font-semibold"
                     >
                       {soundtrack.title}
                     </h3>
 
-                    <p className="mt-1 text-sm text-gray-300">
+                    <p className="mt-1 break-words text-sm text-gray-300">
                       {soundtrack.movie}
                     </p>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 break-words text-sm text-gray-400">
                       {soundtrack.composer}
                     </p>
                   </div>
@@ -170,6 +174,7 @@ export default function PlaylistPage() {
                     aria-label={`Remove ${soundtrack.title} from ${playlist.name}`}
                     loading={removingId === soundtrack._id}
                     loadingText="Removing..."
+                    className="min-h-11 w-full sm:w-auto"
                     onClick={() => handleRemoveSoundtrack(soundtrack._id)}
                   >
                     Remove
