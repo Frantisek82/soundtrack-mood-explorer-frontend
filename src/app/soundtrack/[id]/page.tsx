@@ -180,7 +180,7 @@ export default function SoundtrackDetailPage() {
   if (loading || !authChecked) {
     return (
       <div
-        className="p-12 flex justify-center"
+        className="flex justify-center p-8 sm:p-12"
         role="status"
         aria-live="polite"
       >
@@ -207,7 +207,7 @@ export default function SoundtrackDetailPage() {
   ===================== */
 
   return (
-    <main className="mx-auto max-w-3xl p-8 space-y-8">
+    <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:p-8">
       {/* Unified card */}
       <SoundtrackCard soundtrack={soundtrack} />
 
@@ -216,7 +216,9 @@ export default function SoundtrackDetailPage() {
         <Button
           onClick={toggleFavorite}
           loading={favLoading}
+          loadingText="Updating..."
           variant={isFav ? "danger" : "primary"}
+          className="min-h-11 w-full sm:w-auto"
           aria-disabled={favLoading}
         >
           {isFav ? "Remove from Favorites" : "Save to Favorites"}
@@ -281,7 +283,9 @@ export default function SoundtrackDetailPage() {
                 type="button"
                 onClick={handleAddToPlaylist}
                 loading={playlistLoading}
+                loadingText="Adding..."
                 disabled={!selectedPlaylistId || playlistLoading}
+                className="min-h-11 w-full sm:w-auto"
               >
                 Add to Playlist
               </Button>
