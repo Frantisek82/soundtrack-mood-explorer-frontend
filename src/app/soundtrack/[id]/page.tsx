@@ -45,6 +45,11 @@ export default function SoundtrackDetailPage() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
   const [playlistLoading, setPlaylistLoading] = useState(false);
   const [playlistMessage, setPlaylistMessage] = useState("");
+  const [playlistsLoading, setPlaylistsLoading] = useState(false);
+  const [playlistsError, setPlaylistsError] = useState("");
+  const [playlistMessageType, setPlaylistMessageType] = useState<
+    "success" | "error" | null
+  >(null);
 
   const errorRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLParagraphElement>(null);
@@ -67,11 +72,16 @@ export default function SoundtrackDetailPage() {
     async function loadPlaylists() {
       if (!loggedIn) return;
 
+      setPlaylistsLoading(true);
+      setPlaylistsError("");
+
       try {
         const data = await getPlaylists();
         setPlaylists(data);
       } catch {
-        setPlaylistMessage("Failed to load playlists.");
+        setPlaylistsError("Failed to load playlists.");
+      } finally {
+        setPlaylistsLoading(false);
       }
     }
 
@@ -158,16 +168,19 @@ export default function SoundtrackDetailPage() {
     try {
       setPlaylistLoading(true);
       setPlaylistMessage("");
+      setPlaylistMessageType(null);
 
       await addSoundtrackToPlaylist(selectedPlaylistId, soundtrack._id);
 
       setPlaylistMessage("Soundtrack added to playlist.");
+      setPlaylistMessageType("success");
     } catch (error: unknown) {
       setPlaylistMessage(
         error instanceof Error
           ? error.message
           : "Failed to add soundtrack to playlist.",
       );
+      setPlaylistMessageType("error");
     } finally {
       setPlaylistLoading(false);
     }
@@ -247,10 +260,25 @@ export default function SoundtrackDetailPage() {
         <section className="space-y-3">
           <h2 className="text-lg font-medium">Add to Playlist</h2>
 
-          {playlists.length === 0 ? (
+          {playlistsLoading ? (
+            <p
+              role="status"
+              aria-live="polite"
+              className="text-sm text-gray-400"
+            >
+              Loading playlists...
+            </p>
+          ) : playlistsError ? (
+            <p role="alert" className="text-sm text-red-400">
+              {playlistsError}
+            </p>
+          ) : playlists.length === 0 ? (
             <p className="text-sm text-gray-400">
               You do not have any playlists yet.{" "}
-              <Link href="/playlists" className="underline hover:text-gray-200">
+              <Link
+                href="/playlists"
+                className="rounded-sm underline hover:text-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              >
                 Create a playlist
               </Link>
             </p>
@@ -267,6 +295,7 @@ export default function SoundtrackDetailPage() {
                 onChange={(event) => {
                   setSelectedPlaylistId(event.target.value);
                   setPlaylistMessage("");
+                  setPlaylistMessageType(null);
                 }}
                 className="min-h-11 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -294,9 +323,15 @@ export default function SoundtrackDetailPage() {
 
           {playlistMessage && (
             <p
-              role="status"
-              aria-live="polite"
-              className="text-sm text-gray-300"
+              role={playlistMessageType === "error" ? "alert" : "status"}
+              aria-live={
+                playlistMessageType === "error" ? "assertive" : "polite"
+              }
+              className={`text-sm ${
+                playlistMessageType === "error"
+                  ? "text-red-400"
+                  : "text-gray-300"
+              }`}
             >
               {playlistMessage}
             </p>
