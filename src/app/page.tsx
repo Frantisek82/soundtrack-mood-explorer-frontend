@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <section className="min-h-[80vh] flex items-center justify-center bg-black text-white">
+    <main className="flex min-h-[80vh] items-center justify-center bg-black text-white">
       <div className="max-w-3xl mx-auto px-6 text-center space-y-8">
         {/* Title */}
         <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
@@ -29,16 +29,18 @@ export default function HomePage() {
 
         {/* Mood preview (non-interactive) */}
         <div className="flex flex-wrap justify-center gap-3 pt-6">
-          {["Epic", "Calm", "Dark", "Emotional", "Hopeful", "Romantic"].map((mood) => (
-            <span
-              key={mood}
-              className="px-3 py-1 rounded-full border border-zinc-700 text-sm text-gray-300"
-            >
-              {mood}
-            </span>
-          ))}
+          {["Epic", "Calm", "Dark", "Emotional", "Hopeful", "Romantic"].map(
+            (mood) => (
+              <span
+                key={mood}
+                className="px-3 py-1 rounded-full border border-zinc-700 text-sm text-gray-300"
+              >
+                {mood}
+              </span>
+            ),
+          )}
         </div>
       </div>
-    </section>
+    </main>
   );
 }
