@@ -8,14 +8,7 @@ import MoodSelector from "@/src/components/MoodSelector";
 import EmptyState from "@/src/components/EmptyState";
 import { getSoundtracks } from "@/src/services/soundtracks";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-
-type Soundtrack = {
-  _id: string;
-  title: string;
-  movie: string;
-  composer: string;
-  moods: string[];
-};
+import type { Soundtrack } from "@/src/types/soundtrack";
 
 export default function ExplorePage() {
   const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
@@ -31,9 +24,7 @@ export default function ExplorePage() {
         setSoundtracks(data);
       } catch (error) {
         setError(
-          error instanceof Error
-            ? error.message
-            : "Failed to load soundtracks",
+          error instanceof Error ? error.message : "Failed to load soundtracks",
         );
       } finally {
         setLoading(false);
@@ -77,10 +68,7 @@ export default function ExplorePage() {
       <main className="max-w-6xl mx-auto p-8" aria-busy="true">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
+            <div key={i} style={{ animationDelay: `${i * 100}ms` }}>
               <SoundtrackCardSkeleton />
             </div>
           ))}
@@ -91,10 +79,7 @@ export default function ExplorePage() {
 
   if (error) {
     return (
-      <main
-        className="p-8 text-center text-red-400"
-        role="alert"
-      >
+      <main className="p-8 text-center text-red-400" role="alert">
         {error}
       </main>
     );
@@ -104,13 +89,9 @@ export default function ExplorePage() {
     <main className="max-w-6xl mx-auto p-8 space-y-8">
       {/* Header */}
       <header>
-        <h1 className="text-3xl font-semibold mb-2">
-          Explore Soundtracks
-        </h1>
+        <h1 className="text-3xl font-semibold mb-2">Explore Soundtracks</h1>
 
-        <p className="text-gray-400">
-          Discover movie soundtracks by mood
-        </p>
+        <p className="text-gray-400">Discover movie soundtracks by mood</p>
       </header>
 
       {/* Search */}
@@ -135,15 +116,10 @@ export default function ExplorePage() {
       {/* Mood Selector */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium text-gray-400">
-            Filter by Mood
-          </h2>
+          <h2 className="text-lg font-medium text-gray-400">Filter by Mood</h2>
         </div>
 
-        <MoodSelector
-          selectedMood={selectedMood}
-          onChange={setSelectedMood}
-        />
+        <MoodSelector selectedMood={selectedMood} onChange={setSelectedMood} />
       </section>
 
       {/* Results */}
