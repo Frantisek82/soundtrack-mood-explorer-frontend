@@ -137,7 +137,12 @@ export default function PlaylistsPage() {
 
   const header = (
     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <h1 className="text-3xl font-bold sm:text-4xl">My Playlists</h1>
+      <div>
+        <h1 className="text-3xl font-bold">My Playlists</h1>
+        <p className="mt-2 text-gray-400">
+          Create and organize your favorite soundtracks into custom playlists
+        </p>
+      </div>
 
       <button
         type="button"
