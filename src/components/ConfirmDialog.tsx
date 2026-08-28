@@ -27,47 +27,99 @@ export default function ConfirmDialog({
   onCancel,
 }: ConfirmDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  // ESC key support
+  // Move focus into the dialog and restore it after closing
   useEffect(() => {
-    function handleEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        onCancel();
-      }
-    }
+    if (!open) return;
 
-    if (open) {
-      window.addEventListener("keydown", handleEsc);
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    const dialog = dialogRef.current;
+    const firstControl = dialog?.querySelector<HTMLElement>(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+
+    if (firstControl) {
+      firstControl.focus();
+    } else {
+      dialog?.focus();
     }
 
     return () => {
-      window.removeEventListener("keydown", handleEsc);
+      previousFocusRef.current?.focus();
+      previousFocusRef.current = null;
     };
-  }, [open, onCancel]);
-
-  // Focus dialog when opened
-  useEffect(() => {
-    if (open) {
-      dialogRef.current?.focus();
-    }
   }, [open]);
+
+  // Keep keyboard focus inside the dialog and support Escape
+  useEffect(() => {
+    if (!open) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      if (event.key === "Escape" && !loading) {
+        event.preventDefault();
+        onCancel();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const controls = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+
+      if (controls.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const firstControl = controls[0];
+      const lastControl = controls[controls.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstControl) {
+        event.preventDefault();
+        lastControl.focus();
+      } else if (!event.shiftKey && document.activeElement === lastControl) {
+        event.preventDefault();
+        firstControl.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [loading, onCancel, open]);
 
   if (!open) return null;
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
-      onClick={onCancel}
-      aria-modal="true"
-      role="dialog"
-      aria-labelledby="confirm-dialog-title"
-      aria-describedby="confirm-dialog-description"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      onClick={() => {
+        if (!loading) onCancel();
+      }}
     >
       <div
         ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-description"
         tabIndex={-1}
-        className="bg-zinc-900 rounded-xl p-6 w-full max-w-md border border-zinc-800 outline-none"
-        onClick={(e) => e.stopPropagation()}
+        className="max-h-[calc(100vh-2rem)] w-full max-w-md overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900 p-4 outline-none sm:p-6"
+        onClick={(event) => event.stopPropagation()}
       >
         <h2
           id="confirm-dialog-title"
@@ -92,8 +144,14 @@ export default function ConfirmDialog({
           </p>
         )}
 
-        <div className="flex justify-end gap-3">
-          <Button type="button" variant="secondary" onClick={onCancel}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={loading}
+            className="min-h-11 w-full sm:w-auto"
+            onClick={onCancel}
+          >
             {cancelLabel}
           </Button>
 
@@ -102,6 +160,7 @@ export default function ConfirmDialog({
             variant="danger"
             loading={loading}
             loadingText={`${confirmLabel}...`}
+            className="min-h-11 w-full sm:w-auto"
             onClick={onConfirm}
           >
             {confirmLabel}

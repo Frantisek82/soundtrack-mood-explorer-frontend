@@ -23,8 +23,6 @@ import type { Playlist } from "@/src/types/playlist";
 
 import { isAuthenticated } from "@/src/utils/auth";
 
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-
 /* =====================
    Page
 ===================== */
@@ -47,11 +45,11 @@ export default function SoundtrackDetailPage() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
   const [playlistLoading, setPlaylistLoading] = useState(false);
   const [playlistMessage, setPlaylistMessage] = useState("");
-  const [playlistMenuOpen, setPlaylistMenuOpen] = useState(false);
-
-  const selectedPlaylist = playlists.find(
-    (playlist) => playlist._id === selectedPlaylistId,
-  );
+  const [playlistsLoading, setPlaylistsLoading] = useState(false);
+  const [playlistsError, setPlaylistsError] = useState("");
+  const [playlistMessageType, setPlaylistMessageType] = useState<
+    "success" | "error" | null
+  >(null);
 
   const errorRef = useRef<HTMLDivElement>(null);
   const authRef = useRef<HTMLParagraphElement>(null);
@@ -74,11 +72,16 @@ export default function SoundtrackDetailPage() {
     async function loadPlaylists() {
       if (!loggedIn) return;
 
+      setPlaylistsLoading(true);
+      setPlaylistsError("");
+
       try {
         const data = await getPlaylists();
         setPlaylists(data);
       } catch {
-        setPlaylistMessage("Failed to load playlists.");
+        setPlaylistsError("Failed to load playlists.");
+      } finally {
+        setPlaylistsLoading(false);
       }
     }
 
@@ -165,16 +168,19 @@ export default function SoundtrackDetailPage() {
     try {
       setPlaylistLoading(true);
       setPlaylistMessage("");
+      setPlaylistMessageType(null);
 
       await addSoundtrackToPlaylist(selectedPlaylistId, soundtrack._id);
 
       setPlaylistMessage("Soundtrack added to playlist.");
+      setPlaylistMessageType("success");
     } catch (error: unknown) {
       setPlaylistMessage(
         error instanceof Error
           ? error.message
           : "Failed to add soundtrack to playlist.",
       );
+      setPlaylistMessageType("error");
     } finally {
       setPlaylistLoading(false);
     }
@@ -187,7 +193,7 @@ export default function SoundtrackDetailPage() {
   if (loading || !authChecked) {
     return (
       <div
-        className="p-12 flex justify-center"
+        className="flex justify-center p-8 sm:p-12"
         role="status"
         aria-live="polite"
       >
@@ -214,7 +220,7 @@ export default function SoundtrackDetailPage() {
   ===================== */
 
   return (
-    <main className="mx-auto max-w-3xl p-8 space-y-8">
+    <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:p-8">
       {/* Unified card */}
       <SoundtrackCard soundtrack={soundtrack} />
 
@@ -223,7 +229,9 @@ export default function SoundtrackDetailPage() {
         <Button
           onClick={toggleFavorite}
           loading={favLoading}
+          loadingText="Updating..."
           variant={isFav ? "danger" : "primary"}
+          className="min-h-11 w-full sm:w-auto"
           aria-disabled={favLoading}
         >
           {isFav ? "Remove from Favorites" : "Save to Favorites"}
@@ -252,10 +260,25 @@ export default function SoundtrackDetailPage() {
         <section className="space-y-3">
           <h2 className="text-lg font-medium">Add to Playlist</h2>
 
-          {playlists.length === 0 ? (
+          {playlistsLoading ? (
+            <p
+              role="status"
+              aria-live="polite"
+              className="text-sm text-gray-400"
+            >
+              Loading playlists...
+            </p>
+          ) : playlistsError ? (
+            <p role="alert" className="text-sm text-red-400">
+              {playlistsError}
+            </p>
+          ) : playlists.length === 0 ? (
             <p className="text-sm text-gray-400">
               You do not have any playlists yet.{" "}
-              <Link href="/playlists" className="underline hover:text-gray-200">
+              <Link
+                href="/playlists"
+                className="rounded-sm underline hover:text-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              >
                 Create a playlist
               </Link>
             </p>
@@ -265,64 +288,33 @@ export default function SoundtrackDetailPage() {
                 Choose a playlist
               </label>
 
-              <div
-                className={`overflow-hidden rounded-xl border bg-zinc-900 transition ${
-                  playlistMenuOpen
-                    ? "border-zinc-500 ring-2 ring-zinc-500"
-                    : "border-zinc-700"
-                }`}
+              <select
+                id="playlist"
+                value={selectedPlaylistId}
+                disabled={playlistLoading}
+                onChange={(event) => {
+                  setSelectedPlaylistId(event.target.value);
+                  setPlaylistMessage("");
+                  setPlaylistMessageType(null);
+                }}
+                className="min-h-11 w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <button
-                  id="playlist"
-                  type="button"
-                  onClick={() => setPlaylistMenuOpen((prev) => !prev)}
-                  aria-haspopup="listbox"
-                  aria-expanded={playlistMenuOpen}
-                  className={`flex w-full items-center justify-between px-4 py-3 text-left text-white focus:outline-none ${
-                    playlistMenuOpen ? "border-b border-zinc-700" : ""
-                  }`}
-                >
-                  <span>
-                    {selectedPlaylist
-                      ? selectedPlaylist.name
-                      : "Select a playlist"}
-                  </span>
+                <option value="">Select a playlist</option>
 
-                  <ChevronDownIcon
-                    aria-hidden="true"
-                    className={`h-5 w-5 shrink-0 text-gray-300 transition-transform ${
-                      playlistMenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {playlistMenuOpen && (
-                  <div role="listbox" aria-label="Choose a playlist">
-                    {playlists.map((playlist) => (
-                      <button
-                        key={playlist._id}
-                        type="button"
-                        role="option"
-                        aria-selected={selectedPlaylistId === playlist._id}
-                        onClick={() => {
-                          setSelectedPlaylistId(playlist._id);
-                          setPlaylistMessage("");
-                          setPlaylistMenuOpen(false);
-                        }}
-                        className="block w-full px-4 py-3 text-left text-white transition hover:bg-zinc-800 focus:bg-zinc-800 focus:outline-none"
-                      >
-                        {playlist.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+                {playlists.map((playlist) => (
+                  <option key={playlist._id} value={playlist._id}>
+                    {playlist.name}
+                  </option>
+                ))}
+              </select>
 
               <Button
                 type="button"
                 onClick={handleAddToPlaylist}
                 loading={playlistLoading}
+                loadingText="Adding..."
                 disabled={!selectedPlaylistId || playlistLoading}
+                className="min-h-11 w-full sm:w-auto"
               >
                 Add to Playlist
               </Button>
@@ -331,9 +323,15 @@ export default function SoundtrackDetailPage() {
 
           {playlistMessage && (
             <p
-              role="status"
-              aria-live="polite"
-              className="text-sm text-gray-300"
+              role={playlistMessageType === "error" ? "alert" : "status"}
+              aria-live={
+                playlistMessageType === "error" ? "assertive" : "polite"
+              }
+              className={`text-sm ${
+                playlistMessageType === "error"
+                  ? "text-red-400"
+                  : "text-gray-300"
+              }`}
             >
               {playlistMessage}
             </p>

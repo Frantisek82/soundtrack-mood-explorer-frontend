@@ -16,11 +16,7 @@ export default function SpotifyPreview({
 
   if (!trackId) {
     return (
-      <p
-        role="status"
-        aria-live="polite"
-        className="text-sm text-gray-400"
-      >
+      <p role="status" aria-live="polite" className="text-sm text-gray-400">
         Spotify preview is not available for this soundtrack.
       </p>
     );
@@ -32,15 +28,14 @@ export default function SpotifyPreview({
         role="alert"
         className="bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-sm text-gray-300 space-y-2"
       >
-        <p>
-          Spotify preview is currently unavailable.
-        </p>
+        <p>Spotify preview is currently unavailable.</p>
 
         <Link
           href={`https://open.spotify.com/track/${trackId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-green-400 underline hover:text-green-300 transition"
+          aria-label={`Open ${title} in Spotify (opens in a new tab)`}
+          className="inline-flex min-h-11 items-center rounded text-green-400 underline transition hover:text-green-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
           Open in Spotify
         </Link>

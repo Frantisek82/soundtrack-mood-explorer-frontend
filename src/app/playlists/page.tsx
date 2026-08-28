@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import Spinner from "@/src/components/Spinner";
 import EmptyState from "@/src/components/EmptyState";
@@ -124,13 +124,6 @@ export default function PlaylistsPage() {
     }
   }
 
-  function handleDescriptionKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleCreatePlaylist();
-    }
-  }
-
   function toggleCreateForm() {
     setCreateError("");
 
@@ -143,13 +136,20 @@ export default function PlaylistsPage() {
   }
 
   const header = (
-    <div className="mb-8 flex items-center justify-between">
-      <h1 className="text-4xl font-bold">My Playlists</h1>
+    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 className="text-3xl font-bold">My Playlists</h1>
+        <p className="mt-2 text-gray-400">
+          Create and organize your favorite soundtracks into custom playlists
+        </p>
+      </div>
 
       <button
         type="button"
+        aria-expanded={showForm}
+        aria-controls="new-playlist-form"
         onClick={toggleCreateForm}
-        className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500"
+        className="min-h-11 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
       >
         {showForm ? "Cancel" : "New Playlist"}
       </button>
@@ -157,22 +157,23 @@ export default function PlaylistsPage() {
   );
 
   const playlistForm = (
-    <PlaylistForm
-      name={newName}
-      description={newDescription}
-      onNameChange={setNewName}
-      onDescriptionChange={setNewDescription}
-      onSubmit={handleCreatePlaylist}
-      onDescriptionKeyDown={handleDescriptionKeyDown}
-      submitting={submitting}
-      error={createError}
-    />
+    <div id="new-playlist-form">
+      <PlaylistForm
+        name={newName}
+        description={newDescription}
+        onNameChange={setNewName}
+        onDescriptionChange={setNewDescription}
+        onSubmit={handleCreatePlaylist}
+        submitting={submitting}
+        error={createError}
+      />
+    </div>
   );
 
   if (loading) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center">
-        <Spinner />
+        <Spinner label="Loading playlists" />
       </main>
     );
   }
@@ -180,7 +181,9 @@ export default function PlaylistsPage() {
   if (error) {
     return (
       <main className="mx-auto max-w-4xl px-4 py-10">
-        <p className="text-center text-red-500">{error}</p>
+        <p role="alert" className="text-center text-red-500">
+          {error}
+        </p>
       </main>
     );
   }
