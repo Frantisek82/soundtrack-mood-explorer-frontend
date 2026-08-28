@@ -4,7 +4,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/version-v2.0.0-blue)
+![Version](https://img.shields.io/badge/version-v2.1.0-blue)
 [![Frontend CI](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml)
 
 Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
@@ -17,6 +17,7 @@ This application allows users to:
 - Preview tracks via Spotify
 - Register & login securely
 - Save and manage favorites
+- Create and manage custom soundtrack playlists
 - View personal profile statistics
 - Contact the developer through a built-in contact form
 
@@ -30,6 +31,7 @@ Built as a modern full-stack portfolio project showcasing secure authentication,
 - 🔍 Search by title, movie or composer
 - 🎭 Filter by mood
 - ⭐ Persistent favorites
+- 🎼 Custom soundtrack playlists
 - 👤 Profile statistics
 - 📬 Contact form with email delivery
 - 🔐 Secure authentication
@@ -98,6 +100,24 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 
 ---
 
+## 🎼 Custom Playlists (v2.1.0)
+
+Authenticated users can organize soundtracks into personalized collections:
+
+- Create playlists with a name and optional description
+- View, rename, and delete playlists
+- Add soundtracks from the soundtrack detail page
+- Prevent duplicate soundtracks within the same playlist
+- View playlist soundtrack counts and details
+- Remove soundtracks from playlists
+- Preview playlist tracks through Spotify
+- Access playlists across authenticated sessions
+- Use responsive, keyboard-accessible playlist controls
+
+Playlist data is securely associated with the authenticated user and persisted in MongoDB.
+
+---
+
 ## 📸 Screenshots
 
 ### Explore Page
@@ -111,6 +131,14 @@ Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-s
 ### Favorites Page
 
 ![Favorites Page](docs/screenshots/favorites.png)
+
+### Playlists Page
+
+![Playlists Page](docs/screenshots/playlists.png)
+
+### Playlist Detail
+
+![Playlist Detail](docs/screenshots/playlist-detail.png)
 
 ### Profile Page
 
@@ -220,6 +248,18 @@ The automated test suite currently includes:
 - Reusable UI components
 - Shared service modules
 - Utility functions
+- Playlist services and reusable playlist components
+- Playlist creation, editing, deletion, and soundtrack interactions
+- Normal, loading, empty, error, and duplicate-addition scenarios
+
+The current suite contains **17 test suites and 114 tests**.
+
+Current coverage:
+
+- Statements: **96.57%**
+- Branches: **94.66%**
+- Functions: **93.44%**
+- Lines: **97.22%**
 
 Continuous Integration is configured with **GitHub Actions**, which automatically runs the test suite and verifies the production build on every push and pull request.
 
@@ -286,13 +326,15 @@ MongoDB Atlas
 Current version:
 
 ```
-v2.0.0
+v2.1.0
 ```
 
 ---
 
-## ✨ Current Highlights
+## ✨ v2.1.0 Highlights
 
+- 🎼 Custom playlists with full create, view, rename, and delete functionality
+- 🎵 Add and remove soundtracks from persistent playlist collections
 - 🔍 Search soundtracks by title, movie, or composer
 - 🎭 Combined search and mood filtering
 - ⭐ Persistent favorites synchronized with MongoDB
@@ -310,6 +352,7 @@ v2.0.0
 - ⏳ Improved skeleton loading experience
 - ♿ Enhanced accessibility for profile statistics
 - 🧪 Automated unit testing for components, services, and utilities
+- 🧪 Automated playlist service, component, and interaction testing
 - ✅ Continuous Integration with GitHub Actions
 - 🚀 Automated production build verification
 
@@ -321,7 +364,6 @@ Future improvements are tracked through GitHub Issues.
 
 Planned enhancements include:
 
-- 🎼 Playlist support
 - 🎵 Spotify OAuth integration
 - 🤖 AI-powered soundtrack recommendations
 - 🎛 Advanced filtering
@@ -355,10 +397,14 @@ See the GitHub Issues and Milestones for the latest roadmap, planned features, a
 - Component unit testing
 - Shared service and utility unit testing
 - Continuous Integration with GitHub Actions
+- Custom playlist creation and management
+- Playlist soundtrack organization
+- Responsive and accessible playlist interface
+- Playlist service, component, and interaction testing
+- Playlist documentation and screenshots
 
 ### 🚧 Planned
 
-- Playlist support
 - Spotify OAuth integration
 - Improve Safari cross-site cookie compatibility
 - Advanced filtering
