@@ -293,10 +293,15 @@ fetch("http://localhost:3000/api/seed", { method: "POST" })
 
 ```
 src/
- ├── app/
- ├── components/
- ├── services/
- └── utils/
+├── app/
+├── components/
+├── lib/
+├── services/
+├── types/
+└── utils/
+
+docs/
+└── screenshots/
 ```
 
 ---
@@ -328,6 +333,7 @@ Current version:
 ```
 v2.1.0
 ```
+Release notes: [v2.1.0 – Custom Playlists](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/releases/tag/v2.1.0)
 
 ---
 
