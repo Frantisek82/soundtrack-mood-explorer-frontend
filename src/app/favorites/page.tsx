@@ -179,7 +179,7 @@ export default function FavoritesPage() {
                   className="min-w-0 flex-1 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                 >
                   <div>
-                    <h2 className="text-lg font-semibold">
+                    <h2 className="text-lg font-semibold text-white">
                       {soundtrack.title}
                     </h2>
 

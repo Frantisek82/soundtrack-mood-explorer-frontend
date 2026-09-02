@@ -33,6 +33,10 @@ describe("PlaylistCard", () => {
 
     expect(screen.getByRole("heading", { name: "Focus" })).toBeInTheDocument();
 
+    expect(screen.getByRole("heading", { name: "Focus" })).toHaveClass(
+      "text-white",
+    );
+
     expect(
       screen.getByText("Soundtracks for focused work"),
     ).toBeInTheDocument();
