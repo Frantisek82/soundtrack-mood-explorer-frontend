@@ -35,7 +35,7 @@ describe("SoundtrackCardSkeleton", () => {
 
         const moodTags = skeleton.children[2];
 
-        expect(skeleton.children).toHaveLength(3);
+        expect(moodTags.children).toHaveLength(3);
     });
 
     it("is hidden from assistive technologies", () => {
