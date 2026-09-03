@@ -173,7 +173,7 @@ export default function ContactPage() {
             </p>
 
             <p className="text-gray-400">
-              Thank you for your message. I've received it and will get back to you as soon as possible.
+              Thank you for your message. I&apos;ve received it and will get back to you as soon as possible.
             </p>
           </div>
         )}
