@@ -155,7 +155,7 @@ export default function PlaylistPage() {
                   <div className="min-w-0">
                     <h3
                       id={`soundtrack-${soundtrack._id}-title`}
-                      className="break-words text-lg font-semibold"
+                      className="break-words text-lg font-semibold text-white"
                     >
                       {soundtrack.title}
                     </h3>

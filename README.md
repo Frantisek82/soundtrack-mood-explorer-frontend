@@ -4,7 +4,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-![Version](https://img.shields.io/badge/version-v2.1.0-blue)
+![Version](https://img.shields.io/badge/version-v2.1.1-blue)
 [![Frontend CI](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/actions/workflows/frontend-ci.yml)
 
 Frontend application for Soundtrack Mood Explorer, a full-stack portfolio project for discovering and organizing movie soundtracks by mood.
@@ -261,7 +261,7 @@ Current coverage:
 - Functions: **93.44%**
 - Lines: **97.22%**
 
-Continuous Integration is configured with **GitHub Actions**, which automatically runs the test suite and verifies the production build on every push and pull request.
+Continuous Integration is configured with **GitHub Actions**, which automatically runs ESLint, the complete test suite, standalone TypeScript validation, and the production build on every push and pull request.
 
 ---
 
@@ -272,7 +272,9 @@ This project uses **GitHub Actions** for Continuous Integration.
 On every push and pull request, the workflow automatically:
 
 - Installs project dependencies using `npm ci`
+- Runs ESLint validation with `npm run lint`
 - Runs the complete Jest test suite
+- Runs standalone TypeScript validation with `npx tsc --noEmit`
 - Builds the production application with `npm run build`
 
 This helps ensure that all changes are validated before being merged.
@@ -330,10 +332,23 @@ MongoDB Atlas
 
 Current version:
 
+```text
+v2.1.1
 ```
-v2.1.0
-```
-Release notes: [v2.1.0 – Custom Playlists](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/releases/tag/v2.1.0)
+
+Release notes: [v2.1.1 – Maintenance & Hardening](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/releases/tag/v2.1.1)
+
+---
+
+## ✨ v2.1.1 Highlights
+
+- 🎨 Improved soundtrack and playlist card-heading contrast in light mode
+- 🧹 Resolved frontend ESLint findings without suppressions
+- ✅ Added frontend ESLint validation to GitHub Actions
+- 🧪 Validated 17 test suites with 114 passing tests
+- 🔎 Added standalone TypeScript validation to the CI workflow
+- 🚀 Retained automated production-build validation
+- 🔒 Maintenance-only release with no new user-facing features
 
 ---
 

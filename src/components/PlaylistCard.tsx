@@ -90,7 +90,7 @@ export default function PlaylistCard({
     <article className="rounded-lg border border-gray-700 bg-gray-800 p-4 transition hover:border-zinc-500 sm:p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h2 className="text-xl font-semibold">{playlist.name}</h2>
+          <h2 className="text-xl font-semibold text-white">{playlist.name}</h2>
 
           {playlist.description && (
             <p className="mt-2 text-gray-300">{playlist.description}</p>

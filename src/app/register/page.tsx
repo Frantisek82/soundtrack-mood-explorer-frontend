@@ -30,7 +30,7 @@ export default function RegisterPage() {
       label: "Confirm password",
       type: "password",
     },
-  ];
+  ] as const;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -71,8 +71,12 @@ export default function RegisterPage() {
       });
 
       router.push("/login");
-    } catch (err: any) {
-      setError(err.message || "Registration failed.");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : "Registration failed.",
+      );
     } finally {
       setLoading(false);
     }
@@ -103,7 +107,7 @@ export default function RegisterPage() {
             type={type}
             placeholder={label}
             required
-            value={(form as any)[key]}
+            value={form[key]}
             onChange={(e) =>
               setForm({ ...form, [key]: e.target.value })
             }
