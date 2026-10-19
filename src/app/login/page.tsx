@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { loginUser } from "@/src/services/auth";
 import Button from "@/src/components/Button";
+import {
+  hasSpotifySessionExpiredNotice,
+  readSpotifyCallback,
+} from "@/src/services/spotify-callback";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -15,6 +19,30 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [spotifySessionExpired, setSpotifySessionExpired] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function readNotice() {
+      await Promise.resolve();
+      if (!active) return;
+
+      const url = new URL(window.location.href);
+      setSpotifySessionExpired(hasSpotifySessionExpiredNotice(url));
+
+      if (url.searchParams.has("spotify")) {
+        window.history.replaceState(
+          window.history.state,
+          "",
+          readSpotifyCallback(url).cleanPath,
+        );
+      }
+    }
+
+    void readNotice();
+    return () => { active = false; };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -61,6 +89,13 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold mb-6 text-center">
           Login
         </h1>
+
+        {spotifySessionExpired && (
+          <p role="status" className="mb-4 text-sm text-gray-300">
+            Your application session expired during Spotify authorization.
+            Please sign in again, then reconnect Spotify from your profile.
+          </p>
+        )}
 
         {error && (
           <p

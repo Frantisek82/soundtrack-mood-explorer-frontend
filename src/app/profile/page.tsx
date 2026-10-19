@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, logout } from "@/src/utils/auth";
 import {
@@ -13,6 +13,12 @@ import { getFavorites } from "@/src/services/favorites";
 import ConfirmDialog from "@/src/components/ConfirmDialog";
 import Button from "@/src/components/Button";
 import StatCard from "@/src/components/StatCard";
+import SpotifyConnectionPanel from "@/src/components/SpotifyConnectionPanel";
+import {
+  readSpotifyCallback,
+  spotifySessionExpiredLoginPath,
+  type SpotifyCallbackResult,
+} from "@/src/services/spotify-callback";
 import {
   CalendarDaysIcon,
   StarIcon,
@@ -41,19 +47,42 @@ export default function ProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const messageRef = useRef<HTMLParagraphElement>(null);
+  const callbackRef = useRef<ReturnType<typeof readSpotifyCallback> | null>(null);
+  const [spotifyCallback, setSpotifyCallback] =
+    useState<SpotifyCallbackResult | null>(null);
+
+  const handleSpotifySessionExpired = useCallback(() => {
+    router.replace(spotifySessionExpiredLoginPath());
+  }, [router]);
 
   /* =====================
      Protect page (ASYNC)
   ===================== */
   useEffect(() => {
+    // Capture once so React Strict Mode cannot lose a cleaned notification.
+    if (!callbackRef.current) {
+      callbackRef.current = readSpotifyCallback(new URL(window.location.href));
+      window.history.replaceState(
+        window.history.state,
+        "",
+        callbackRef.current.cleanPath,
+      );
+    }
+    const callback = callbackRef.current;
+
     async function checkAuth() {
       const isAuth = await isAuthenticated();
 
       if (!isAuth) {
-        router.push("/login");
+        router.replace(
+          callback.result
+            ? spotifySessionExpiredLoginPath()
+            : "/login",
+        );
         return;
       }
 
+      setSpotifyCallback(callback.result);
       const currentUser = await getCurrentUser();
       setUser(currentUser);
 
@@ -216,6 +245,11 @@ export default function ProfilePage() {
         />
       </section>
 
+      <SpotifyConnectionPanel
+        callbackResult={spotifyCallback}
+        onSessionExpired={handleSpotifySessionExpired}
+      />
+
       {/* Password Card */}
       <section className="bg-zinc-900 rounded-xl p-6">
         <form onSubmit={handlePasswordChange} className="space-y-4">
@@ -302,7 +336,7 @@ export default function ProfilePage() {
       <ConfirmDialog
         open={showDeleteDialog}
         title="Delete Account"
-        description="This action will permanently delete your account and all associated data, including your saved favorites. This cannot be undone."
+        description="This deletes your application account, saved favorites, custom playlists, and active Spotify connection data. You cannot undo this through the application. It does not revoke Spotify consent; access can also be removed on Spotify’s Apps page."
         confirmLabel="Yes, Delete Account"
         cancelLabel="Cancel"
         loading={deleteLoading}

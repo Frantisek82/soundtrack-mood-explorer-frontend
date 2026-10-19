@@ -20,6 +20,7 @@ export default function RegisterPage() {
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const fields = [
     { key: "name", label: "Name", type: "text" },
@@ -58,6 +59,11 @@ export default function RegisterPage() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      return;
+    }
+
+    if (!acceptedTerms) {
+      setError("Please agree to the Terms of use and read the Privacy notice.");
       return;
     }
 
@@ -119,6 +125,26 @@ export default function RegisterPage() {
             "
           />
         ))}
+
+        <p className="mb-4 text-sm text-gray-300">
+          Before registering, read the{" "}
+          <Link href="/privacy" className="underline">Privacy notice</Link>{" "}
+          and{" "}
+          <Link href="/terms" className="underline">Terms of use</Link>.
+        </p>
+
+        <label className="mb-4 flex items-start gap-3 text-sm">
+          <input
+            type="checkbox"
+            required
+            checked={acceptedTerms}
+            onChange={event => setAcceptedTerms(event.target.checked)}
+            className="mt-1 h-4 w-4"
+          />
+          <span>
+            I agree to the Terms of use and have read the Privacy notice.
+          </span>
+        </label>
 
         <Button
           type="submit"
