@@ -455,3 +455,7 @@ Frantisek Babinsky,
 Full-Stack Developer
 
 Built as a professional portfolio project.
+
+## Spotify connection
+
+Profile connection controls, callback handling, and user notices are implemented. Production enablement and browser verification remain pending. See [Spotify connection controls](docs/spotify-connection.md).
