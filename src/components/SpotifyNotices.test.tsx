@@ -66,3 +66,23 @@ it("requires agreement before submitting a valid registration", async () => {
     password: "test-password",
   });
 });
+
+it("discloses Resend and Gmail processing separately", () => {
+  render(<PrivacyPage />);
+  expect(screen.getByRole("heading", { name: "Contact messages and retention" }))
+    .toBeInTheDocument();
+  expect(screen.getByText(/Contact messages are sent through Resend/))
+    .toHaveTextContent("Gmail");
+  expect(screen.getByRole("link", { name: "Resend’s data-handling information" }))
+    .toHaveAttribute("href", "https://resend.com/security/gdpr");
+  expect(screen.getByRole("link", { name: "Google’s Privacy Policy" }))
+    .toHaveAttribute("href", "https://policies.google.com/privacy");
+});
+
+it("explains manual mailbox retention and separate contact-data deletion", () => {
+  render(<PrivacyPage />);
+  expect(screen.getByText(/within 30 days after resolution/))
+    .toHaveTextContent("manual policy, not an automated deletion feature");
+  expect(screen.getByText(/Application-account deletion does not automatically/))
+    .toHaveTextContent("contact correspondence");
+});
