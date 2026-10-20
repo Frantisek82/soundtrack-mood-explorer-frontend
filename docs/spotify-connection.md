@@ -139,3 +139,20 @@ was not recorded for this local check.
 
 Production privacy, retention, backup, restore, contact-delivery, and logging
 verification remain tracked in backend #40.
+
+## Contact privacy review — 20 October 2026
+
+The Privacy notice now identifies Resend and the maintainer's personal Gmail
+mailbox. It distinguishes provider retention from the agreed manual policy:
+ordinary enquiry conversations and replies are deleted within 30 days after
+resolution and permanently removed from Gmail Trash.
+
+The maintainer confirms no forwarding or downloads into another mailbox/app.
+Account deletion does not automatically delete separate contact correspondence.
+
+Resend's documented Free-plan retention and US storage were checked at:
+https://resend.com/security/gdpr
+
+This disclosure update does not complete backend #40. Controlled delivery,
+deployment logs, backup/restore safeguards, and remaining browser/release
+verification are still pending.

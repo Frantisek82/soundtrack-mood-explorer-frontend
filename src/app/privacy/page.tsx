@@ -4,7 +4,7 @@ export default function PrivacyPage() {
   return (
     <main className="max-w-3xl mx-auto px-6 py-10 space-y-6">
       <h1 className="text-3xl font-bold">Privacy notice</h1>
-      <p>Last updated: 19 October 2026</p>
+      <p>Last updated: 20 October 2026</p>
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Who maintains this project</h2>
@@ -32,6 +32,54 @@ export default function PrivacyPage() {
           This information is processed to provide your account and saved
           collections, authenticate requests, protect the application, and respond
           to messages.
+        </p>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Contact messages and retention</h2>
+        <p>
+          Contact messages are sent through Resend to the maintainer’s personal
+          Gmail mailbox. Resend processes the name, email address, subject, and
+          message you submit. The mailbox also contains any replies.
+        </p>
+        <p>
+          Resend documents United States storage, 30-day email and log retention
+          on its Free plan, and backups persisting for seven days. Earlier removal
+          of a specific message requires contacting Resend support. See{" "}
+          <a
+            href="https://resend.com/security/gdpr"
+            className="underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Resend’s data-handling information
+          </a>.
+        </p>
+        <p>
+          For ordinary project enquiries, the maintainer manually deletes the
+          conversation, including replies, within 30 days after resolution and
+          permanently removes those messages from Gmail Trash. This is a manual
+          policy, not an automated deletion feature.
+        </p>
+        <p>
+          The maintainer does not forward or download these messages into another
+          mailbox or mail application. Gmail processing is also subject to{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            className="underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google’s Privacy Policy
+          </a>.
+          Deletion from the mailbox does not establish immediate erasure from
+          Google’s internal systems.
+        </p>
+        <p>
+          Application-account deletion does not automatically remove separate
+          contact correspondence. For requests concerning that correspondence,
+          contact the maintainer through the Contact page. Earlier deletion of
+          provider-held copies may require provider assistance.
         </p>
       </section>
 
@@ -113,8 +161,8 @@ export default function PrivacyPage() {
           Spotify authorization attempts. Shared catalogue entries remain.
         </p>
         <p>
-          Backup, infrastructure-log, and contact-message retention arrangements
-          are still being verified before wider Spotify availability. Active
+          Database backup/restore arrangements and infrastructure-log retention
+          are still under review before wider Spotify availability. Active
           database deletion does not establish immediate removal from backups
           or infrastructure logs. Contact the maintainer for information or
           requests concerning retained copies.
