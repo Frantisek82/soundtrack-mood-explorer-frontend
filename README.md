@@ -77,7 +77,7 @@ Authentication is now implemented using **httpOnly cookies**:
 
 ## 🌐 Browser Compatibility
 
-Verified during development on:
+Earlier application versions were checked during development on:
 
 - Google Chrome (Linux)
 - Google Chrome (Windows)
@@ -87,7 +87,7 @@ The application is built using modern web standards and is expected to work in o
 
 ### Note
 
-Safari's Intelligent Tracking Prevention (ITP) applies stricter rules to cross-site authentication cookies. Some Safari configurations may require privacy settings to be adjusted during testing.
+Spotify OAuth verification on Chrome and Safari/iOS remains pending. Test with normal privacy protections enabled. If cross-site cookies prevent a workflow, record the limitation rather than requiring users to weaken browser privacy settings.
 
 ---
 
@@ -168,14 +168,25 @@ Playlist data is securely associated with the authenticated user and persisted i
 
 ## 🌍 Environment Configuration
 
+For local development, set these values in the ignored `.env.local`:
+
+```dotenv
+NEXT_PUBLIC_API_URL=http://127.0.0.1:3000/api
+NEXT_PUBLIC_SPOTIFY_ENABLED=false
+```
+
+Keep Spotify disabled by default. Enable it locally only for controlled
+allowlisted-account tests with the corresponding backend configuration.
+Preview deployments disable Spotify controls regardless of the feature flag.
+
 Development:
 
 ```
-Backend: http://localhost:3000
+Backend: http://127.0.0.1:3000
 ```
 
 ```
-Frontend: http://localhost:3001
+Frontend: http://127.0.0.1:3001
 ```
 
 Production:
@@ -195,7 +206,7 @@ Frontend: https://soundtrack-mood-explorer-frontend.vercel.app
 Development:
 
 ```
-http://localhost:3000/api
+http://127.0.0.1:3000/api
 ```
 
 Production:
@@ -215,14 +226,14 @@ credentials: "include"
 ## ▶️ Running the Frontend
 
 ```bash
-npm install
-npm run dev
+npm ci
+npm run dev -- --hostname 127.0.0.1 --port 3001
 ```
 
 Open:
 
 ```
-http://localhost:3001
+http://127.0.0.1:3001
 ```
 
 ---
@@ -252,9 +263,9 @@ The automated test suite currently includes:
 - Playlist creation, editing, deletion, and soundtrack interactions
 - Normal, loading, empty, error, and duplicate-addition scenarios
 
-The current suite contains **17 test suites and 114 tests**.
+Validation on **22 October 2026** passed **22 test suites and 223 tests**, ESLint, standalone TypeScript validation, and the production build.
 
-Current coverage:
+Historical v2.1.1 coverage (114 tests; not remeasured for the current branch):
 
 - Statements: **96.57%**
 - Branches: **94.66%**
@@ -284,7 +295,7 @@ This helps ensure that all changes are validated before being merged.
 ## 🌱 Seeding the Database
 
 ```js
-fetch("http://localhost:3000/api/seed", { method: "POST" })
+fetch("http://127.0.0.1:3000/api/seed", { method: "POST" })
   .then((res) => res.json())
   .then(console.log);
 ```
@@ -385,7 +396,7 @@ Future improvements are tracked through GitHub Issues.
 
 Planned enhancements include:
 
-- 🎵 Spotify OAuth integration
+- 🎵 Complete Spotify OAuth release validation; implementation is on dev and deployed OAuth remains disabled
 - 🤖 AI-powered soundtrack recommendations
 - 🎛 Advanced filtering
 - 🧪 Expand integration and end-to-end testing
@@ -424,9 +435,19 @@ See the GitHub Issues and Milestones for the latest roadmap, planned features, a
 - Playlist service, component, and interaction testing
 - Playlist documentation and screenshots
 
+### 🚧 In progress — v2.2.0 Spotify OAuth
+
+- Profile connection controls, callback handling, and user notices are implemented on dev.
+- Local allowlisted-account OAuth and keyboard checks passed.
+- Production backend configuration and required database indexes are verified.
+- Deployed OAuth remains disabled while callback-query logging is unresolved.
+- Final privacy/retention/restore review and deployed Chrome/Safari/iOS checks remain open.
+- Frontend [#44](https://github.com/Frantisek82/soundtrack-mood-explorer-frontend/issues/44)
+  and backend [#40](https://github.com/Frantisek82/soundtrack-mood-explorer-backend/issues/40)
+  track remaining verification. v2.2.0 has not been released.
+
 ### 🚧 Planned
 
-- Spotify OAuth integration
 - Improve Safari cross-site cookie compatibility
 - Advanced filtering
 - AI-powered soundtrack recommendations
@@ -451,7 +472,7 @@ See the **Issues** tab for current work and future improvements.
 
 ## 👨‍💻 Author
 
-Frantisek Babinsky,
+František Babinský,
 Full-Stack Developer
 
 Built as a professional portfolio project.
