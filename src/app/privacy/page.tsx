@@ -128,9 +128,10 @@ export default function PrivacyPage() {
           can prevent login or Spotify authorization from working.
         </p>
         <p>
-          Soundtrack pages with an embedded Spotify preview load content from
-          Spotify, even if you have not linked a Spotify account. When the
-          preview loads, your browser sends request information to Spotify.
+          Spotify previews can appear on soundtrack detail pages, in Favorites,
+          and on playlist detail pages. When a preview loads, your browser sends
+          request information to Spotify, even if you have not linked a Spotify
+          account.
           Spotify may use cookies or similar technologies to collect browsing
           information, depending on your browser settings. You can restrict
           third-party cookies in your browser, which may affect the preview.
