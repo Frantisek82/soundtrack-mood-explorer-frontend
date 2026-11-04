@@ -4,7 +4,7 @@ export default function PrivacyPage() {
   return (
     <main className="max-w-3xl mx-auto px-6 py-10 space-y-6">
       <h1 className="text-3xl font-bold">Privacy notice</h1>
-      <p>Last updated: 20 October 2026</p>
+      <p>Last updated: 4 November 2026</p>
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Who maintains this project</h2>
@@ -126,6 +126,14 @@ export default function PrivacyPage() {
         <p>
           You can remove or block cookies through your browser settings. Doing so
           can prevent login or Spotify authorization from working.
+        </p>
+        <p>
+          Soundtrack pages with an embedded Spotify preview load content from
+          Spotify, even if you have not linked a Spotify account. When the
+          preview loads, your browser sends request information to Spotify.
+          Spotify may use cookies or similar technologies to collect browsing
+          information, depending on your browser settings. You can restrict
+          third-party cookies in your browser, which may affect the preview.
         </p>
         <p>
           The deployed application uses Vercel for hosting and MongoDB Atlas for
