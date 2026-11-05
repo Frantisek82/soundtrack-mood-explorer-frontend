@@ -1,11 +1,15 @@
 import { StrictMode } from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import ProfilePage from "@/src/app/profile/page";
 import LoginPage from "@/src/app/login/page";
-import { isAuthenticated } from "@/src/utils/auth";
-import { getCurrentUser } from "@/src/services/user";
+import { isAuthenticated, logout } from "@/src/utils/auth";
+import {
+  AccountDeletionUnavailableError,
+  deleteAccount,
+  getCurrentUser,
+} from "@/src/services/user";
 import { getFavorites } from "@/src/services/favorites";
 import { loginUser } from "@/src/services/auth";
 
@@ -24,6 +28,7 @@ jest.mock("@/src/utils/auth", () => ({
 }));
 
 jest.mock("@/src/services/user", () => ({
+  ...jest.requireActual("@/src/services/user"),
   getCurrentUser: jest.fn(),
   updatePassword: jest.fn(),
   deleteAccount: jest.fn(),
@@ -150,4 +155,69 @@ it("preserves normal application login after the Spotify notice", async () => {
   await user.type(screen.getByPlaceholderText("Password"), "test-password");
   await user.click(screen.getByRole("button", { name: "Login" }));
   await waitFor(() => expect(mockRouter.push).toHaveBeenCalledWith("/explore"));
+});
+
+it("keeps the user signed in when account deletion is unavailable", async () => {
+  const user = userEvent.setup();
+  const alertMock = jest.spyOn(window, "alert").mockImplementation(() => {});
+  jest.mocked(deleteAccount).mockRejectedValueOnce(
+    new AccountDeletionUnavailableError(),
+  );
+
+  try {
+    render(<ProfilePage />);
+    await user.click(await screen.findByRole("button", {
+      name: "Delete Account",
+    }));
+    const dialog = screen.getByRole("dialog");
+    await user.click(within(dialog).getByRole("button", { name: /delete/i }));
+
+    await waitFor(() => expect(alertMock).toHaveBeenCalledWith(
+      "Account deletion is temporarily unavailable. Please try again later.",
+    ));
+    expect(deleteAccount).toHaveBeenCalledTimes(1);
+    expect(logout).not.toHaveBeenCalled();
+    expect(mockRouter.push).not.toHaveBeenCalled();
+    expect(mockRouter.replace).not.toHaveBeenCalled();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    jest.mocked(deleteAccount).mockResolvedValueOnce(undefined);
+    await user.click(screen.getByRole("button", { name: "Delete Account" }));
+    await user.click(within(screen.getByRole("dialog")).getByRole(
+      "button", { name: /delete/i },
+    ));
+
+    await waitFor(() => expect(mockRouter.push).toHaveBeenCalledWith("/"));
+    expect(deleteAccount).toHaveBeenCalledTimes(2);
+    expect(logout).toHaveBeenCalledTimes(1);
+  } finally {
+    alertMock.mockRestore();
+  }
+});
+
+it("keeps unexpected deletion errors generic and preserves sign-in", async () => {
+  const user = userEvent.setup();
+  const alertMock = jest.spyOn(window, "alert").mockImplementation(() => {});
+  jest.mocked(deleteAccount).mockRejectedValueOnce(
+    new Error("private-server-details"),
+  );
+
+  try {
+    render(<ProfilePage />);
+    await user.click(await screen.findByRole("button", {
+      name: "Delete Account",
+    }));
+    await user.click(within(screen.getByRole("dialog")).getByRole(
+      "button", { name: /delete/i },
+    ));
+
+    await waitFor(() => expect(alertMock).toHaveBeenCalledWith(
+      "Failed to delete account.",
+    ));
+    expect(logout).not.toHaveBeenCalled();
+    expect(mockRouter.push).not.toHaveBeenCalled();
+    expect(mockRouter.replace).not.toHaveBeenCalled();
+  } finally {
+    alertMock.mockRestore();
+  }
 });

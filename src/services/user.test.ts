@@ -1,4 +1,5 @@
 import {
+  AccountDeletionUnavailableError,
   deleteAccount,
   getCurrentUser,
   updatePassword,
@@ -87,6 +88,28 @@ describe("user service", () => {
   });
 
   describe("deleteAccount", () => {
+
+    it("maps HTTP 503 to a bounded temporary-unavailability error", async () => {
+      const readBody = jest.fn().mockRejectedValue(
+        new Error("private-response-details"),
+      );
+      (global.fetch as jest.Mock).mockResolvedValue({
+        ok: false,
+        status: 503,
+        json: readBody,
+      });
+
+      await expect(deleteAccount()).rejects.toEqual(
+        new AccountDeletionUnavailableError(),
+      );
+      expect(readBody).not.toHaveBeenCalled();
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledWith(API_URL, {
+        method: "DELETE",
+        credentials: "include",
+      });
+    });
+
     it("deletes the account successfully", async () => {
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
