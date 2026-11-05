@@ -50,11 +50,22 @@ export async function updatePassword(password: string) {
    Delete account
 ===================== */
 
+export class AccountDeletionUnavailableError extends Error {
+  constructor() {
+    super("Account deletion is temporarily unavailable. Please try again later.");
+    this.name = "AccountDeletionUnavailableError";
+  }
+}
+
 export async function deleteAccount() {
   const res = await fetch(API_URL, {
     method: "DELETE",
     credentials: "include",
   });
+
+  if (res.status === 503) {
+    throw new AccountDeletionUnavailableError();
+  }
 
   if (!res.ok) {
     throw new Error("Failed to delete account");

@@ -7,6 +7,7 @@ import {
   getCurrentUser,
   updatePassword,
   deleteAccount,
+  AccountDeletionUnavailableError,
   type User,
 } from "@/src/services/user";
 import { getFavorites } from "@/src/services/favorites";
@@ -184,8 +185,12 @@ export default function ProfilePage() {
       await logout(); // IMPORTANT
       router.push("/");
 
-    } catch {
-      alert("Failed to delete account.");
+    } catch (error) {
+      alert(
+        error instanceof AccountDeletionUnavailableError
+          ? error.message
+          : "Failed to delete account.",
+      );
     } finally {
       setDeleteLoading(false);
       setShowDeleteDialog(false);
